@@ -1,0 +1,258 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<!DOCTYPE>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>新增/編輯合同</title>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.bgiframe.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/loading-min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.json-2.3.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/easyui/jquery.easyui.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/validateType.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.scrollTo-min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-overlay.js"></script>
+		<!--<link href="__PUBLIC__/js/uploadifive/uploadifive.css" rel="stylesheet" type="text/css">-->
+
+		<link href="__PUBLIC__/style/css/common.css" rel="stylesheet" type="text/css">
+		<link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
+		<link href="__PUBLIC__/style/css/loading.css" rel="stylesheet" type="text/css" />
+		<link href="__PUBLIC__/js/jquery-easyui-1.2.6/themes/default/easyui.css" rel="stylesheet" type="text/css">
+		<SCRIPT LANGUAGE="JavaScript">
+
+			var actionName = '__ACTION__';
+			$(document).ready(function() {
+				var status;
+				//status区分add或edit
+				//编辑时显示删除按钮
+				if (window.location.href.indexOf("id") != -1) {
+					$("#removeBtn").show();
+					status = "edit";
+				} else {
+					status = "add";
+				}
+				//格式化日期控件的日期格式
+				$("#orderDate,#startDate,#endDate").datebox({
+					formatter:formater
+				});
+				$('#floatWin').dialog({
+					buttons : [{
+						text : 'Cancel',
+						handler : function() {
+							$('#floatWin').dialog('close');
+						}
+					}],
+					resizable:true
+				});
+				$('#floatWin').dialog("close");
+				$("#searchCustomerBtn").click(function() {
+					$("#iframeWin").attr("src",root + "/Admin/Customer/searchCustomer");
+					$('#floatWin').dialog({title:"查找客户"});
+					$('#floatWin').dialog('open');
+				})
+				$("#searchStaffBtn").click(function() {
+					$("#iframeWin").attr("src",root + "/Admin/Staff/searchStaff");
+					$('#floatWin').dialog({title:"查找月嫂"});
+					$('#floatWin').dialog('open');
+				})
+				//保存
+				$("#saveBtn").click(function() {
+					var form = $('#infoForm');
+					if (!form.form("validate")) {
+						alert('請填寫必須的信息');
+						return;
+					}
+					$("#floatWin").remove();
+					var data = form.serialize();
+					if (status == "add") {
+						$.post(root + '/Admin/Contract/addContract', data, saveHandler, "json");
+					} else if (status == "edit") {
+						$.post(root + '/Admin/Contract/saveContract', data, saveHandler, "json");
+					}
+				});
+				function saveHandler(response){
+					alert(response.info);
+					if(response.status){
+						window.location.href = root + "/Admin/Contract/";
+					}
+				}
+				function ajaxHandler(response) {
+					alert(response.info);
+					if (response.status == 1)
+						window.location.href =  root + "/Admin/Contract/";
+				}
+
+				//删除
+				$("#removeBtn").click(function() {
+					$.post(root + '/Admin/Contract/removeContract', "id=" + $("#id").val(), ajaxHandler, "json");
+				});
+			});
+			//子页面调用该函数。不能放在$()中，否则调用不了
+			function getCustomer(data)
+			{
+				$("#floatWin").dialog("close");
+				$("#customerName").val(data.name);
+				$("#hospital").text(data.hospital);
+				$("#expectedDay").text(data.expectedDay);
+				$("#birthday").text(data.birthday);
+				$("#address").text(data.address);
+				$("#customerId").val(data.id);
+			}
+			//子页面调用该函数。不能放在$()中，否则调用不了
+			function getStaff(data)
+			{
+				$("#floatWin").dialog("close");
+				$("#staffId").val(data.staffid);
+				$("#staffName").val(data.name);
+				$("#ysLevel").text(data.ysLevel);
+			}
+		</SCRIPT>
+	</head>
+	<body>
+		<include file="Public:header" />
+		<!-- 主要內容 -->
+		<div id="content">
+			<include file="Public:leftForContent" />
+			<!-- 右框架 -->
+			<div id="rightWrap">
+				<!-- 所在位置地址 -->
+				<div class="addressBar">
+					合同管理 > 新增/編輯合同
+				</div>
+				<!--<div class="groupTitle">
+				<h2 class="pageTitle">新增/編輯合同</h2>
+				</div>-->
+				<div class="locationInfo">
+					<form id="infoForm">
+						<input name="id" id="id" type="text" style="display:none;" value="{$id}" />
+						<input name="customerId"  id="customerId" type="text" style="display:none;" value="{$customerId}" />
+						<input name="staffId" id="staffId" type="text" style="display:none;" value="{$staffId}" />
+						<table class="noBackground">
+							<tr>
+								<td class="noBackground inputName">编号:</td>
+								<td class="noBackground inputText">
+								<input name="bh" id="bh" type="text" style="width: 300px;" readonly="readonly" value="{$bh}" />
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">查询客户:</td>
+								<td class="noBackground inputText" >
+									<input type="button" value="Search" id="searchCustomerBtn" />
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName" colspan="2">
+								<table  class="noBackground">
+									<tr>
+										<td class="noBackground inputName" colspan="2">客户信息</td>
+									</tr>
+									<tr>
+										<td class="noBackground inputName">姓名:</td>
+										<td class="noBackground inputName">
+											<input id="customerName" class="easyui-validatebox" 
+											value="{$customerName}" type="text" readonly="true" data-options="required:true,missingMessage:'请选择客户'" />
+										</td>
+									</tr>
+									<tr>
+										<td class="noBackground inputName">现住地址:</td>
+										<td class="noBackground inputName"><label id="address">{$address}</label></td>
+									</tr>
+									<tr>
+										<td class="noBackground inputName">预产期:</td>
+										<td class="noBackground inputName"><label id="expectedDay">{$expectedDay}</label></td>
+									</tr>
+									<tr>
+										<td class="noBackground inputName">生产日期:</td>
+										<td class="noBackground inputName"><label id="birthday">{$birthday}</label></td>
+									</tr>
+									<tr>
+										<td class="noBackground inputName">医院:</td>
+										<td class="noBackground inputName"><label id="hospital">{$hospital}</label></td>
+									</tr>
+								</table>
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">查询员工:</td>
+								<td class="noBackground inputText" >
+									<input type="button" value="Search" id="searchStaffBtn" />
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName" colspan="2">
+								<table  class="noBackground">
+									<tr>
+										<td class="noBackground inputName" colspan="2">员工信息</td>
+									</tr>
+									<tr>
+										<td class="noBackground inputName">姓名:</td>
+										<td class="noBackground inputName">
+											<input id="staffName" class="easyui-validatebox"
+											 value="{$staffName}" type="text" readonly="true" data-options="required:true,missingMessage:'请选择月嫂'" />
+										 </td>
+									</tr>
+									<tr>
+										<td class="noBackground inputName">级别:</td>
+										<td class="noBackground inputName"><label id="ysLevel"></label></td>
+									</tr>
+								</table>
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">签订日期:</td>
+								<td class="noBackground inputText">
+								<input name="orderDate" id="orderDate" class="easyui-datebox" required="true"
+								value="{$orderDate}" />
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">起止日期:</td>
+								<td class="noBackground inputText">
+								<input name="startDate" id="startDate" class="easyui-datebox" required="true"
+								value="{$startDate}" />
+								至
+								<input name="endDate" id="endDate" type="text" class="easyui-datebox"
+								value="{$endDate}" required="true"/>
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">金额:</td>
+								<td class="noBackground inputText">
+								<input name="price" id="price" type="text" class="easyui-numberbox"
+								validType="length[1,10]"  value="{$price}" required="true"/>
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">已付:</td>
+								<td class="noBackground inputText">
+									<input name="doPay" id="doPay" type="text" class="easyui-numberbox"
+									validType="length[1,10]"  value="{$doPay}" required="true"/>
+								</td>
+							</tr>
+						</table>
+					</form>
+				</div>
+				<div class="formLine" style="padding:0px;">
+					<div id="toolbar2" class="formLine">
+						<button class="actionButton" id="saveBtn">
+							儲存
+						</button>
+						<button class="actionButton" id="removeBtn" style="display: none;">
+							刪除
+						</button>
+						<button class="actionButton" onclick="window.location.href='__ROOT__/Admin/Contract/'">
+							返回
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--弹出窗口-->
+		<div id="floatWin" data-options="iconCls:'icon-save'" style="padding:5px;width:450px;height:650px;">
+			<iframe src="" id="iframeWin" frameborder="0" width="100%" height="100%" scrolling="no" ></iframe>
+		</div>
+	</body>
+</html>

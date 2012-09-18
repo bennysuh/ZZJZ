@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>登入系統</title>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.bgiframe.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/loading-min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.2.6/jquery.easyui.min.js"></script>
+
+<link href="__PUBLIC__/style/css/login.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/style/css/loading.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/js/jquery-easyui-1.2.6/themes/default/easyui.css" rel="stylesheet" type="text/css">
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+
+$(document).ready(function(){
+	
+    loading = new ol.loading({id:"loginWrap"});
+    $("#loginButton").click(function(){
+        var form = $('#loginForm')[0];
+	    if(!$(form.username).validatebox('isValid')) return;
+		if(!$(form.password).validatebox('isValid')) return;
+		<?php if (C('VERIFY_CODE_MODE')) { ?>
+		if(!$(form.verifyCode).validatebox('isValid')) return;
+		<?php } ?>
+
+		var data = $(form).serialize();
+		
+		loading.show();
+		$(".loginErrorInfo").html('');
+		$.post('__ROOT__/Admin/Auth/login', data, showResponse, 'json');
+		function showResponse(response) {
+		    loading.hide();
+			if (!response.status) {
+			    $(".loginErrorInfo").html(response.info);
+				$(".verifyImage").click();//刷新验证码
+				return;
+			}
+			window.location.href = response.info;
+		}
+	});
+
+	$('#loginForm').find('input[type=text],input[type=password]').keydown(function(event) {
+	    if (event.which == 13) {
+		    $("#loginButton").click();
+	    }  
+	});
+
+
+	$(".verifyImage,.verifyNotice").click(function(){
+	    $(".verifyImage")[0].src = "{:U('Auth/verify')}?"+new Date().valueOf();
+
+	});
+	
+
+})
+
+
+//-->
+</SCRIPT>
+
+</head>
+<body>
+<!-- 頭部 -->
+<div id="header">
+  <!-- 頭部內框 -->
+  <div id="internalBox">
+    <!-- logo -->
+    <div id="headerLogo"><img src="__PUBLIC__/style/img/headerLogo.png" /></div>
+  </div>
+</div>
+<div id="loginWrap">
+  <div class="loginTitle">登入系統</div>
+  <div class="inputBox">
+    <form id="loginForm">
+      <div class="formLine">
+        <label class="loginLabel">用戶名：</label>
+        <input name="username" type="text" class="easyui-validatebox" required="true" />
+      </div>
+      <div class="formLine">
+        <label class="loginLabel">密碼：</label>
+        <input name="password" type="password" class="easyui-validatebox" required="true" />
+      </div>
+      <!-- 验证码 -->
+	  <?php if (C('VERIFY_CODE_MODE')) { ?>
+	  <div class="formLine">
+        <label class="loginLabel">驗證碼：</label>
+        <input name="verifyCode" class="easyui-validatebox" required="true" />
+		<img class="verifyImage" src="{:U('Auth/verify')}" title="看不清，按下去換一個" />
+		<span class="verifyNotice">看不清楚</span>
+      </div>
+	  <?php } ?>
+    </form>
+	<span class="loginErrorInfo"></span>
+    <button id="loginButton">登入</button>
+  </div>
+</div>
+</body>
+</html>

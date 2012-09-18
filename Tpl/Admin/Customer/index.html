@@ -1,0 +1,119 @@
+<!DOCTYPE>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-1.7.2.min.js"></script>
+<!--解决IE6 select遮罩 hack插件 配合loading插件使用-->
+<script type="text/javascript" src="__PUBLIC__/js/jquery.bgiframe.min.js"></script>
+<!--loading mask插件-->
+<script type="text/javascript" src="__PUBLIC__/js/loading-min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.2.6/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/validateType.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.json-2.3.min.js"></script>
+<link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/style/css/loading.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/js/jquery-easyui-1.2.6/themes/default/easyui.css" rel="stylesheet" type="text/css">
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+var actionName = '__ACTION__';
+$(document).ready(function(){
+	var loading = new ol.loading({id:"searchForm"});
+     //导航选中
+	$(".navList li[name=setting]").addClass('selectButton');
+	
+	$('#searchBtn').click(function(){
+	    var postData = $("#searchForm").serialize();
+		var url = actionname + "/?" + postData;
+		window.location.href = url;
+	});
+	
+	$("#addBtn").click(function(){
+		window.location.href = group + "/Customer/editCustomer/";
+	});
+	//编辑或删除的按纽被按下
+	$('#listTb').delegate(".tableActionButton","click",function(){
+		var currentRow = $(this).parent().parent();
+		var customerId = currentRow.attr('customerId');
+		var isHidden;//显示隐藏按钮状态
+		if ($(this).attr('value') == '編輯') {
+			window.location.href = group + '/Customer/editCustomer/id/'+customerId;
+			return;
+		}
+		
+		if ($(this).attr('value') == '刪除') {
+		    if (!confirm('你確定要刪除此客户？')) return; 
+			loading.show();
+		    $.post('{:U("Customer/removeCustomer")}', "id="+customerId, removeHandler, 'json');
+		}
+	});
+	function removeHandler(response) {
+		loading.hide();
+		if (response.status) {
+			window.location.reload();
+		}else{
+			alert(response.info);
+		}
+	}
+})
+//-->
+</SCRIPT>
+
+</head>
+<body>
+  <include file="Public:header" />
+
+<!-- 主要內容 -->
+<div id="content">
+	
+  <!-- 左菜单 -->
+  <include file="Public:leftForContent" />
+    
+  <!-- 右框架 -->
+  <div id="rightWrap">
+    <!-- 所在位置地址 -->
+    <div class="addressBar">客户管理 > </div>
+    <!-- 用戶管理框架 -->
+  	<div class="UMWrap">
+  		 <div class="formLine">
+        <form id="searchForm"  >
+            <table class="noBackground" style="border: none;">
+              <tr>
+              	<td class="inputName"><label>姓名</label></td>
+                <td class="inputText"><input name="name" type="text" /></td>  	
+              </tr>
+            </table>
+            <!-- 按鈕按下去為select否則為noselect -->
+            <input type="button" id="searchBtn" value="Search" class="TinputAdd noselected" />
+          </form>
+      </div>
+        <!-- 列表框架 -->
+        <div class="listWrap">
+          <h2>客户列表</h2> 
+          <button id="addBtn" class="TinputAdd noselected"> 新 增 </button>
+            <table id="listTb">
+              <tr class="tableHeader">
+                <!-- F代表Form -->
+                <th class="nameF">姓名</th>
+				<th class="tableActionTD">操作</th>
+              </tr>
+              <volist name="list" id="vo">
+			  <tr customerId={$vo['id']}>
+                <td>{$vo['name']}</td>
+				<td>
+					<input type="button" value="編輯" class="tableActionButton"/>
+					<input type="button" value="刪除" class="tableActionButton"/>
+				</td>
+              </tr>
+              </volist>
+            </table>
+			{:$page}
+        </div>
+  </div>
+  
+</div>
+</body>
+</html>

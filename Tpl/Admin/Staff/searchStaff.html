@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-1.7.2.min.js"></script>
+<!--解决IE6 select遮罩 hack插件 配合loading插件使用-->
+<script type="text/javascript" src="__PUBLIC__/js/jquery.bgiframe.min.js"></script>
+<!--loading mask插件-->
+<script type="text/javascript" src="__PUBLIC__/js/loading-min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.2.6/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/validateType.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.json-2.3.min.js"></script>
+<link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/style/css/loading.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/js/jquery-easyui-1.2.6/themes/default/easyui.css" rel="stylesheet" type="text/css">
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+var actionName = '__ACTION__';
+$(document).ready(function(){
+	var loading = new ol.loading({
+		id : "searchForm"
+	});
+     //导航选中
+	$(".navList li[name=setting]").addClass('selectButton');
+	$('#searchBtn').click(function(){
+	    var postData = $("#searchForm").serialize();
+		var url = "/Admin/Staff/searchStaff?" + postData;
+		window.location.href = url;
+	});
+	
+	$("#addBtn").click(function(){
+		//顶层url跳转到新增客户页面
+		window.top.location.href = "/Admin/Staff/editStaff/";
+	});
+	
+	$('#staffList').delegate(".tableActionButton","click",function(){
+		var currentRow = $(this).parent().parent();
+		var staffId = currentRow.attr('staffId');
+		var isHidden;//显示隐藏按钮状态
+		if ($(this).attr('value') == '选择') {
+			loading.show();
+			$.post('{:U("Staff/getStaffById/")}', "id=" + staffId, chooseHandler, 'json');
+		}
+	});
+	//选择回调
+	function chooseHandler(response) {
+		loading.hide();
+		window.parent.getStaff(response);
+	}
+})
+//-->
+</SCRIPT>
+
+</head>
+<body>
+<!-- 主要內容 -->
+<div id="content">
+  <!-- 右框架 -->
+  <div id="rightWrap" style="margin:20px;">
+    <!-- 用戶管理框架 -->
+  	<div class="UMWrap">
+  		 <div class="formLine">
+        <form id="searchForm"  >
+            <table class="noBackground" style="border: none;">
+              <tr>
+              	<td class="inputName"><label>姓名</label></td>
+                <td class="inputText"><input name="name" type="text" /></td>  
+            	<td class="inputText">
+            		<input type="button" id="searchBtn" value="Search" class="TinputAdd noselected" />
+              	</td>
+              </tr>
+            </table>
+          </form>
+      </div>
+        <!-- 列表框架 -->
+        <div class="listWrap">
+          <button id="addBtn" class="TinputAdd noselected"> 新 增 </button>
+            <table id="staffList">
+              <tr class="tableHeader">
+                <!-- F代表Form -->
+                <th class="nameF" style="width:100px">姓名</th>
+				<th class="tableActionTD" style="width:100px">操作</th>
+              </tr>
+              <volist name="list" id="vo">
+			  <tr staffid={$vo['staffid']}>
+                <td>{$vo['name']}</td>
+				<td>
+					<input type="button" value="选择"  class="tableActionButton"/>
+				</td>
+              </tr>
+              </volist>
+            </table>
+			{:$page}
+        </div>
+  </div>
+  
+</div>
+</body>
+</html>

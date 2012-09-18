@@ -1,0 +1,242 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-1.7.2.min.js"></script>
+<!--解决IE6 select遮罩 hack插件 配合loading插件使用-->
+<script type="text/javascript" src="__PUBLIC__/js/jquery.bgiframe.min.js"></script>
+<!--loading mask插件-->
+<script type="text/javascript" src="__PUBLIC__/js/loading-min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.2.6/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/validateType.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.json-2.3.min.js"></script>
+<link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/style/css/loading.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/js/jquery-easyui-1.2.6/themes/default/easyui.css" rel="stylesheet" type="text/css">
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+var actionName = '__ACTION__';
+
+$(document).ready(function(){
+	createYearOptions($("#yearSel"));
+	createMonthOptions($("#monthSel"));
+	function createYearOptions(yearSel,selectIndex){
+		var date = new Date();
+		var currYear = date.getFullYear(),yearArr = [];
+		//生成年度选项
+		for (var i=0; i < parseInt(currYear) - 2010 + 1; i++) {
+			yearArr.push(2010 + i);
+		};
+		yearArr.reverse();
+		$.each(yearArr,function(i){
+			if(selectIndex && selectIndex == this){
+				yearSel.append("<option selected='true' value='" + this + "'>" + this + "</option>");
+			}else{
+				yearSel.append("<option value='" + this + "'>" + this + "</option>");
+			}
+		});
+	}
+	function createMonthOptions(monthSel,selectIndex){
+		for  (var i=1; i < 13; i++) {
+			if(selectIndex && selectIndex == i){
+				monthSel.append("<option selected='true' value='" + i + "'>" + i + "</option>");
+			}else{
+				monthSel.append("<option value='" + i + "'>" + i + "</option>");
+			}
+		};
+	}
+	//显示loading
+	var loading = new ol.loading({id:"addForm"});
+     //导航选中
+	$(".navList li[name=setting]").addClass('selectButton');
+	//新增
+    $('#saveBtn').click(function(){
+	    var form = $('#editForm');
+	    if(!$('#editForm').form("validate")) {
+	    	alert('請填寫必須的信息');
+			return;
+	    }
+		
+		loading.show();
+		var data = $('#addForm').serialize();
+		$.post(root + '/Admin/GuidePrice/addGuidePrice', data, showResponse, 'json');
+		function showResponse(response) {
+			loading.hide();
+			alert(response.info);
+			if (response.status) {
+			    window.location.reload();
+		    }
+		}
+	});
+
+	//编辑或删除的按纽被按下
+	$('#guideList').delegate(".tableActionButton","click",function(){
+		var currentRow = $(this).parent().parent();
+		var obj = {};
+		obj.id = currentRow.attr('guideId');
+		
+		if ($(this).attr('value') == '編輯') {
+			var btn = $(this),tdYear,tdMonth,tdPrice,tdContent;
+			btn.attr('value', '保存');
+			currentRow.children().each(function(i){
+				if(i===0){
+					tdYear = $(this);
+					obj.year = tdYear.text();
+					var tdYearSel = "<select name='tdYearSel'></select>";
+					tdYear.html(tdYearSel);
+					createYearOptions(tdYear.children(0),obj.year);
+				}
+				if(i==1){
+					tdMonth = $(this);
+					obj.month = $(this).text();
+					var tdMonthSel = "<select name='tdMonthSel'></select>";
+					tdMonth.html(tdMonthSel);
+					createMonthOptions(tdMonth.children(0),obj.month);
+				}
+				if(i==2){
+					tdPrice = $(this);
+					obj.price = $(this).text();
+					tdContent = "<input value='" + obj.price + "' type='text' class='easyui-validatebox' required='true' />"
+					tdPrice.html(tdContent);
+				}
+			})
+			return;
+		}
+		
+		if($(this).attr('value') == '保存'){
+			var btn = $(this),tdYear,tdMonth,tdPrice,tdContent;
+			currentRow.children().each(function(i){
+				if(i===0){
+					tdYear = $(this);
+					obj.year = tdYear.find("option:selected").val();
+				}
+				if(i==1){
+					tdMonth = $(this);
+					obj.month = tdMonth.find("option:selected").val();
+				}
+				if(i==2){
+					tdPrice = $(this);
+					if(tdPrice.children(0).val()){
+						obj.price = tdPrice.children(0).val();
+					}else{
+						alert("请输入价格");
+						return;
+					}
+				}
+			});
+			loading.show();
+			$.post('{:U("GuidePrice/saveGuidePrice")}',obj,function(response){
+				loading.hide();
+				if(response.status){
+					window.location.href = root + '/Admin/GuidePrice/';
+				}else{
+					alert(response.info);
+				}
+			},"json");
+			
+			return;
+		}
+		
+		if ($(this).attr('value') == '刪除') {
+		    if (!confirm('你確定要刪除此指导价格？')) return; 
+			loading.show();
+		    $.post('{:U("GuidePrice/removeGuidePrice")}', "id="+obj.id, removeHandler, 'json');
+		    return;
+		}
+
+		function removeHandler(response) {
+			loading.hide();
+			if (response.status) {
+				window.location.reload();
+			} else {
+			    alert(response.info);
+			}
+		}
+	})
+})
+//-->
+</SCRIPT>
+
+</head>
+<body>
+  <include file="Public:header" />
+
+<!-- 主要內容 -->
+<div id="content">
+	
+  <!-- 左菜单 -->
+  <include file="Public:leftForContent" />
+    
+  <!-- 右框架 -->
+  <div id="rightWrap">
+    <!-- 所在位置地址 -->
+    <div class="addressBar">设置 > 指导价</div>
+    
+  	<div class="UMWrap">
+    	<!-- 框架標題 -->
+        <div class="wrapTitle">
+          <h2><img src="__PUBLIC__/style/img/groupLogo.png" />增加指导价格</h2>
+        </div>
+          <!-- 增加框架 -->
+        <div class="UMWrap">
+          <div class="formLine">
+	          <form id="addForm">
+	          	<input id="guideId" style="display: none;" name="id" value="{$id}"/>
+	            <table guideId="" id="editTB">
+	              <tr>
+	              	<td class="inputName"><label>年度:</label></td>
+	              	<td class="inputText">	    
+	              		<select id="yearSel" name="year"></select>
+	              	</td>
+	              	<td class="inputName"><label>月份:</label></td>
+	              	<td class="inputText">
+	              		<select id="monthSel" name="month"></select>
+	              	</td>
+	                <td class="inputName"><label>价格:</label></td>
+	            	<td class="inputText"><input name="price" type="text" class="easyui-numberbox" length="{1,5}" required="true" /></td>  
+	              </tr>
+	            </table>
+	            <input type="button" value="新增" class="actionButton" id="saveBtn"/>
+	          </form>
+        </div>
+      </div>
+        <!-- 列表框架 -->
+        <div class="userListWrap">
+          <h2>价格列表</h2> 
+        <table id="guideList">
+          <tr class="tableHeader">
+            <!-- F代表Form -->
+            <th class="userNameF">年度</th>
+            <th class="nameF">月份</th>
+            <th class="nameF">指导价格</th>
+            <th class="nameF">更新日期</th>
+			<th class="tableActionTD">操作</th>
+          </tr>
+          <volist name="list" id="vo">
+		  <tr guideId="{$vo['id']}">
+			<td class="year">{$vo['year']}</td>
+            <td class="month">{$vo['month']}</td>
+			<td class="price">{$vo['price']}</td>
+            <td><php>echo date('Y-m-d',strtotime($vo['updatetime']))</php></td>
+			<td>
+				<input type="button" value="編輯" class="tableActionButton"/><input type="button" value="刪除" class="tableActionButton"/>
+			</td>
+          </tr>
+          </volist>
+        </table>
+		{:$page}
+        </div>
+    </div>    
+  </div>
+  
+</div>
+
+
+</body>
+</html>

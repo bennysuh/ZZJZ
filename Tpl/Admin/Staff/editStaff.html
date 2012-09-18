@@ -1,0 +1,479 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>新增/編輯员工</title>
+		<link href="__PUBLIC__/style/css/common.css" rel="stylesheet" type="text/css">
+		<link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
+		<link href="__PUBLIC__/style/css/loading.css" rel="stylesheet" type="text/css" />
+		<link href="__PUBLIC__/js/jquery-easyui-1.2.6/themes/default/easyui.css" rel="stylesheet" type="text/css">
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.bgiframe.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/loading-min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.json-2.3.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.2.6/jquery.easyui.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/validateType.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.scrollTo-min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-overlay.js"></script>
+		<SCRIPT LANGUAGE="JavaScript">
+		<!--
+		var actionName = '__ACTION__';
+		
+		$(document).ready(function(){
+			var loading = new ol.loading({id:"staffInfoForm"});
+			var status;
+			//初始化语言选择项
+			setLangSel();
+			//编辑时显示删除按钮
+			if(window.location.href.indexOf("staffId") != -1){
+				$("#removeStaffBtn").show();
+				status = "edit";
+				$("#staffName").attr("readonly",true);//不可更改用户名
+				$("#firstContact").remove();
+				$("#vo").empty();
+			}else{
+				status = "add";
+				$("#firstContact").show();
+			}
+			//格式化日期控件的日期格式
+			$("#birthday").datebox({
+				formatter:formater
+			});
+			//保存
+			var postData = {};
+			$("#saveStaffBtn").click(function(){
+				loading.show();
+				var form = $('#staffInfoForm')[0];
+				var contactData = [];
+				$("#contactUl li").each(function(){
+					var contact = {};
+					contact.type = $(this).find("select").val();
+					contact.content = $(this).find("input").val();
+					if(status=="edit"){
+						contact.id = $(this).find("label").text();
+					}
+					contactData.push(contact);
+				});
+				
+				postData.data = contactData;
+				if(contactData.length == 0){
+					alert("缺少联系方式");
+					loading.hide();
+					return;
+				}
+				//if(!$(form.name).validatebox('isValid') || !$(form.phone).validatebox('isValid')) {
+				if(!$('#staffInfoForm').form("validate")) {
+					alert('請填寫必須的信息');
+					loading.hide();
+					return;
+				}
+				var data = $(form).serialize();
+				
+				if(status == "add"){
+					$.post('{:U("Staff/addStaff")}',data,saveHandler,"json");
+				}else if(status == "edit"){
+					$.post('{:U("Staff/saveStaff")}',data,saveHandler,"json");
+				}
+			});
+			//新增/更新联系方式
+			function saveHandler(response){
+				
+				if(response.status){
+					if(postData.data.length == 0){
+						alert("缺少联系方式");
+						loading.hide();
+						return;
+					}
+					var action;
+					if(status == "add") {
+						postData.no = response.info;
+						action = root + '/Admin/Staff/addContact';//新增不能使用{:U("/Staff/saveContact")}。否则找不到对应的action函数。而编辑则可以。
+					}else{
+						postData.no = $("#staffId").val();
+						action = root + '/Admin/Staff/saveContact';
+					}
+					//这是在回调函数中第二次调用post，post的action不需要前面的目录
+					$.post(action,{json:$.toJSON(postData)},relHandler,"json");
+				}else{
+					loading.hide();
+					alert(response.info);	
+				}
+			}
+			//联系方式回调
+			function relHandler(r){
+				loading.hide();
+				alert(r.info);
+				window.location.href = root + "/Staff";
+			}
+				
+			function ajaxHandler(response){
+				alert(response.info);
+				if(response.status == 1)
+					window.location.href =  root + "/Staff";
+			}
+			//删除员工
+			$("#removeStaffBtn").click(function(){
+				$.post('{:U("Staff/removeStaff")}',"staffId="+$("#staffId").val(),ajaxHandler,"json");
+			});
+            //封面图片切换
+            $("input[name=showWeb]").live("click",function(){
+            	$("#imgShowIndex").val(this.selectedIndex);
+            });
+            //删除上传图片
+            $("#thumbList").delegate(".delImg","click",function(){
+            	var data = {};
+            	var imgSrc = $(this).prev().attr("src");// 格式：/Public/Uploads/Staff/XX.JPG
+            	data.thumbUrl = imgSrc.substr(1);// 去掉首个“/” 带个/表示的是web地址？在action中删除操作的地址是不能带/的
+            	data.index = $(this).parent().index();
+            	$.post(root + '/Admin/Staff/removeThumb',{json:$.toJSON(data)},removeThumbHandler,"json");
+            });
+            function removeThumbHandler(response){
+            	if(response.status){
+            		//删除Li图片
+	            	$("#thumbList li").eq(response.info).remove();
+	            	//重置上传图片地址 INPUT
+	            	$("#uploadImages").val("");
+	            	var images = "";
+	            	$("#thumbList li").each(function(){
+	            		images += $(this).find(".uploadImg").eq(0).attr("src") + ",";
+	            	});
+	            	images = images.substr(0,1);
+	            	$("#uploadImages").val(images);
+            	}else{
+            		alert(response.info);
+            	}
+            }
+            //新增联系方式
+        	$("#contactUl").delegate(".addImg","click",function(){
+        		var contactHtml = '<li ><select class="contactTypeSel">' +
+										'<option selected="true">电话</option>' + 
+										'<option>email</option>' +
+									'</select>' +
+				'<input type="text" class="easyui-validatebox" validType="number"  required="true" />' +
+				"<img class='delImg' src='__PUBLIC__/style/img/delete.png' /></li>";
+	        	$("#contactUl").append(contactHtml);
+	        	$("#contactUl input[validType='number']").last().validatebox({
+					required:true
+				});	        	
+        	}).delegate(".delImg","click",function(e){
+        		var i = $(this).parent().index();
+        		$("#contactUl li").eq(i).find("input").validatebox("destroy");//删除验证销毁组件
+        		$("#contactUl li").eq(i).remove();
+        	});
+        	//切换联系方式
+        	$(".contactTypeSel").live("change",function(e){
+        		var selectedIndex = e.currentTarget.selectedIndex;
+        		var input = $(this).next();
+        		input.val("");
+        		switch(selectedIndex){
+        			case 0:
+        				input.attr("validType","number");
+        				input.validatebox('remove');
+        				input.validatebox({
+        					required:true
+        				});
+        				break;
+        			case 1:
+        				input.attr("validType","email");
+        				input.validatebox('remove');
+        				input.validatebox({
+        					required:true,
+        					validType:"email"
+        				})
+        				break;
+        		}
+        	});
+        	//更改省份和城市
+        	$("#provSel").change(function(){
+        		var selIndex = this.selectedIndex;
+        		var pid = $(this).find("option").eq(selIndex).val();
+        		$.post('{:U("Staff/getCityByProv")}',{"pid":pid},function(response){
+        			$("#citySel").empty();
+        			var option;
+        			$.each(response.info,function(i){
+        				option = "<option value='" + i + "'>" + this + "</option>";
+        				$("#citySel").append(option);
+        			});
+        		},"json");
+        	})
+        	
+        	//给checkbox重新赋值。解决html:checkbox缓存问题
+        	function setLangSel(){
+				var langs = '{$lang}';
+				langs = langs.split(",");
+				var input;
+				$("input[name='lang[]']").each(function(){
+					input = this;
+					$(this).removeAttr("checked");//设置checked “” 无效
+					$.each(langs,function(){
+						if($(input).attr("value") == this){
+							$(input).attr("checked","checked");
+						}
+					})
+				})
+        	}
+		});
+		//上传完后回调 
+		function uploadComplete(name){
+			var oldImgName = $("#uploadImages").val();
+			if(oldImgName)
+				$("#uploadImages").val(oldImgName+","+name);
+			else
+				$("#uploadImages").val(name);
+			var tmp = name.split(",");
+        	var ele = "";
+        	$.each(tmp,function(i){
+    			ele += "<li class='smallThumb'><input class='checkShow' name='showWeb' type='radio'/>"
+    			 + "<img  src='__PUBLIC__/Uploads/Staff/" + this + "' class='uploadImg'/>" 
+    			 + "<img class='delImg' src='__PUBLIC__/style/img/delete.png' />";
+	        }) 
+	        //显示上传的缩略图
+        	$("#thumbList ul").append(ele);
+        }
+		//增加上传行数
+		function addRow(){
+			if(curFileNum>10) return;
+            curFileNum++;
+            rowsnum++;
+            var row = tbl.insertRow(-1);
+            //var td = arow.insertCell();
+            var cell = document.createElement("td");
+            cell.innerHTML = '<div class="impBtn  fLeft" ><input type="file" id="file' + curFileNum + '" name="file' + curFileNum + '" class="file  huge"></div><div class="fLeft hMargin"><img src="__PUBLIC__/style/img/del.gif"  style="cursor:hand" onfocus="javascript:getObject(this)" onclick="deleteRow();" width="20" height="20" border="0" alt="删除" align="absmiddle"></div> ';
+            cell.align = "center";
+            row.appendChild(cell);
+        }
+        
+        //上传
+        function uploading(){
+        	if($("#tbl").find("input[type=file]").length == 0) return;
+            $('#result').css("display",'block');
+            $('#result').html('<img src="__PUBLIC__/style/img/ajaxloading.gif" width="16" height="16" border="0" alt="" align="absmiddle"> 文件上传中～');
+            $('#upload')[0].submit();          
+        }
+        //删除上传行数
+        function deleteRow(){
+            if (tbl.rows.length > 0) {
+                tbl.deleteRow(rindex); //删除当前行
+                rowsnum--;
+            }
+            else {
+                return;
+            }
+            rindex = "";
+        }
+		//-->
+		</SCRIPT>
+
+	</head>
+	<body>
+		<div id="uploadifyQueue"></div>
+		<include file="Public:header" />
+		<!-- 主要內容 -->
+		<div id="content">
+			<include file="Public:leftForContent" />
+			<!-- 右框架 -->
+			<div id="rightWrap">
+				<!-- 所在位置地址 -->
+				<div class="addressBar">
+					员工管理 > 新增/編輯员工
+				</div>
+				<!--<div class="groupTitle">
+					<h2 class="pageTitle">新增/編輯员工</h2>
+				</div>-->
+				<div class="locationInfo">
+					<form id="staffInfoForm">
+						<input name="staffId" id="staffId" type="text" style="display:none;" value="{$staffId}" />
+						<input name="images" id="uploadImages" type="text" style="display:none;" value="{$images}" />
+						<input name="imgShowIndex" id="imgShowIndex" type="text" style="display:none;" value="{$imageShowIndex}" />
+						<table class="noBackground">
+							<tr>
+								<td class="noBackground inputName">姓名:</td>
+								<td class="noBackground inputText">
+								<input name="name" id="staffName" type="text" class="easyui-validatebox" required="true" value="{$name}" />
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">联系方式:</td>
+								<td class="noBackground inputText" >
+									<ul id="contactUl">
+										<!--编辑页面-->
+										<volist name="contactList" id="contactVo" key="k">
+								            <li>
+								              	<select class="contactTypeSel">
+													<option <?php if($contactVo['type']=='电话') echo "selected='true'" ?>>电话</option>
+													<option <?php if($contactVo['type']=='email') echo "selected='true'" ?>>email</option>
+												</select>
+												<input type="text" class="easyui-validatebox" 
+													<?php 
+														if($contactVo['type']=='电话') 
+															echo "validType='number'";
+														else if($contactVo['type']=='email')
+															echo "validType='email'";
+													?>
+														  required="true" value="{$contactVo['fieldA']}" />
+												<img <?php if($k===1) {echo 'src="__PUBLIC__/style/img/add.png" class="addImg"';} 
+													else {echo 'src="__PUBLIC__/style/img/delete.png" class="delImg"';} ?> />
+								            	<label class="contactID" style="display:none;" >{$contactVo['id']}</label>
+								            </li>
+										</volist>
+										<!--新增页面-->
+										<li id="firstContact" style="display:none;">
+											<select class="contactTypeSel">
+												<option selected="true">电话</option>
+												<option>email</option>
+											</select>
+											<input type="text" class="easyui-validatebox" validType="number" required="true" value="{$phone}" />
+											<img class='addImg' src='__PUBLIC__/style/img/add.png' />
+										</li>
+									</ul>
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">籍贯:</td>
+								<td class="noBackground inputName">
+									<html:select name="jg_province" options="provList" selected="jg_province" id="provSel"/>
+									<html:select name="jg_city" options="cityList" selected="jg_city" id="citySel"/>
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">出生日期:</td>
+								<td class="noBackground inputText">
+								<input name="birthday" id="birthday" type="text" class="easyui-datebox" required="true" value="{$birthday}" />
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">文化程度:</td>
+								<td class="noBackground inputText">
+									<html:select options="whcdList" selected="whcd" name="whcd"/>
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">工作经验:</td>
+								<td class="noBackground inputText">
+									<input name="gzjy" id="gzjy" type="text" class="easyui-validatebox" required="true" value="{$gzjy}" />
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">现住地址:</td>
+								<td class="noBackground inputName">
+									<textarea cols="5" class="easyui-validatebox" 
+									name="address">{$address}</textarea></td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">级别:</td>
+								<td class="noBackground inputName">
+									<select id="levelSel" name="ysLevel">
+										<volist name="levelVo" id="levelVo" key="k">
+											<option <if condition="$levelVo eq $ysLevel">selected="selected"</if> >
+												{$levelVo}
+											</option>
+										</volist>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">通晓语言:</td>
+								<td class="noBackground inputName">
+									<html:checkbox checkboxes="langList" checked="lang[]" name="lang" id="langCheckBoxes"/>
+								</td> 
+							</tr>
+							<tr>
+								<td class="noBackground inputName">综合评价:</td>
+								<td class="noBackground inputName">
+									<textarea cols="5" name="remark" class="easyui-validatebox" validType="text"  value="{$remark}">
+										{$remark}
+									</textarea>
+								</td>
+							</tr>
+							
+						</table>
+					</form>
+					<!--上传图片-->
+					<div class="content">
+                	<!--若使用ajax。必须设置target="iframeUpload"-->
+	                    <form id="upload" method='post' action="{:U("Staff/upload")}" enctype="multipart/form-data" target="iframeUpload">
+	                        <table cellpadding=0 cellspacing=0 width="450PX">
+	                            <tr>
+	                                <td colspan="2" class="tLeft">
+	                                    <div class="result" style="background:#E9E9F3">
+	                                        上传允许文件类型：gif png jpg 图像文件，分别生产2张缩略图。稍大的图会显示带水印的图片
+	                                    </div>
+	                                </td>
+	                            </tr>
+								 <tr>
+	                                <td colspan="2" class="tLeft">
+	                                    <div id="result" style="background:#E9E9F3">
+	                                    </div>
+	                                </td>
+	                            </tr>
+	                            <tr>
+	                                <td class="tRight tTop">
+	                                </td>
+	                                <td class="tLeft tTop">
+	                                    <input type="hidden" name="ajax" value="1">
+	                                    <iframe name="iframeUpload" src="" width="350" height="35" frameborder=0 scrolling="no" style="display:none;">
+	                                    </iframe>
+	                                    <input type="hidden" name="_uploadFileResult" value="result">
+										<input type="hidden" name="_uploadFormId" value="upload">
+										<input type="hidden" name="_uploadFileSize" value="-1">
+										<input type="hidden" name="_uploadResponse" value="uploadComplete">
+										<input type="hidden" name="_uploadFileVerify" value="{$verify}">
+										<input type="hidden" name="_uploadFileType" value="jpeg,jpg,gif,png,doc,rar,zip,mp3,wav,flv,rm,asf">
+										<input type="hidden" name="_uploadSavePath" value="<?php echo APP_PATH .'Public/Uploads/';?>">
+										<input type="button" value="增 加" onclick="addRow();" class="actionButton">
+										<input type="submit" value="上 传" onclick="uploading();" class="actionButton" />
+										<!--上传文件列表-->
+	                                    <table id='tbl' style="clear:both">
+	                                    </table>
+	                                </td>
+	                            </tr>
+	                        </table>
+	                    </form>
+                	</div>
+					<!--预览上传图片-->
+					<div class="image" id="thumbList">
+						<ul>
+							<volist name='list' id='vo' key="k">
+								<li class='smallThumb'>
+									<input class='checkShow' checked='checked' name='showWeb' type='radio'/>
+									<img  src="__PUBLIC__/Uploads/Staff/{$list[$k-1]}"  class='uploadImg'>
+									<img class='delImg' src='__PUBLIC__/style/img/delete.png' />
+								</li>
+							</volist>
+						</ul>
+                	</div>
+				</div>
+				<div class="formLine" style="padding:0px;">
+					<div id="toolbar2" class="formLine">
+						<?php if (Auth::AccessDecision('Admin','Staff','editStaff')) { ?>
+						<button class="actionButton" id="saveStaffBtn">
+							儲存
+						</button>
+						<?php } ?>
+						<?php if (Auth::AccessDecision('Admin','Staff','removeStaff')) { ?>
+						<button class="actionButton" id="removeStaffBtn" style="display: none;">
+							刪除
+						</button>
+						<?php } ?>
+						<button class="actionButton" onclick="window.location.href='__ROOT__/Admin/Staff'">
+							返回
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script language="JavaScript">
+        <!--
+        var curFileNum = 0;
+        var rowsnum = 0; //记录行数
+        var rindex = ""; //列索引
+        var tbl = document.getElementById('tbl');
+        addRow();
+        //-->
+    </script>
+</html>

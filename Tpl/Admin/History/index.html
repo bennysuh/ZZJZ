@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title></title>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-1.7.2.min.js"></script>
+		<!--解决IE6 select遮罩 hack插件 配合loading插件使用-->
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.bgiframe.min.js"></script>
+		<!--loading mask插件-->
+		<script type="text/javascript" src="__PUBLIC__/js/loading-min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.2.6/jquery.easyui.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/validateType.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.json-2.3.min.js"></script>
+		<link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
+		<link href="__PUBLIC__/style/css/loading.css" rel="stylesheet" type="text/css" />
+		<link href="__PUBLIC__/js/jquery-easyui-1.2.6/themes/default/easyui.css" rel="stylesheet" type="text/css">
+
+	</head>
+	<body>
+  <include file="Public:header" />
+
+<!-- 主要內容 -->
+<div id="content">
+	
+  <!-- 左菜单 -->
+  <include file="Public:leftForContent" />
+    
+  <!-- 右框架 -->
+  <div id="rightWrap">
+    <!-- 所在位置地址 -->
+    <div class="addressBar">员工管理 > </div>
+    <!-- 用戶管理框架 -->
+  	<div class="UMWrap">
+        <!-- 列表框架 -->
+        <div class="listWrap">
+          <h2>员工列表</h2> 
+          <button id="addBtn"> 新 增 </button>
+          <div class="searchUserDIV">
+          	<form id="searchForm">
+          		<span><INPUT id="searchInput" TYPE="text" NAME="keyword" value="{$keyword}"></span>
+          		<span>
+          			<input type="button" id="searchButton">
+          		</span>
+          	</form>
+      	  </div>
+            <table id="staffList">
+              <tr class="tableHeader">
+                <!-- F代表Form -->
+                <th class="nameF">No.</th>
+                <th class="emailField">Date</th>
+				<th class="tableActionTD">Description</th>
+				<th class="tableActionTD">Attachment</th>
+				<th class="tableActionTD">Update by</th>
+              </tr>
+              <volist name="list" id="vo">
+			  <tr staffid={$vo['staffid']}>
+                <td>{$vo['name']}</td>
+				<td>{$vo['phone']}</td>
+				
+              </volist>
+            </table>
+			{:$page}
+        </div>
+  </div>
+  
+</div>
+</body>
+</html>
+

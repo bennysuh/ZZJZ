@@ -1,0 +1,473 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Archive_用戶管理_群組設定</title>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.bgiframe.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/loading-min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.json-2.3.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.2.6/jquery.easyui.min.js"></script>
+
+<link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/style/css/loading.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/js/jquery-easyui-1.2.6/themes/default/easyui.css" rel="stylesheet" type="text/css">
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+var actionName = '__ACTION__';
+
+var userListUrl = '{:U("Group/getUsersForAutoSelection")}';
+
+//保存群組成員的變量，用於刪除成員時組織參數
+var groupMembers;
+
+$(document).ready(function(){
+     //导航选中
+	$(".navList li[name=setting]").addClass('selectButton');
+	
+	//按某個群組時
+	$('.mouseClick').live('click',function(){
+	    var checkbox = $(this).parent().find('input[type=checkbox]');
+		var groupID = $(this).parent().attr('groupID');
+		if (groupID == '{:C('SYS_USER_GROUP_ID')}') {
+		    userListUrl = '{:U("Group/getUsersForAutoSelection?ignoreStatus=1")}';
+		} else {
+		    userListUrl = '{:U("Group/getUsersForAutoSelection")}';
+		}
+		if(groupID > 0) {
+		    $('#membersContainer').css('display','block');
+			$('#memberTable').attr('groupID',groupID);
+			$('#groupTitle').html(':'+$(this).html());
+			window.location.href = '#membersContainer';
+		    readyForEditMembers(groupID);
+		}
+	});
+
+	//選擇成員的種類，是用戶還是ＥＤＢ的組或本地的群組
+	$('.memberType').live('change', function(){
+	    $(this).nextAll().each(function(){
+		    $(this).remove();		
+		});
+		if (this.value == 'user') {
+			var userList = $("<select id='userList' class='easyui-combobox' name='user' style='width:250px;'></select>");
+			userList.appendTo($(this).parent());
+			userList.combobox({
+				url:userListUrl,
+				valueField:'userID',
+				textField:'name',
+				mode:'remote'
+			});
+		} else if (this.value == 'group') { //ＥＤＢ群組
+		    var buList = $("<select id='buList' name='bu' style='width:250px;margin-right:10px'></select>");
+			buList.appendTo($(this).parent());
+			$('<option value=0></option>').appendTo(buList);
+			$.post('{:U("Group/getBUList")}', null, getBUListHandler, 'json');
+		} else { //本地群組
+		    var localGroupList = $("<select id='localGroupList' style='width:250px;margin-right:10px'></select>");
+			localGroupList.appendTo($(this).parent());
+			$('<option value=0></option>').appendTo(localGroupList);
+			$.post('{:U("Group/getGroupList")}', null, getGroupListHandler, 'json');
+
+		}
+
+		var $this = $(this);
+
+		//生成ＢＵ列表的數據選項
+		function getBUListHandler(response) {
+			var data = response.data;
+			var buList = $this.nextAll('#buList');
+			for (var i = 0; i < data.length; i++) {
+			    var option = $("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+				option.appendTo(buList);
+			}
+			buList.width(buList.width());//FOR IE BUG
+		}
+
+		//生成本地群組的選項
+		function getGroupListHandler(response) {
+			var data = response.data;
+			var localGroupList = $this.nextAll('#localGroupList');
+			for (var i = 0; i < data.length; i++) {
+			    if ($('#memberTable').attr('groupID') == data[i].id) continue;//不能加當前群組為子群組
+			    var option = $("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+				option.appendTo(localGroupList);
+			}
+			localGroupList.width(localGroupList.width());//FOR IE BUG
+		}
+	});
+
+	//當用戶改變ＢＵ時
+	$('#buList').live('change', function(){
+        $(this).nextAll('#teamList').remove();//當改變ＢＵ時，先刪除team的列表
+
+	    var departmentList
+	    //如果還沒有生成department列表
+		if ($(this).nextAll('#departmentList').length == 0) {
+			departmentList = $("<select id='departmentList' name='department' style='width:250px;margin-right:10px'></select>");
+			departmentList.appendTo($(this).parent());
+		} else {
+		    departmentList = $(this).nextAll('#departmentList');
+		}
+		departmentList.html('<option value=0></option>');
+
+		
+		$.post('{:U("Group/getDepartmentList")}', {BUID:this.value}, getDepartmentListHandler, 'json');
+		
+		//生成部門列表的數據選項
+		var $this = $(this);
+		//获取当前BU的部门列表
+		function getDepartmentListHandler(response) {
+			var data = response.data;
+			var departmentList = $this.nextAll('#departmentList');
+			for (var i = 0; i < data.length; i++) {
+			    var option = $("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+				option.appendTo(departmentList);
+			}
+            departmentList.width(departmentList.width());//FOR IE BUG
+		}
+	});
+
+	//當用戶改變部門時
+	$('#departmentList').live('change', function(){
+	    var teamList
+	    //如果還沒有生成teamList列表
+		if ($(this).nextAll('#teamList').length == 0) {
+			teamList = $("<select id='teamList' name='team' style='width:250px;margin-right:10px'></select>");
+			teamList.appendTo($(this).parent());
+		} else {
+		    teamList = $(this).nextAll('#teamList');
+		}
+		teamList.html('<option value=0></option>');
+
+		
+		$.post('{:U("Group/getTeamList")}', {departmentID:this.value}, getTeamListHandler, 'json');
+		
+		//生成team列表的數據選項
+		var $this = $(this);
+		function getTeamListHandler(response) {
+			var data = response.data;
+			var teamList = $this.nextAll('#teamList');
+			for (var i = 0; i < data.length; i++) {
+			    var option = $("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+				option.appendTo(teamList);
+			}
+			teamList.width(teamList.width());//FOR IE BUG
+		}
+
+	});
+
+	//用戶點擊新增群組成員
+	$('#addMember').click(function(){
+	    var newMember = $('#template').children().first().clone();//复制新增群组成员模板
+		var newRow = $("<tr><td colspan=3></td></tr>");
+		newRow.appendTo($('#memberTable'));
+		newMember.appendTo(newRow.children().first());//插入第一個TD裡面
+		var userList = $("<select id='userList' class='easyui-combobox' name='user' style='width:250px;'></select>");
+		userList.appendTo(newMember);
+		userList.combobox({
+			url:userListUrl,
+			valueField:'userID',
+			textField:'name',
+			mode:'remote'
+		});
+
+		$('#saveMember').css('display', '');	
+	});
+
+	//用戶點擊保存群組成員
+	$('#saveMember').click(function(){
+		var data = [];		
+		$('#memberTable tr').each(function(){
+			if ($(this).hasClass('tableHeader')) return;//排除第一行頭部
+			var children = $(this).children();
+			
+			if ($(children[0]).find("input[type=checkbox]").length > 0) return;//有checkbox，是舊數據
+			var item = {};
+			var memberType = $(children[0]).find("select[name=memberType]");
+			item.type = memberType[0].value;
+			if (item.type == 'user') {
+			    item.userID = $(children[0]).find("#userList").combobox('getValue');
+			} else if (item.type == 'group') { //EDB group
+			    item.BUID = $(children[0]).find("#buList")[0].value;
+				item.BUName = $(children[0]).find("#buList").find("option:selected").text();
+				var dept = $(children[0]).find("#departmentList");
+				if (dept.length > 0) {
+				    item.departmentID = dept[0].value;
+					item.department = dept.find("option:selected").text();
+				}
+				var team = $(children[0]).find("#teamList");
+				if (team.length > 0) {
+				    item.teamID = team[0].value;
+					item.team = team.find("option:selected").text();
+				}
+			} else { //local group
+			    item.groupID = $(children[0]).find("#localGroupList")[0].value;
+				item.groupName = $(children[0]).find("#localGroupList").find("option:selected").text();
+			}
+			data.push(item);
+		});
+
+		if (data.length == 0) return;
+
+	    var json = $.toJSON(data);
+
+		var loading = new ol.loading({id:"groupMemberForm"});
+		loading.show();
+
+		$.post('{:U("Group/addMember")}', {groupID:$('#memberTable').attr('groupID'),json:json}, addMemberHandler, 'json');
+		
+		//生成team列表的數據選項
+		var $this = $(this);
+		function addMemberHandler(response) {
+		    loading.hide();
+			readyForEditMembers($('#memberTable').attr('groupID'));
+			$('#saveMember').css('display', 'none');			
+		}
+	});
+
+	//刪除群組成員
+	$('#removeMember').click(function(){
+	    if (!confirm('你確定要從群組中移除已選中的成員？')) return;
+		var data = [];
+		var removeRow = [];
+		if (groupMembers == null || groupMembers.length == 0) return; //沒有數據
+		$('#memberTable tr').each(function(){
+			if ($(this).hasClass('tableHeader')) return;//排除頭部第一行
+			var children = $(this).children();
+			
+			var item = {};
+			var checkbox = $($(children[0]).find("input[type=checkbox]"));
+
+			if (checkbox.length == 0) return; //不是原有的行，是新增並未保存的項
+			var isChecked = $(checkbox[0]).attr("checked");
+			if (isChecked != 'checked') return;//沒有被選中，不用處理
+
+			var index = $(this).attr('index');
+			if (index >= groupMembers.length) return;//數據異常
+			data.push(groupMembers[index]);
+			removeRow.push($(this));
+		});
+
+		if (data.length == 0) return;
+	    var json = $.toJSON(data);
+
+		$.post('{:U("Group/removeMember")}', {groupID:$('#memberTable').attr('groupID'),json:json}, removeMemberHandler, 'json');
+		
+		//生成team列表的數據選項
+		var $this = $(this);
+		function removeMemberHandler(response) {
+		    for (var i = 0; i < removeRow.length; i++) {
+			    removeRow[i].remove();
+			}		    
+		}
+	});
+});
+
+//新增群组
+function addGroup() {
+	var tr = $("<tr isNew='true'><td></td><td><INPUT TYPE='text' NAME='groupName'></td><td><INPUT TYPE='text' NAME='description'></td></tr>");
+	tr.appendTo($('#groupList'));
+}
+
+function editGroup() {
+    $('#groupList tr').each(function(){
+	    if ($(this).hasClass('tableHeader')) return;//排除第一行頭部
+	    var children = $(this).children();
+		if ($(children[1]).find("input").length > 0) return;//防止重復
+		if ($(children[0]).find("input[type=checkbox]").length == 0) return;//沒有checkbox，可能是新增的
+		var isChecked = $(children[0]).find("input[type=checkbox]").eq(0).attr("checked");
+		if (isChecked != 'checked') return;//沒有被選中
+
+		$(children[1]).html("<INPUT TYPE='text' NAME='groupName' value='"+$(children[1]).html()+"'>");
+		$(children[2]).html("<INPUT TYPE='text' NAME='description' value='"+$(children[2]).html()+"'>");
+		$(children[1]).removeClass('mouseClick');
+	});
+}
+
+function saveGroup() {
+    var data = [];
+    $('#groupList tr').each(function(){
+	    if ($(this).hasClass('tableHeader')) return;//排除第一行頭部
+	    var children = $(this).children();
+		//群组信息对象
+		var item = {};
+		var checkbox = $(children[0]).find("input[type=checkbox]");
+
+		//沒有checkbox，表示新增或禁止修改的
+		if (checkbox.length == 0) {
+		    item.id = 0;
+		} else {
+			var isChecked = $(checkbox[0]).attr("checked");
+		    if (isChecked != 'checked') return;//沒有被選中，不用處理
+			item.id = $(this).attr('groupID');
+		}
+		var groupNameInput = $(children[1]).find('input[type=text]');
+		if (groupNameInput.length == 0) return;//雖然有選中，但因為用戶沒有按編輯，或禁止修改的群組，如管理員組
+		var descriptionInput = $(children[2]).find('input[type=text]');
+		if (descriptionInput.length == 0) return;//雖然有選中，但因為用戶沒有按編輯
+		item.groupName = groupNameInput[0].value;
+		item.description = descriptionInput[0].value;
+		data.push(item);	
+	});
+	
+	if (data.length == 0) return;
+	//修改的群组信息转换成json格式
+	var json = $.toJSON(data);
+
+	var loading = new ol.loading({id:"groupManageForm"});
+	loading.show();
+
+	$.post('{:U("Group/saveGroups")}', {json:json}, saveGroupsResponse, 'json');
+	function saveGroupsResponse(response) {
+	    loading.hide();
+		$('#groupList input[type=checkbox]').each(function(){
+		    this.checked = false;
+		});
+		window.location.reload();
+	}
+}
+
+function removeGroup()
+{
+    if (!confirm('此動作不可被撤回，你是否確定要刪除群組？')) {
+	    return;
+	}
+	var selected = [];
+	$('#groupList input[type=checkbox]').each(function(){
+		if (!this.checked) return;
+		selected.push($(this).parent().parent().attr('groupID'));
+	});
+
+	if (selected.length == 0) return;
+
+	var data = {ids:selected.join(',')};
+    $.post('{:U("Group/removeGroups")}', data, removeGroupsResponse, 'json');
+	function removeGroupsResponse(response) {
+	    $('#groupList input[type=checkbox]').each(function(){
+		    this.checked = false;
+		});
+		window.location.reload();
+	}
+}
+//显示群组成员列表
+function readyForEditMembers(groupID) {
+    //清除原來的數據行
+	$('#memberTable tr').each(function(){
+	    if ($(this).hasClass('tableHeader')) return;//排除第一行頭部
+		$(this).remove();
+	});
+
+	$.post('{:U("Group/getGroupMember")}', {groupID:groupID}, getGroupMemberHandler, 'json');
+	function getGroupMemberHandler(response) {
+	    var data = response.data;
+		if (data == null) return;
+		groupMembers = data;
+		for (var i = 0; i < data.length; i++) {
+		    var row = data[i];
+			var displayName;
+			var userType;
+			if (row['source'] == 'single') {
+			    displayName = row['displayName'];
+				userType = '用戶';
+			} else {
+				displayName = row['unitName'];
+				if (row['source'] == 'group') {
+				    userType = 'EDB群組';
+				} else {
+					userType = '本地群組';
+				}
+			}
+
+			var newRow = $("<tr><td><input type=\"checkbox\" /></td><td>" + displayName + "</td><td>" + userType + "</td></tr>");
+			newRow.attr('index', i);
+			newRow.appendTo($('#memberTable'));
+		}
+	}
+}
+//-->
+</SCRIPT>
+</head>
+<body>
+<!-- 增加群組成員的模板 -->
+<div id="template" style="display:none">
+  <div style="text-align:left;margin-left:40px">
+	<select class="memberType" name="memberType">
+	  <option value="user">用戶</option>
+	  <option value="group">EDB群組</option>
+	  <option value="localGroup">本地群組</option>
+	</select>
+  </div>
+</div>
+
+
+<include file="Public:header" />
+
+<!-- 主要內容 -->
+<div id="content">
+  <include file="Public:left" />
+  <!-- 右框架 -->
+  <div id="rightWrap">
+    <!-- 所在位置地址 -->
+    <div class="addressBar">用戶管理 > 群組設定</div>
+    <div class="groupSetWrap">
+      <div class="groupModule">
+        <h2>群組</h2>
+        <form id="groupManageForm">
+          <table id="groupList">
+            <tr class="tableHeader">
+              <th class="selectState"></th>
+              <!-- F代表Form -->
+              <th class="groupNameF">名稱</th>
+              <th class="descriptionF">描述</th>
+            </tr>
+			<volist name="list" id="vo">
+            <tr groupID="{$vo['groupID']}">
+              <td><?php if (!$vo['fixed']) { ?><input type="checkbox" /><?php } ?></td>
+              <td class="mouseClick">{:htmlspecialcharsx($vo['groupName'])}</td>
+              <td>{:htmlspecialcharsx($vo['description'])}</td>
+            </tr>
+			</volist>
+          </table>
+          <?php if (Auth::AccessDecision('Admin','Group','saveGroups')) { ?>
+		  <input type="button" value="保存" class="actionButton" onclick="saveGroup()" />
+		  <?php } ?>
+		  <?php if (Auth::AccessDecision('Admin','Group','saveGroups')) { ?>
+          <input type="button" value="新增" class="actionButton" onclick="addGroup()" />
+		  <?php } ?>
+		  <?php if (Auth::AccessDecision('Admin','Group','saveGroups')) { ?>
+          <input type="button" value="編輯" class="actionButton" onclick="editGroup()"/>
+		  <?php } ?>
+		  <?php if (Auth::AccessDecision('Admin','Group','removeGroups')) { ?>
+          <input type="button" value="刪除" class="actionButton" onclick="removeGroup()" />
+		  <?php } ?>
+        </form>
+      </div>
+      <!--群组成员列表-->
+      <div id="membersContainer" class="membersModule">
+        <h2>群組成員<span id="groupTitle"></span></h2>
+        <form id="groupMemberForm">
+          <table id="memberTable">
+            <tr class="tableHeader">
+              <th class="selectState"></th>
+              <!-- F代表Form -->
+              <th class="nameOrGroup">用戶/組</th>
+			  <th class="userType">類型</th>
+            </tr>
+          </table>
+		  <?php if (Auth::AccessDecision('Admin','Group','saveGroups')) { ?>
+		  <input id="addMember" type="button" value="新增" class="actionButton" />
+          <input id='saveMember' type="button" value="保存" class="actionButton" style="display:none" />
+		  <?php } ?>
+		  <?php if (Auth::AccessDecision('Admin','Group','removeGroups')) { ?>
+          <input id='removeMember' type="button" value="刪除" class="actionButton" />
+		  <?php } ?>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

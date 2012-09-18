@@ -1,0 +1,171 @@
+<!DOCTYPE>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>新增/編輯客户</title>
+		<link href="__PUBLIC__/style/css/common.css" rel="stylesheet" type="text/css">
+		<link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
+		<link href="__PUBLIC__/style/css/loading.css" rel="stylesheet" type="text/css" />
+		<link href="__PUBLIC__/js/jquery-easyui-1.2.6/themes/default/easyui.css" rel="stylesheet" type="text/css">
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.bgiframe.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/loading-min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.json-2.3.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/easyui/jquery.easyui.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/validateType.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.raty.min.js"></script>
+
+		<SCRIPT LANGUAGE="JavaScript">
+			<!--
+			var actionName = '__ACTION__';
+			$(document).ready(function() {
+				var status;
+				
+				//status区分add或edit
+				//编辑时显示删除按钮
+				if ($("#assessId").val()) {
+					$("#removeBtn").show();
+					status = "edit";
+				} else {
+					status = "add";
+				}
+				initRaty();
+				//保存
+				$("#saveBtn").click(function() {
+					if (!$('#infoForm').form("validate")) {
+						alert('請填寫必須的信息');
+						return;
+					}
+					var data = $('#infoForm').serialize();
+					if (status == "add") {
+						$.post('{:U("Assess/addAssess")}', data, saveHandler, "json");
+					} else if (status == "edit") {
+						$.post('{:U("Assess/saveAssess")}', data, saveHandler, "json");
+					}
+				});
+				//回调
+				function saveHandler(response) {
+					if (response.status) {
+						//返回合同列表
+						window.location.href = '{:U("Admin/Contract/")}';
+					} else {
+						alert(response.info);
+					}
+				}
+
+				//删除
+				$("#removeBtn").click(function() {
+					$.post('{:U("Assess/removeAssess")}', "assessId=" + $("#assessId").val(), ajaxHandler, "json");
+				});
+
+				function ajaxHandler(response) {
+					alert(response.info);
+					if (response.status == 1)
+						window.location.href = root + "/Admin/Contract";
+				}
+				
+				function initRaty()
+				{
+					var hint = ["很不满意","不满意","一般","满意","很满意",];
+					var path = '__PUBLIC__/style/img/';
+					$("#fwtdDiv").raty({
+							hints:hint,
+							path:path,//ICON路径
+							scoreName:"fwtdLevel",
+							score:"{$fwtdLevel}"
+					});
+					$("#zyjnDiv").raty({
+						hints:hint,
+						path:path,//ICON路径
+						scoreName:"zyjnLevel",
+						score:"{$zyjnLevel}"
+					});
+					$("#yzczlDiv").raty({
+						hints:hint,
+						path:path,//ICON路径
+						scoreName:"yzczlLevel",
+						score:"{$yzczlLevel}"
+					});
+					$("#wsxgDiv").raty({
+						hints:hint,
+						path:path,//ICON路径
+						scoreName:"wsxgLevel",
+						score:"{$wsxgLevel}"
+					});
+				}
+			});
+			//-->
+		</SCRIPT>
+	</head>
+	<body>
+
+		<div id="uploadifyQueue"></div>
+		<include file="Public:header" />
+		<!-- 主要內容 -->
+		<div id="content">
+			<include file="Public:leftForContent" />
+			<!-- 右框架 -->
+			<div id="rightWrap">
+				<!-- 所在位置地址 -->
+				<div class="addressBar">
+					客户管理 > 新增/編輯客户
+				</div>
+				<!--<div class="groupTitle">
+				<h2 class="pageTitle">新增/編輯评价</h2>
+				</div>-->
+				<div class="locationInfo">
+					<form id="infoForm">
+						<input name="staffId" id="staffId" type="text" style="display:none;" value="{$staffId}" />
+						<input name="orderId" id="orderId" type="text" style="display:none;" value="{$orderId}" />
+						<input name="id" id="assessId" type="text" style="display:none;" value="{$id}" />
+						<table class="noBackground">
+							<tr>
+								<td class="noBackground inputName">姓名:</td>
+								<td class="noBackground inputText">
+								<input  name="name" id="staffName" type="text" class="easyui-validatebox"
+								readonly="readonly" required="true" value="{$staffName}" />
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">服务态度:</td>
+								<td class="noBackground inputText"><div id="fwtdDiv" class="raty"></div></td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">专业技能:</td>
+								<td class="noBackground inputText"><div id="zyjnDiv"></div></td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">月子餐质量:</td>
+								<td class="noBackground inputText"><div id="yzczlDiv"></div></td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">卫生习惯:</td>
+								<td class="noBackground inputText"><div id="wsxgDiv"></div></td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">综合评价:</td>
+								<td class="noBackground inputText">								<textarea id="assess" name="assess" placeholder="请说说您的评价">{$assess}</textarea></td>
+							</tr>
+						</table>
+					</form>
+				</div>
+				<div class="formLine" style="padding:0px;">
+					<div id="toolbar2" class="formLine">
+						<?php if (Auth::AccessDecision('Admin','Assess','editAssess')) { ?>
+						<button class="actionButton" id="saveBtn">
+							儲存
+						</button>
+						<?php } ?>
+						<?php if (Auth::AccessDecision('Admin','Assess','removeAssess')) { ?>
+						<button class="actionButton" id="removeBtn" style="display: none;">
+							刪除
+						</button>
+						<?php } ?>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

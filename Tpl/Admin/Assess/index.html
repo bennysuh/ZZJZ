@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title></title>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-1.7.2.min.js"></script>
+		<!--解决IE6 select遮罩 hack插件 配合loading插件使用-->
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.bgiframe.min.js"></script>
+		<!--loading mask插件-->
+		<script type="text/javascript" src="__PUBLIC__/js/loading-min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.2.6/jquery.easyui.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/validateType.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.json-2.3.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="__PUBLIC__/js/jquery.raty.min.js"></script>
+		<link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
+		<link href="__PUBLIC__/style/css/loading.css" rel="stylesheet" type="text/css" />
+		<link href="__PUBLIC__/js/jquery-easyui-1.2.6/themes/default/easyui.css" rel="stylesheet" type="text/css">
+
+		<SCRIPT LANGUAGE="JavaScript">
+			<!--
+			var actionName = '__ACTION__';
+			$(document).ready(function() {
+				//导航选中
+				$(".navList li[name=setting]").addClass('selectButton');
+				//编辑或删除的按纽被按下
+				$('#assessList').delegate(".tableActionButton", "click", function() {
+					var currentRow = $(this).parent().parent();
+					var assessId = currentRow.attr('assessId');
+					var contractId = currentRow.attr('contractId');
+					if ($(this).attr('value') == '查看订单') {
+						window.location.href = root + '/Admin/Contract/editContract/id/' + contractId;
+						return;
+					}
+					if ($(this).attr('value') == '编辑') {
+						window.location.href = root + '/Admin/Assess/editAssess/assessId/' + assessId;
+						return;
+					}
+					if ($(this).attr('value') == '删除') {
+						window.location.href = root + '/Admin/Assess/removeAssess/assessId/' + assessId;
+						return;
+					}
+				});
+				//从URL参数中获取staffName
+				var text = window.location.search;
+				var param = text.split("&");
+				var staffName = decodeURIComponent(param[1].split("=")[1]);//必须转换URI编码否则是乱码
+				$("#listTitle").text(staffName + "的评价记录");
+			})
+			//-->
+		</SCRIPT>
+	</head>
+	<body>
+		<include file="Public:header" />
+
+		<!-- 主要內容 -->
+		<div id="content">
+
+			<!-- 左菜单 -->
+			<include file="Public:leftForContent" />
+			<!-- 右框架 -->
+			<div id="rightWrap">
+				<!-- 所在位置地址 -->
+				<div class="addressBar">
+					评价列表 >
+				</div>
+				<!-- 用戶管理框架 -->
+				<div class="UMWrap">
+					<!-- 列表框架 -->
+					<div class="listWrap">
+						 <h2 id="listTitle"></h2> 
+						<table id="assessList">
+							<tr class="tableHeader">
+								<!-- F代表Form -->
+								<th class="nameF">订单编号</th>
+								<th class="nameF" style="width:120px;">客户名称</th>
+								<th class="nameF">开始日期</th>
+								<th class="nameF">结束日期</th>
+								<th class="nameF" style="width:200px">评分</th>
+								<th class="nameF" style="width:300px">综合评价</th>
+								<th class="tableActionTD">操作</th>
+							</tr>
+							<volist name="list" id="vo">
+								<tr assessId={$vo['id']} contractId="{$vo['orderId']}">
+									<td>{$vo['bh']}</td>
+									<td >{$vo['customerName']}</td>
+									<td style="width:100px;">{$vo['startDate']}</td>
+									<td style="width:100px;">{$vo['endDate']}</td>
+									<td class="raty">
+									服务态度:<label class="fwtd">{$vo['fwtdLevel']}</label>
+									<br />
+									专业技能:<label class="zyjn">{$vo['zyjnLevel']}</label>
+									<br />
+									月子餐质量:<label class="yzczl">{$vo['yzczlLevel']}</label>
+									<br />
+									卫生习惯:<label class="wsxg">{$vo['wsxgLevel']}</label>
+									<br />
+									</td>
+									<td style="width:300px;">{$vo['assess']}</td>
+									<td style="width:300px;">
+										<input type="button" value="编辑" class="tableActionButton"/>
+										<input type="button" value="删除" class="tableActionButton"/>
+										<input type="button" value="查看订单" class="tableActionButton"/>
+									</td>
+							</volist>
+						</table>
+						{:$page}
+					</div>
+				</div>
+			</div>
+	</body>
+</html>
+

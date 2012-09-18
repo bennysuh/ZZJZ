@@ -1,0 +1,263 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>Add/Edit Courier</title>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.bgiframe.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/loading-min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.json-2.3.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.2.6/jquery.easyui.min.js"></script>
+		<!--<script type="text/javascript" src="__PUBLIC__/js/uploadifive/jquery.uploadifive.min.js"></script>-->
+		<script type="text/javascript" src="__PUBLIC__/js/validateType.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.scrollTo-min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-overlay.js"></script>
+
+		<!--<link href="__PUBLIC__/js/uploadifive/uploadifive.css" rel="stylesheet" type="text/css">-->
+		
+		<link href="__PUBLIC__/style/css/common.css" rel="stylesheet" type="text/css">
+		<link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
+		<link href="__PUBLIC__/style/css/loading.css" rel="stylesheet" type="text/css" />
+		<link href="__PUBLIC__/js/jquery-easyui-1.2.6/themes/default/easyui.css" rel="stylesheet" type="text/css">
+		<SCRIPT LANGUAGE="JavaScript">
+		<!--
+		var actionName = '__ACTION__';
+		$(document).ready(function(){
+			var status;
+			//编辑时显示删除按钮
+			if(window.location.href.indexOf("courierID") != -1){
+				status = "edit";
+				$("#staffName").attr("readonly",true);//不可更改用户名
+				$("#firstContact").remove();
+			}else{
+				status = "add";
+				$("#firstContact").show();
+			}
+			//保存
+			$("#saveBtn").click(function(){
+				var form = $('#courierInfoForm');
+				//if(!$(form.name).validatebox('isValid') || !$(form.phone).validatebox('isValid')) {
+				if(!form.form("validate")) {
+					alert('請填寫必須的信息');
+					return;
+				}
+				var data = form.serialize();
+				
+				if(status == "add"){
+					$.post('{:U("Courier/addCourier")}',data,saveHandler,"json");
+				}else if(status == "edit"){
+					$.post('{:U("Courier/updateCourier")}',data,saveHandler,"json");
+				}
+			});
+			//新增/更新
+			function saveHandler(response){
+				if(response.status){
+					var contactData = [];
+					$("#contactUl li").each(function(){
+						var contact = {};
+						contact.type = $(this).find("select").val();
+						contact.content = $(this).find("input").val();
+						if(status=="edit"){
+							contact.id = $(this).find("label").text();
+						}
+						contactData.push(contact);
+					});
+					var postData = {};
+					postData.data = contactData;
+					
+					var action;
+					if(status == "add") {
+						postData.no = response.info;
+						action = "addContact";
+					}else{
+						postData.no = $("#staffID").val();
+						action = '{:U("/Staff/saveContact")}';
+					}
+					//这是在回调函数中第二次调用post，post的action不需要前面的目录
+					$.post(action,{json:$.toJSON(postData)},relHandler,"json");
+				}else{
+					alert(response.info);	
+				}
+			}
+				
+			function relHandler(r){
+				alert( r.info);
+				window.location.href = '{:U("/Admin/Courier")}';
+			}
+				
+			function ajaxHandler(response){
+				alert(response.info);
+				if(response.status == 1)
+					window.location.href = '{:U("/Admin/Courier")}';
+			}
+			
+            //新增联系方式
+        	$("#contactUl .addImg").click(function(){
+        		var contactHtml = '<li ><select class="contactTypeSel">' +
+										'<option selected="true">电话</option>' + 
+										'<option>email</option>' +
+									'</select>' +
+				'<input type="text" class="easyui-validatebox" validType="number" required="true"/>' +
+				'<label> - </label>' +
+				'<input type="text" class="easyui-validatebox" validType="number" required="true"/>' +
+				'<label> - </label>' +
+				'<input type="text" class="easyui-validatebox" validType="number" required="true"/>' +
+				"<img class='delImg' src='/Public/style/img/delete.png' /></li>";
+	        	$("#contactUl").append(contactHtml);
+	        	$("#contactUl input[validType='number']").last().validatebox({
+					required:true
+				});	        	
+        	})
+        	//删除联系方式
+        	$("#contactUl .delImg").live("click",function(e){
+        		var i = $(this).parent().index();
+        		$("#contactUl li").eq(i).find("input").validatebox("destroy");//删除验证销毁组件
+        		$("#contactUl li").eq(i).remove();
+        	})
+        	//切换联系方式
+        	$(".contactTypeSel").live("change",function(e){
+        		var selectedIndex = e.currentTarget.selectedIndex;
+        		var input = $(this).next();
+        		input.val("");
+        		switch(selectedIndex){
+        			case 0:
+        				input.attr("validType","number");
+        				input.validatebox('remove');
+        				input.validatebox({
+        					required:true
+        				});
+        				break;
+        			case 1:
+        				input.attr("validType","email");
+        				input.validatebox('remove');
+        				input.validatebox({
+        					required:true,
+        					validType:"email"
+        				})
+        				break;
+        			case 2:
+        				input.attr("validType","number");
+        				input.validatebox('remove');
+        				input.validatebox({
+        					required:true
+        				});
+        				break;
+        		}
+        	});
+		});
+		//-->
+		</SCRIPT>
+	</head>
+	<body>
+		<div id="uploadifyQueue"></div>
+		<include file="Public:header" />
+		<!-- 主要內容 -->
+		<div id="content">
+			<include file="Public:leftForContent" />
+			<!-- 右框架 -->
+			<div id="rightWrap">
+				<!-- 所在位置地址 -->
+				<div class="addressBar">
+					员工管理 > 新增/編輯员工
+				</div>
+				<!--<div class="groupTitle">
+					<h2 class="pageTitle">Add New Courier</h2>
+				</div>-->
+				<div class="locationInfo">
+					<form id="courierInfoForm">
+						<input name="courierID" id="courierID" type="text" style="display:none;" value="{$courierID}" />
+						<table class="noBackground">
+							<tr>
+								<td class="noBackground inputName">Courier Code:</td>
+								<td class="noBackground inputText">
+									<input name="no" id="no" type="text"
+									 class="easyui-validatebox" required="true" value="{$no}" />
+								</td>
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">Courier Name:</td>
+								<td class="noBackground inputText" >
+									<input name="courier" id="courier" type="text"
+									 class="easyui-validatebox" required="true" value="{$courier}" />
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">Initial:</td>
+								<td class="noBackground inputText" >
+									<input name="initial" id="initial" type="text"
+									 class="easyui-validatebox" required="true" value="{$initial}" />
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">Initial:</td>
+								<td class="noBackground inputText" >
+									<input name="address" id="address" type="textarea"
+									 class="easyui-validatebox" required="true" value="{$address}" />
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">Contact:</td>
+								<td class="noBackground inputText" >
+									<label>Name: </label><input name="contactName" id="contactName" type="text"
+									 class="easyui-validatebox" required="true" value="{$contactName}" style="margin: 10px"/>
+									 <ul id="contactUl">
+										<volist name="contactList" id="contactVo" key="k">
+								            <li>
+								              	<select class="contactTypeSel">
+													<option <?php if($contactVo['type']=='Phone') echo "selected='true'" ?>>Phone</option>
+													<option <?php if($contactVo['type']=='Fax') echo "selected='true'" ?>>Fax</option>
+													<option <?php if($contactVo['type']=='Email') echo "selected='true'" ?>>Email</option>
+												</select>
+												<input type="text" class="easyui-validatebox" 
+													<?php 
+														if($contactVo['type']=='Phone') 
+															echo "validType='number'";
+														else if($contactVo['type']=='email')
+															echo "validType='mail'";
+													?>
+														  required="true" value="{$contactVo['fieldA']}" />
+												<img <?php if($k===1) {echo 'src="/Public/style/img/add.png" class="addImg"';} 
+													else {echo 'src="/Public/style/img/delete.png" class="delImg"';} ?> />
+								            	<label class="contactID" style="display:none;" >{$contactVo['id']}</label>
+								            </li>
+										</volist>
+										<li id="firstContact" style="display:none;">
+											<select class="contactTypeSel">
+												<option selected="true">Phone</option>
+												<option>Fax</option>
+												<option>Email</option>
+											</select>
+											<input type="text" class="easyui-validatebox" validType="number" required="true"/>
+											<label> - </label>
+											<input type="text" class="easyui-validatebox" validType="number" required="true"/>
+											<label> - </label>
+											<input type="text" class="easyui-validatebox" validType="number" required="true"/>
+											<img class='addImg' src='/Public/style/img/add.png' />
+										</li>
+									</ul>
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">Status</td>
+								<td class="noBackground inputText">
+									<select name="status" id="status">
+										<option>Action</option><option>Inaction</option>
+									</select></td>
+							</tr>
+						</table>
+					</form>
+				</div>
+				<div class="formLine" style="padding:0px;">
+					<div id="toolbar2" class="formLine">
+						<button class="actionButton" id="saveBtn">
+							Save
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

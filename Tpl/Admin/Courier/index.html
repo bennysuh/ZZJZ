@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-1.7.2.min.js"></script>
+<!--解决IE6 select遮罩 hack插件 配合loading插件使用-->
+<script type="text/javascript" src="__PUBLIC__/js/jquery.bgiframe.min.js"></script>
+<!--loading mask插件-->
+<script type="text/javascript" src="__PUBLIC__/js/loading-min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.2.6/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/validateType.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.json-2.3.min.js"></script>
+<link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/style/css/loading.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/js/jquery-easyui-1.2.6/themes/default/easyui.css" rel="stylesheet" type="text/css">
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+var actionName = '__ACTION__';
+$(document).ready(function(){
+     //导航选中
+	$(".navList li[name=setting]").addClass('selectButton');
+
+	//搜索
+	$('#searchForm').submit(function(event) {
+		// 順便去掉hash
+		$(this).find("input:hidden").remove();
+		search();	
+	})
+	
+	$('#searchButton').click(function(){
+		search();
+	});
+	
+	$("#addBtn").click(function(){
+		window.location.href = "/Admin/Courier/addCourier";
+	});
+	//编辑或删除的按纽被按下
+	$('.tableActionButton').click(function(){
+		var currentRow = $(this).parent().parent();
+		var staffID = currentRow.attr('staffID');
+		var isHidden;//显示隐藏按钮状态
+	})
+})
+
+function search() {
+    var url = window.location.href.split('#')[0];
+	if (window.location.href.indexOf('?') == -1) {
+		url += '?keyword=' + $('#searchInput').val();
+	} else {
+		url += '&keyword=' + $('#searchInput').val();
+	}
+	window.location.href = url;
+}
+//-->
+</SCRIPT>
+
+</head>
+<body>
+  <include file="Public:header" />
+
+<!-- 主要內容 -->
+<div id="content">
+	
+  <!-- 左菜单 -->
+  <include file="Public:leftForContent" />
+    
+  <!-- 右框架 -->
+  <div id="rightWrap">
+    <!-- 所在位置地址 -->
+    <div class="addressBar">Courier List</div>
+    <!-- 用戶管理框架 -->
+  	<div class="UMWrap">
+        <!-- 列表框架 -->
+        <div class="listWrap">
+          <div class="searchUserDIV">
+          	<form id="searchForm">
+          		<span><INPUT id="searchInput" TYPE="text" NAME="keyword" value="{$keyword}"></span>
+          		<span>
+          			<input type="button" id="searchButton">
+          		</span>
+          	</form>
+      	  </div>
+      	  <div id="countDiv">共{$count}個記錄，列表以Courier Code排序</div>
+            <table id="staffList">
+              <tr class="tableHeader">
+                <!-- F代表Form -->
+                <th>Courier Code</th>
+                <th >Courier Name</th>
+				<th >Initial</th>
+				<th >Address</th>
+				<th >Contact</th>
+				<th >Status</th>
+				<th >Details</th>
+				<th>History</th>
+              </tr>
+              <volist name="list" id="vo">
+			  <tr courierID={$vo['id']}>
+                <td>{$vo['no']}</td>
+				<td>{$vo['courier']}</td>
+				<td>{$vo['initial']}</td>
+				<td>{$vo['address']}</td>
+				<td>{$vo['contactName']}</td>
+				<td>{$vo['status']}</td>
+				<td><input type="button" value="View" class="tableActionButton"/></td>
+				<td><input type="button" value="View" class="tableActionButton"/></td>
+              </tr>
+              </volist>
+            </table>
+             <button style="width:150px;" id="addBtn"> Add Courier </button>
+        </div>
+  </div>
+  
+</div>
+</body>
+</html>

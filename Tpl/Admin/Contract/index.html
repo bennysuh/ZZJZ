@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title></title>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-1.7.2.min.js"></script>
+		<!--解决IE6 select遮罩 hack插件 配合loading插件使用-->
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.bgiframe.min.js"></script>
+		<!--loading mask插件-->
+		<script type="text/javascript" src="__PUBLIC__/js/loading-min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
+		
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.2.6/jquery.easyui.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/validateType.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.json-2.3.min.js"></script>
+		<link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
+		<link href="__PUBLIC__/style/css/loading.css" rel="stylesheet" type="text/css" />
+		<link href="__PUBLIC__/js/jquery-easyui-1.2.6/themes/default/easyui.css" rel="stylesheet" type="text/css">
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+var actionName = '__ACTION__';
+$(document).ready(function(){
+	var loading = new ol.loading({id:"searchForm"});
+     //导航选中
+	$(".navList li[name=setting]").addClass('selectButton');
+
+	$('#searchBtn').click(function(){
+	    var postData = $("#searchForm").serialize();
+		var url = root + "/Admin/Contract/?" + postData;
+		window.location.href = url;
+	});
+	//格式化日期控件的日期格式
+	$("#startDate,#endDate").datebox({
+		formatter:formater
+	});
+	$("#addBtn").click(function(){
+		window.location.href = root + "/Admin/Contract/editContract/";
+	});
+	//编辑或删除的按纽被按下
+	$('#listTb').delegate(".tableActionButton","click",function(){
+		var currentRow = $(this).parent().parent();
+		var contractId = currentRow.attr('contractId');
+		var isHidden;//显示隐藏按钮状态
+		if ($(this).attr('value') == '編輯') {
+			window.location.href = root + '/Admin/Contract/editContract/id/' + contractId;
+			return;
+		}
+		
+		if ($(this).attr('value') == '刪除') {
+		    if (!confirm('你確定要刪除？')) return; 
+			loading.show();
+		    $.post(root + "/Admin/Contract/removeContract", "id="+contractId, removeHandler, 'json');
+		}
+		if ($(this).attr('value') == '评价') {
+			var staffName = currentRow.children().eq(2).text();
+			var staffId = currentRow.attr('staffId');
+			window.location.href = root + '/Admin/Assess/editAssess/?orderId='+contractId+'&staffId='+staffId+'&staffName='+staffName;
+			return;
+		}
+	});
+	function removeHandler(response) {
+		loading.hide();
+		if (response.status) {
+			window.location.reload();
+		}else{
+			alert(response.info);
+		}
+	}
+})
+//-->
+</SCRIPT>
+
+	</head>
+	<body>
+		<include file="Public:header" />
+		<!-- 主要內容 -->
+		<div id="content">
+
+			<!-- 左菜单 -->
+			<include file="Public:leftForContent" />
+
+			<!-- 右框架 -->
+			<div id="rightWrap">
+				<!-- 所在位置地址 -->
+				<div class="addressBar">
+					合同管理 >
+				</div>
+				<!-- 用戶管理框架 -->
+				<div class="UMWrap">
+					<div class="formLine">
+						<form id="searchForm"  >
+							<table class="noBackground" style="border: none;">
+								<tr>
+									<td class="inputName"><label>编号</label></td>
+									<td class="inputText">
+									<input name="bh" type="text" />
+									</td>
+								</tr>
+								<tr>
+									<td class="inputName"><label>客户名称</label></td>
+									<td class="inputText">
+									<input name="customerName" type="text" />
+									</td>
+								</tr>
+								<tr>
+									<td class="inputName"><label>员工名称</label></td>
+									<td class="inputText">
+									<input name="staffName" type="text" />
+									</td>
+								</tr>
+								<tr>
+					          	  	<td class="inputName"><label>订单日期</label></td>
+					                <td class="inputText">
+					                	<input name="startDate" id="startDate" class="easyui-datebox" /> 至 
+                						<input name="endDate" id="endDate" class="easyui-datebox" />
+					                </td>  	
+				          	    </tr>
+							</table>
+							<!-- 按鈕按下去為select否則為noselect -->
+							<input type="button" id="searchBtn" value="Search" class="TinputAdd noselected" />
+						</form>
+					</div>
+					<!-- 列表框架 -->
+					<div class="listWrap">
+						<h2>合同列表</h2>
+						<button id="addBtn" class="TinputAdd noselected">
+							新 增
+						</button>
+						<table id="listTb">
+							<tr class="tableHeader">
+								<!-- F代表Form -->
+								<th class="nameF" style="width: 180px">编号</th>
+								<th class="nameF" style="width: 120px">客户名</th>
+								<th class="nameF" style="width: 120px">员工名</th>
+								<th class="nameF" style="width: 120px">签订日期</th>
+								<th class="tableActionTD">操作</th>
+							</tr>
+							<volist name="list" id="vo">
+								<tr contractId={$vo['id']} staffId="{$vo['staffId']}">
+									<td>{$vo['bh']}</td>
+									<td>{$vo['customerName']}</td>
+									<td>{$vo['staffName']}</td>
+									<td>{$vo['orderDate']}</td>
+									<td>
+									<input type="button" value="編輯" class="tableActionButton"/>
+									<input type="button" value="刪除" class="tableActionButton"/>
+									<input type="button" value="评价" class="tableActionButton"/>
+									</td>
+								</tr>
+							</volist>
+						</table>
+						{:$page}
+					</div>
+				</div>
+			</div>
+	</body>
+	<script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
+</html>
