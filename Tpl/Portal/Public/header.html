@@ -1,0 +1,25 @@
+<!-- 頭部 -->
+<div id="header">
+  <!-- 頭部內框 -->
+  <div id="internalBox">
+    <!-- logo -->
+    <div id="headerLogo"><A HREF="/"><img src="__PUBLIC__/style/img/headerLogo.png" /></A></div>
+    <!-- 登入信息&登出按鈕 -->
+    <div id="loginInfo"> <span>Hi,{$_SESSION['loginName']}<BR> Date:{:date('m/d/Y (D)')}</span><br />
+      <button onclick="window.location.href='/Admin/Auth/logout'">登出</button>
+    </div>
+  </div>
+</div>
+<!-- 導航條 -->
+<div id="nav">
+  <!-- 導航條列表 -->
+  <!-- 當選中時加上class="selsctButton" -->
+  <ul class="navList">
+    <?php if (Auth::AccessDecision('Admin','User','index')) { ?>
+    <li name="setting" url="/Admin/User/index">設定</li>
+	<?php } ?>
+	<?php if (Auth::AccessDecision('Admin','Staff','index')) { ?>
+    <li name="setting" url="/Admin/Staff/index">业务</li>
+	<?php } ?>
+  </ul>
+</div>

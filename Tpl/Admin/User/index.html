@@ -1,0 +1,292 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-1.7.2.min.js"></script>
+<!--解决IE6 select遮罩 hack插件 配合loading插件使用-->
+<script type="text/javascript" src="__PUBLIC__/js/jquery.bgiframe.min.js"></script>
+<!--loading mask插件-->
+<script type="text/javascript" src="__PUBLIC__/js/loading-min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.2.6/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/validateType.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
+<link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/style/css/loading.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/js/jquery-easyui-1.2.6/themes/default/easyui.css" rel="stylesheet" type="text/css">
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+var actionName = '__ACTION__';
+
+$(document).ready(function(){
+     //导航选中
+	$(".navList li[name=setting]").addClass('selectButton');
+	//新增用户
+    $('#AddUserForm input[type=button]').click(function(){
+	    var form = $('#AddUserForm')[0];
+		//验证
+		if(!$(form.lastname).validatebox('isValid')) return;
+		if(!$(form.firstname).validatebox('isValid')) return;
+		if(!$(form.email).validatebox('isValid')) return;
+		if(!$(form.password).validatebox('isValid')) return;
+		if(!$(form.repassword).validatebox('isValid')) return;
+		if(!$(form.userID).validatebox('isValid')) return;
+
+		if ($.trim(form.password.value) != $.trim(form.repassword.value)) {
+		    alert("兩次密碼不一致");
+			return;
+		}
+		//显示loading
+		var loading = new ol.loading({id:"AddUserForm"});
+		loading.show();
+
+		var data = $('#AddUserForm').serialize();
+		$.post('{:U("User/addUser")}', data, showResponse, 'json');
+		function showResponse(response) {
+			loading.hide();
+			alert(response.info);
+			if (response.status) {
+			    window.location.href = window.location.href;//強逼刷新
+		    }
+		}
+	});
+
+	//编辑或删除用户的按纽被按下
+	$('.tableActionButton').click(function(){
+		var currentRow = $(this).parent().parent();
+	    var source = currentRow.attr('source');//获取tr的属性source（local或edb）
+		if (source == 'edb' && $(this).attr('value') != '權限') {
+		    alert('來自EDB的用戶不能編輯和刪除');
+			return;
+		}
+
+		var userID = currentRow.attr('userID');
+
+		if ($(this).attr('value') == '編輯') {
+		    $('#editUser').css('display','block');
+			window.location.href = '#editUser';
+			readyForEdit(userID);
+			return;
+		}
+
+		if ($(this).attr('value') == '權限') {
+			window.location.href = root + "/Admin/User/privileges/userID/"+userID;
+			return;
+		}
+
+		if ($(this).attr('value') == '刪除') {
+		    if (!confirm('你確定要刪除此用戶？')) return; 
+		    var loading = new ol.loading({id:"userList"});
+			loading.show();
+		    $.post('{:U("User/removeUser")}', "userID="+userID, removeUserHandler, 'json');
+		}
+
+		function removeUserHandler(response) {
+			loading.hide();
+			if (response.status) {
+				currentRow.remove();
+				$('#totalRecord').html(parseInt($('#totalRecord').html()) - 1);
+			} else {
+			    alert(response.info);
+			}
+		}
+	
+	})
+
+	//搜索
+	$('#searchForm').submit(function(event) {
+		// 順便去掉hash
+		$(this).find("input:hidden").remove();
+		searchUser();	
+	})
+	
+	$('#searchButton').click(function(){
+		searchUser();
+	});
+
+	//编辑用户相关事件
+	$('.cancelButton').click(function(){
+	    $('#editUser').css('display','none');	
+	});
+
+	//保存用户信息
+	$('#editUserForm input[value=保存][type=button]').click(function(){
+	    var form = $('#editUserForm')[0];
+
+        if(!$(form.lastname).validatebox('isValid')) return;
+		if(!$(form.firstname).validatebox('isValid')) return;
+		if(!$(form.email).validatebox('isValid')) return;		
+
+		if ($.trim(form.password.value) != $.trim(form.repassword.value)) {
+		    alert("兩次密碼不一致");
+			return;
+		}
+		
+		var data = $('#editUserForm').serialize();
+		data += "&userID=" + $('#editUserForm').attr('userID');
+		var loading = new ol.loading({id:"editUserForm"});
+	    loading.show();
+		$.post('{:U("User/saveUserInfo")}', data, saveUserInfoHandler, 'json');
+	    function saveUserInfoHandler(response) {
+		    loading.hide();
+			if (response.status) {
+			    window.location.reload();
+			} else {
+			    alert(response.info);
+			}
+		}
+		
+	});
+
+
+})
+//查询用户。会生成多个keyword
+function searchUser() {
+    var url = window.location.href.split('#')[0];
+	if (window.location.href.indexOf('?') == -1) {
+		url += '?keyword=' + $('#searchUserInput').val();
+	} else {
+		url += '&keyword=' + $('#searchUserInput').val();
+	}
+	window.location.href = url;
+}
+//显示编辑用户信息
+function readyForEdit(userID) {
+    $('#editUserForm').attr('userID', userID);
+
+	var loading = new ol.loading({id:"editUserForm"});
+	loading.show();
+	$.post('{:U("User/getUserInfo")}', "userID="+userID, getUserInfoHandler, 'json');
+	function getUserInfoHandler(response) {
+		loading.hide();
+		if (response.status) {
+		    var form = $('#editUserForm')[0];
+			var data = response.data;
+			form.lastname.value = data.lastname;
+			form.firstname.value = data.firstname;
+			form.nickname.value = data.nickname;
+			form.email.value = data.email;
+			form.userID.value = userID;			
+		}
+	}
+
+}
+
+
+
+//-->
+</SCRIPT>
+
+</head>
+<body>
+  <include file="Public:header" />
+
+<!-- 主要內容 -->
+<div id="content">
+	
+  <!-- 左菜单 -->
+  <include file="Public:left" />
+    
+  <!-- 右框架 -->
+  <div id="rightWrap">
+    <!-- 所在位置地址 -->
+    <div class="addressBar">用戶管理 > 系統用戶</div>
+    
+    
+    <!-- 用戶管理框架 -->
+  	<div class="UMWrap">
+    	<!-- 框架標題 -->
+        <div class="wrapTitle">
+          <h2><img src="__PUBLIC__/style/img/groupLogo.png" />增加用戶</h2>
+        </div>
+        <!-- 增加用戶框架 -->
+        <div class="addUserWrap">
+          <form id="AddUserForm">
+            <table>
+              <tr>
+              	<td class="inputName"><label>姓:</label></td><td class="inputText"><input name="lastname" type="text" class="easyui-validatebox" required="true" /></td>
+                <td class="inputName"><label>名:</label></td><td class="inputText"><input name="firstname" type="text" class="easyui-validatebox" required="true" /></td>  
+              </tr>
+              <tr>
+              	<td class="inputName"><label>昵稱:</label></td><td class="inputText"><input name="nickname" type="text" /></td>
+                <td class="inputName"><label>電郵:</label></td><td class="inputText"><input name="email" type="text" class="easyui-validatebox" required="true" validType="email" /></td>  
+              </tr>
+              <tr>
+              	<td class="inputName"><label>密碼:</label></td><td class="inputText"><input name="password" type="password" class="easyui-validatebox" required="true" /></td>
+                <td class="inputName"><label>確認密碼:</label></td><td class="inputText"><input name="repassword" type="password" class="easyui-validatebox" required="true" /></td>  
+              </tr>
+              <tr>
+              	<td class="inputName"><label>登錄名:</label></td><td class="inputText"><input name="userID" type="text" class="easyui-validatebox" required="true" validType="userID" /></td> 
+              </tr>
+            </table>
+            <!-- 按鈕按下去為select否則為noselect -->
+            <input type="button" value="新增" class="actionButton"/><BR><BR>
+          </form>
+        </div>
+      </div>
+        <!-- 用戶列表框架 -->
+        <div class="userListWrap">
+          <h2>用戶列表</h2> <div class="searchUserDIV"><form id="searchForm"><span><INPUT id="searchUserInput" TYPE="text" NAME="keyword" value="{$keyword}"></span><span><input type="button" id="searchButton"></span></form></div>
+            <table id="userList">
+              <tr class="tableHeader">
+                <!-- F代表Form -->
+                <th class="userNameF">登陸名稱</th>
+                <th class="nameF">姓名</th>
+                <th class="emailField">電郵</th>
+                <th class="comeFrom">來源</th>
+				<th class="tableActionTD">操作</th>
+              </tr>
+              <volist name="list" id="vo">
+			  <tr userID="{$vo['userID']}" source="{$vo['source']}">
+				<td>{$vo['userID']}</td>
+                <td>{:userDisplayName($vo)}</td>
+				<td>{$vo['email']}</td>
+                <td>{$vo['source']}</td>
+				<td><input type="button" value="編輯" class="tableActionButton"/><input type="button" value="刪除" class="tableActionButton"/><input type="button" value="權限" class="tableActionButton"/> </td>
+              </tr>
+              </volist>
+            </table>
+			{:$page}
+        </div>
+        
+     <!-- 用戶管理框架 -->
+     <!-- 這裡的UMWrap是修改時出現的,所以加上了modify控制display -->
+  	 <div id="editUser" class="UMWrap modify">
+        <!-- 框架標題 -->
+        <div class="wrapTitle">
+          <h2>修改用戶</h2>
+        </div>
+        <!-- 增加用戶框架 -->
+        <div class="addUserWrap">
+          <form id="editUserForm" userID=''>
+            <table>
+              <tr>
+              	<td class="inputName"><label>姓:</label></td><td class="inputText"><input name="lastname" type="text" class="easyui-validatebox" required="true" /></td>
+                <td class="inputName"><label>名:</label></td><td class="inputText"><input name="firstname" type="text" class="easyui-validatebox" required="true" /></td>  
+              </tr>
+              <tr>
+              	<td class="inputName"><label>昵稱:</label></td><td class="inputText"><input name="nickname" type="text" /></td>
+                <td class="inputName"><label>電郵:</label></td><td class="inputText"><input name="email" type="text" class="easyui-validatebox" required="true" validType="email" /></td>  
+              </tr>
+              <tr>
+              	<td class="inputName"><label>密碼:</label></td><td class="inputText"><input name="password" type="password" /></td>
+                <td class="inputName"><label>確認密碼:</label></td><td class="inputText"><input name="repassword" type="password" /></td>  
+              </tr>
+              <tr>
+              	<td class="inputName"><label>登錄名:</label></td><td class="inputText"><input name="userID" type="text" disabled /></td> 
+              </tr>
+            </table>
+            <!-- 按鈕按下去為select否則為noselect -->
+            <input type="button" value="保存" class="actionButton"/><input type="button" value="取消" class="cancelButton actionButton"/>
+          </form>
+        </div>
+    </div>    
+  </div>
+  
+</div>
+
+
+</body>
+</html>

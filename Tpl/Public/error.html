@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
+<html>
+<head>
+<title>頁面提示</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv='Refresh' content='{$waitSecond};URL={$jumpUrl}'>
+<style>
+html, body{margin:0; padding:0; border:0 none;font:14px Tahoma,Verdana;line-height:150%;background:#EBEBEB}
+a{text-decoration:none; color:#174B73; border-bottom:1px dashed gray}
+a:hover{color:#F60; border-bottom:1px dashed gray}
+div.message{margin:10% auto 0px auto;clear:both;padding:5px;border:1px solid silver; text-align:center; width:45%}
+span.wait{color:blue;font-weight:bold}
+span.error{color:red;font-weight:bold}
+span.success{color:blue;font-weight:bold}
+div.msg{margin:20px 0px}
+</style>
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+setTimeout(function(){
+	window.location.href = "{$jumpUrl}";
+}, 3000);	
+//-->
+</SCRIPT>
+</head>
+<body>
+<div class="message">
+	<div class="msg">
+	<present name="message" >
+	<span class="success">{$message}</span>
+	<else/>
+	<span class="error">{$error}</span>
+	</present>
+	</div>
+	<div class="tip">
+	<present name="closeWin" >
+		頁面將在 <span class="wait">{$waitSecond}</span> 秒後自動關閉，或[<a href="{$jumpUrl}">按此</a>]關閉
+	<else/>
+		頁面將在 <span class="wait">{$waitSecond}</span> 秒後自動跳轉，或[<a href="{$jumpUrl}">按此</a>]跳轉
+	</present>
+	</div>
+</div>
+</body>
+</html>

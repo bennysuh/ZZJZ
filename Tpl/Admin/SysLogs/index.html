@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>查看日誌</title>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.bgiframe.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/loading-min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.json-2.3.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.2.6/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/validateType.js"></script>
+
+<link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/style/css/loading.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/js/jquery-easyui-1.2.6/themes/default/easyui.css" rel="stylesheet" type="text/css">
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+var actionName = '__ACTION__';
+
+var nicknames = [];
+
+$(document).ready(function(){
+    //导航选中
+    $(".navList li[name=setting]").addClass('selectButton');
+
+	
+
+});
+
+
+//-->
+</SCRIPT>
+
+</head>
+<body>
+<!-- 
+這部份每個頁面都一樣,不用重複做多幾頁
+-->
+<include file="Public:header" />
+<!-- 主要內容 -->
+<div id="content">
+  <include file="Public:left" />
+  <!-- 右框架 -->
+  <div id="rightWrap" style="margin-left:270px;">
+    <!-- 所在位置地址 -->
+    <div class="addressBar">系統日誌 > 查看日誌 </div>
+    <!--初始化就取得了所有tab的数据。若数据量大是否需要优化？不存在该问题。因为只取第一页的数据-->
+	<div id="sysLogsTabs" class="easyui-tabs" style="width:980px;margin-top:30px;">
+	  <div title="所有分類">  
+		<iframe src="__ROOT__/Admin/SysLogs/showList/category/all" width=978 height=400 frameborder=0></iframe>
+      </div>
+	  <div title="用戶登入">  
+		<iframe src="__ROOT__/Admin/SysLogs/showList/category/login" width=978 height=400 frameborder=0></iframe>
+      </div>
+	  <div title="用戶管理">  
+		<iframe src="__ROOT__/Admin/SysLogs/showList/category/user" width=978 height=400 frameborder=0></iframe>
+      </div>
+	  <div title="群組管理">  
+		<iframe src="__ROOT__/Admin/SysLogs/showList/category/group" width=978 height=400 frameborder=0></iframe>
+      </div>
+	  <div title="系統功能">  
+		<iframe src="__ROOT__/Admin/SysLogs/showList/category/function" width=978 height=400 frameborder=0></iframe>
+      </div>
+	  <div title="其他">  
+		<iframe src="__ROOT__/Admin/SysLogs/showList/category/other" width=978 height=400 frameborder=0></iframe>
+      </div>
+	</div>
+
+  </div>
+</div>

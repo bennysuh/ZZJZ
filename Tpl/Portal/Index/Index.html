@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="月嫂,广州月嫂,广州育儿嫂">
+<meta name="description" content="真真家政可以帮助你轻松找到优质、可靠的月嫂和育儿嫂，为你提供丰富的母婴护理知识。">
+<title>真真家政_广州月嫂公司_广州月嫂价格_找月嫂_月嫂全集_婴儿护理知识</title>
+
+<script type="text/javascript" src="__PUBLIC__/js/jquery-1.7.2.min.js"></script>
+<!--解决IE6 select遮罩 hack插件 配合loading插件使用-->
+<script type="text/javascript" src="__PUBLIC__/js/jquery.bgiframe.min.js"></script>
+<!--loading mask插件-->
+<script type="text/javascript" src="__PUBLIC__/js/loading-min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.2.6/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/validateType.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.json-2.3.min.js"></script>
+<link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/style/css/loading.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/js/jquery-easyui-1.2.6/themes/default/easyui.css" rel="stylesheet" type="text/css">
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+var actionName = '__ACTION__';
+
+$(document).ready(function(){
+	createYearOptions($("#startYear"));
+	createMonthOptions($("#startMonth"));
+	createYearOptions($("#endYear"));
+	createMonthOptions($("#endMonth"));
+	function createYearOptions(yearSel,selectIndex){
+		var date = new Date();
+		var currYear = date.getFullYear(),yearArr = [];
+		//生成年度选项
+		for (var i=0; i < parseInt(currYear) - 2010 + 1; i++) {
+			yearArr.push(2010 + i);
+		};
+		yearArr.reverse();
+		$.each(yearArr,function(i){
+			if(selectIndex && selectIndex == this){
+				yearSel.append("<option selected='true' value='" + this + "'>" + this + "</option>");
+			}else{
+				yearSel.append("<option value='" + this + "'>" + this + "</option>");
+			}
+		});
+	}
+	function createMonthOptions(monthSel,selectIndex){
+		for  (var i=1; i < 13; i++) {
+			if(selectIndex && selectIndex == i){
+				monthSel.append("<option selected='true' value='" + i + "'>" + i + "</option>");
+			}else{
+				monthSel.append("<option value='" + i + "'>" + i + "</option>");
+			}
+		};
+	}
+	$("#exportChartBtn").click(function(){
+		var data = $("#exportForm").serialize();
+		$.post('{:U("GuidePrice/exportChart")}',data,exportHandler,'json');
+	})
+	function exportHandler(response){
+		alert(response.info);
+	}
+})
+//-->
+</SCRIPT>
+
+</head>
+<body>
+  <include file="Public:header" />
+
+<!-- 主要內容 -->
+<div id="content">
+	
+  <!-- 右框架 -->
+  <div id="rightWrap">
+        
+  </div>  
+</div>
+</body>
+</html>

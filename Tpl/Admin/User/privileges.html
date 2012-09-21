@@ -1,0 +1,131 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.bgiframe.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/loading-min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.2.6/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/validateType.js"></script>
+
+<link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/style/css/loading.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/js/jquery-easyui-1.2.6/themes/default/easyui.css" rel="stylesheet" type="text/css">
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+var actionName = '/Admin/User/index';
+var members = {$members};
+
+$(document).ready(function(){
+     //导航选中
+	$(".navList li[name=setting]").addClass('selectButton');
+	//展开收缩
+	$('.expandIcon,.shrinkIcon').click(function(){
+		//查找最近的父辈元素（不包含tr）所以要加上parent 找到tr
+	    var currentRow = $(this).parentsUntil('tr').parent();
+		//收缩状态
+		if ($(this).hasClass('expandIcon')) {
+		    currentRow.find('.shrinkIcon').addClass('expandIcon').removeClass('shrinkIcon');//更改收缩图片为展开图片
+			$(this).removeClass('expandIcon').addClass('shrinkIcon');
+
+			var index = currentRow.attr('index');
+			var level = $(this).attr('level');
+			var member = members[index][level];
+			//添加新行
+			var newRow;
+			//判断是否在最后一行
+			if (currentRow.next().length == 0 || (currentRow.next().length > 0 && !currentRow.next().hasClass('expandRow'))) {
+				newRow = $("<tr class='expandRow'><td></td><td colspan=6></td></tr>");
+				currentRow.after(newRow);
+			} else {
+			    newRow = currentRow.next();
+			}
+			//包含内容的td元素
+			var memberContainer = newRow.children().eq(1);
+			memberContainer.html('');
+
+			for (var i = 0; i < member.length; i++) {
+			    var m;
+				if (member[i]['userID'].length > 0) {
+				    m = $("<div class='authMember'>個人權限: " + member[i]['userID']+"</div>");
+				} else {
+					m = $("<div class='authMember'>群組權限: " + member[i]['groupName']+"</div>");
+				}
+				m.appendTo(memberContainer);
+			}
+
+		} else {
+			$(this).removeClass('shrinkIcon');
+			$(this).addClass('expandIcon');
+			
+			if (currentRow.next().hasClass('expandRow')) {
+			    currentRow.next().remove();
+			}
+		}
+	
+	});
+
+});
+
+
+//-->
+</SCRIPT>
+
+</head>
+<body>
+  <include file="Public:header" />
+
+<!-- 主要內容 -->
+<div id="content">
+  <include file="Public:left" />
+    
+  <!-- 右框架 -->
+  <div id="rightWrap">
+    <!-- 所在位置地址 -->
+    <div class="addressBar">用戶管理 > 系統用戶 > 用戶權限</div>
+    
+  	<div class="UMWrap">
+      <div id="privilegesTabs" class="easyui-tabs" style="width:980px;margin-top:30px;">  
+        <div title="所屬群組">  
+            <ul class="groupList">
+			  <volist id="vo" name="groupList">
+			    <li>{$vo['groupName']}</li>
+			  </volist>
+			</ul>
+        </div>
+        <div title="所有權限" style="overflow:auto;">  
+           <table class="privilegesTable" style="margin-bottom:0px;">
+		     <volist id="vo" name="accessRights">
+			 <tr index={$key}>
+			   <td class="sysAuthName">{$vo['name']}</td>
+			   <td class="<?php if(!$vo['access'][1]['enable']) echo 'grayText' ?>"><span class="accessType">查看</span><?php if($vo['access'][1]['member'] && $vo['access'][1]['enable']) echo "<span level='1' class='expandIcon'></span>" ?></td>
+			   <td class="<?php if(!$vo['access'][2]['enable']) echo 'grayText' ?>"><span class="accessType">新增</span><?php if($vo['access'][2]['member'] && $vo['access'][2]['enable']) echo "<span level='2' class='expandIcon'></span>" ?></td>
+			   <td class="<?php if(!$vo['access'][4]['enable']) echo 'grayText' ?>"><span class="accessType">編輯</span><?php if($vo['access'][4]['member'] && $vo['access'][4]['enable']) echo "<span level='4' class='expandIcon'></span>" ?></td>
+			   <td class="<?php if(!$vo['access'][8]['enable']) echo 'grayText' ?>"><span class="accessType">刪除</span><?php if($vo['access'][8]['member'] && $vo['access'][8]['enable']) echo "<span level='8' class='expandIcon'></span>" ?></td>
+			   <td class="<?php if(!$vo['access'][16]['enable']) echo 'grayText' ?>"><span class="accessType">導出</span><?php if($vo['access'][16]['member'] && $vo['access'][16]['enable']) echo "<span level='16' class='expandIcon'></span>" ?></td>
+			   <td class="<?php if(!$vo['access'][32]['enable']) echo 'grayText' ?>"><span class="accessType">打印</span><?php if($vo['access'][32]['member'] && $vo['access'][32]['enable']) echo "<span level='32' class='expandIcon'></span>" ?></td>
+			 </tr>			 
+		     </volist>
+		   </table>
+		   <div style="margin:20px;color:#336699">黑色字體代表系統對此權限作了限制</div>
+		   <div style="margin:20px;color:#336699">灰色字體代表系統對此權限沒有限制</div>
+		   <div style="margin:20px;color:#336699">展開按紐說明該用戶擁有此權限的原因，可能是該用戶單獨設置了權限，又或是該用戶繼承了某個群組的權限，按下去查看詳細</div>
+        </div>
+		<!--<div class="authCopyWrapper" title="複製用戶權限">  
+            <div style="margin:50px;"><span>目標用戶:</span><span><INPUT TYPE="text" NAME="userID"></span><span><INPUT TYPE="button" value="複製"></span><div>
+			<div style="width:500px;margin:auto;margin-top:50px;">複製功能可以把一個用戶所屬的群組複製到目標用戶上，如果用戶有單獨設定的權限也會被複製到目標用戶上，原用戶的權限保持不變，目標用戶的權限為原用戶與目標用戶的疊加。</div>
+        </div>-->
+      </div> 
+     
+    </div>    
+  </div>
+  
+</div>
+
+
+</body>
+</html>

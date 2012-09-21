@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>查看日誌</title>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
+
+<link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+
+
+
+//-->
+</SCRIPT>
+
+
+</head>
+<body style="background-color:#FFFFFF;margin:5px;">
+<table id="logTable" width=950>
+  <tr align=center>
+    <th width=150>用戶</td>
+	<th width=180>時間</td>
+	<th>操作</td>
+  </tr>
+  <volist name="list" id="vo">
+  <tr>
+    <td>{$vo['userID']}</td>
+	<td>{$vo['dateTime']}</td>
+	<td style="text-align:left">{$vo['description']}</td>
+  </tr>
+  </volist>
+</table>
+{$page}
+</body>
+</html>

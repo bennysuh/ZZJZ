@@ -1,0 +1,360 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>權限管理_訪問級別</title>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.bgiframe.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/loading-min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.json-2.3.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.2.6/jquery.easyui.min.js"></script>
+
+<link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/style/css/loading.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/js/jquery-easyui-1.2.6/themes/default/easyui.css" rel="stylesheet" type="text/css">
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+var actionName = '__ACTION__';
+
+$(document).ready(function(){
+    //导航选中
+	$(".navList li[name=setting]").addClass('selectButton');
+	
+	//按某個群組時
+	$('.mouseClick').live('click',function(){
+		var sysID = $(this).parent().attr('sysID');
+		if(sysID > 0) {
+		    $('#membersContainer').css('display','block');
+			$('#moduleTitle').html(':'+$(this).html());
+			$('#memberTable').attr('sysID',sysID);
+			window.location.href = '#membersContainer';
+		    readyForEditRights(sysID);
+		}
+	});
+
+	//用戶點擊新增群組成員
+	$('#addMember').click(function(){
+	    var newMember = $('#template').children().first().clone();
+	    //新增行的autoID默认是0
+		var newRow = $("<tr autoID='0'><td colspan=3></td></tr>");
+		newRow.appendTo($('#memberTable'));
+		newMember.appendTo(newRow.children().first());//插入第一個TD裡面
+
+		var localGroupList = $("<select id='localGroupList' style='width:250px;margin-right:10px'></select>");
+		localGroupList.appendTo(newMember);
+		$('<option value=0></option>').appendTo(localGroupList);
+		$.post('{:U("Group/getGroupList")}', null, getGroupListHandler, 'json');
+
+		//插入幾個checkbox
+		$('<td><input type="checkbox" name="list" /></td>').appendTo(newRow);
+		$('<td><input type="checkbox" name="create" /></td>').appendTo(newRow);
+		$('<td><input type="checkbox" name="edit" /></td>').appendTo(newRow);
+		$('<td><input type="checkbox" name="delete"  /></td>').appendTo(newRow);
+		$('<td><input type="checkbox" name="export"  /></td>').appendTo(newRow);
+		$('<td><input type="checkbox" name="print"  /></td>').appendTo(newRow);
+	});
+
+	//選擇成員的種類，是用戶還是群組
+	$('.memberType').live('change', function(){
+	    $(this).nextAll().each(function(){
+		    $(this).remove();		
+		});
+		if (this.value == 'user') {
+			var userList = $("<select id='userList' class='easyui-combobox' name='user' style='width:250px;'></select>");
+			userList.appendTo($(this).parent());
+			userList.combobox({
+				url:'{:U("Group/getUsersForAutoSelection")}',
+				valueField:'userID',
+				textField:'name',
+				mode:'remote'
+			});
+		} else { //本地群組
+		    var localGroupList = $("<select id='localGroupList' style='width:250px;margin-right:10px'></select>");
+			localGroupList.appendTo($(this).parent());
+			$('<option value=0></option>').appendTo(localGroupList);
+			$.post('{:U("Group/getGroupList")}', null, getGroupListHandler, 'json');
+		}
+	});
+
+	//批量設置權限
+	$('.tableHeader input[type=checkbox]').click(function(){
+	    var checkbox = $(this);
+		$('#memberTable tr').each(function(){
+			if ($(this).hasClass('tableHeader')) return;//排除第一行頭部
+
+			var name = checkbox.attr('name');
+			if (checkbox.attr('checked') == 'checked') {
+			    $(this).find('input[type=checkbox][name=' + name + ']').attr('checked', 'checked');
+			} else {
+			    $(this).find('input[type=checkbox][name=' + name + ']').removeAttr('checked');
+			}
+		});
+	});
+
+	//用戶點擊保存群組成員
+	$('#saveMember').click(function(){
+		var data = [];		
+		$('#memberTable tr').each(function(){
+			if ($(this).hasClass('tableHeader')) return;//排除第一行頭部
+			var children = $(this).children();
+			var item = {};
+			
+			//計數權限值
+			var level = 0;
+			if ($(this).find('input[type=checkbox][name=list]').attr("checked") == 'checked') level += 1;
+			if ($(this).find('input[type=checkbox][name=create]').attr("checked") == 'checked') level += 2;
+			if ($(this).find('input[type=checkbox][name=edit]').attr("checked") == 'checked') level += 4;
+			if ($(this).find('input[type=checkbox][name=delete]').attr("checked") == 'checked') level += 8;
+			if ($(this).find('input[type=checkbox][name=export]').attr("checked") == 'checked') level += 16;
+			if ($(this).find('input[type=checkbox][name=print]').attr("checked") == 'checked') level += 32;
+			item.level = level;
+			item.id = $(this).attr('autoID');
+			
+			if (item.id == 0) {//新增的行
+			    var memberType = $(children[0]).find("select[name=memberType]");
+				item.type = memberType[0].value;
+				if (item.type == 'user') {
+					item.userID = $(children[0]).find("#userList").combobox('getValue');
+				} else if (item.type == 'group') {
+					item.groupID = $(children[0]).find("#localGroupList")[0].value;
+				}
+			}
+			
+			data.push(item);
+		});
+
+		if (data.length == 0) return;
+
+	    var json = $.toJSON(data);
+
+		var loading = new ol.loading({id:"accessRightForm"});
+		loading.show();
+
+		$.post('{:U("SysAuth/updateSysAccess")}', {sysID:$('#memberTable').attr('sysID'),json:json}, updateSysAccessHandler, 'json');
+		
+		//生成team列表的數據選項
+		var $this = $(this);
+		function updateSysAccessHandler(response) {
+		    loading.hide();
+			readyForEditRights($('#memberTable').attr('sysID'));			
+		}
+	});
+
+	//刪除群組或成員
+	$('#removeMember').click(function(){
+	    if (!confirm('你確定要移除已選中的成員？')) return;
+		var data = [];
+		var removeRow = [];
+		
+		$('#memberTable tr').each(function(){
+			if ($(this).hasClass('tableHeader')) return;//排除頭部第一行
+			var children = $(this).children();
+			
+			var item = {};
+			var checkbox = $($(children[0]).find("input[type=checkbox]"));
+
+			if (checkbox.length == 0) return; //不是原有的行，是新增並未保存的項
+			var isChecked = $(checkbox[0]).attr("checked");
+			if (isChecked != 'checked') return;//沒有被選中，不用處理
+
+			var autoID = $(this).attr('autoID');
+			
+			data.push(autoID);
+			removeRow.push($(this));
+		});
+
+		if (data.length == 0) return;
+	    var ids = data.join(',');
+
+		$.post('{:U("SysAuth/removeAccessRight")}', {ids:ids}, removeAccessRightHandler, 'json');
+		
+		//生成team列表的數據選項
+		var $this = $(this);
+		function removeAccessRightHandler(response) {
+		    for (var i = 0; i < removeRow.length; i++) {
+			    removeRow[i].remove();
+			}		    
+		}
+	});
+
+	//顯示或隱藏模塊名稱
+	$('.tableActionButton').click(function(){
+	    var sysID = $(this).parent().parent().attr('sysID');
+		if(sysID == null || sysID == 0) return;
+		
+		var isHidden;
+		if ($(this).val() == '顯示') {
+		    isHidden = 0;
+		} else {
+		    isHidden = 1;
+		}
+
+		$.post('{:U("SysAuth/updateAccessRightModule")}', {sysID:sysID,isHidden:isHidden}, updateAccessRightModuleHandler, 'json');
+		
+		//生成team列表的數據選項
+		var $this = $(this);
+		function updateAccessRightModuleHandler(response) {
+		    if ($this.val() == '顯示') {
+				$this.val('隱藏');
+			} else {
+				$this.val('顯示');
+			}			
+		}
+	});
+
+
+});
+//显示模块权限用户组列表
+function readyForEditRights(sysID) {
+    //清除原來的數據行
+	$('#memberTable tr').each(function(){
+	    //排除第一行頭部
+		if ($(this).hasClass('tableHeader')) {
+		    $(this).find('input[type=checkbox]').removeAttr('checked');
+		    return;
+		}
+		$(this).remove();
+	});
+
+	$.post('{:U("SysAuth/getAccessRightList")}', {sysID:sysID}, getAccessRightListHandler, 'json');
+	function getAccessRightListHandler(response) {
+	    var data = response.data;
+		if (data == null) return;
+		groupMembers = data;
+		for (var i = 0; i < data.length; i++) {
+		    var row = data[i];
+			var displayName;
+			var userType;
+			if (row['userID'].length > 0) {
+				userType = '用戶';
+			} else {
+				userType = '群組';
+			}
+
+			var newRow = $("<tr><td><input type=\"checkbox\" /></td><td>" + row['displayName'] + "</td><td>" + userType + "</td></tr>");
+			$('<td><input type="checkbox" name="list" /></td>').appendTo(newRow);
+			$('<td><input type="checkbox" name="create" /></td>').appendTo(newRow);
+			$('<td><input type="checkbox" name="edit" /></td>').appendTo(newRow);
+			$('<td><input type="checkbox" name="delete"  /></td>').appendTo(newRow);
+			$('<td><input type="checkbox" name="export"  /></td>').appendTo(newRow);
+			$('<td><input type="checkbox" name="print"  /></td>').appendTo(newRow);
+			//判断权限。
+			//如果level=7，则二进制是0111.它有1，2，4的权限
+			//如果level=21，则二进制是10101.它有1，4，16的权限
+			if (1 & row['level']) {
+			    newRow.find('input[type=checkbox][name=list]').attr("checked", "checked");
+			}
+			if (2 & row['level']) {
+			    newRow.find('input[type=checkbox][name=create]').attr("checked", "checked");
+			}
+			if (4 & row['level']) {
+			    newRow.find('input[type=checkbox][name=edit]').attr("checked", "checked");
+			}
+			if (8 & row['level']) {
+			    newRow.find('input[type=checkbox][name=delete]').attr("checked", "checked");
+			}
+			if (16 & row['level']) {
+			    newRow.find('input[type=checkbox][name=export]').attr("checked", "checked");
+			}
+			if (32 & row['level']) {
+			    newRow.find('input[type=checkbox][name=print]').attr("checked", "checked");
+			}
+			
+			newRow.attr('autoID', row['id']);
+			newRow.appendTo($('#memberTable'));
+		}
+	    
+	}
+}
+
+//生成本地群組的選項
+function getGroupListHandler(response) {
+	var data = response.data;
+	var localGroupList = $('.memberType').nextAll('#localGroupList');
+	for (var i = 0; i < data.length; i++) {
+		if ($('#memberTable').attr('groupID') == data[i].id) continue;//不能加當前群組為子群組
+		var option = $("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+		option.appendTo(localGroupList);
+	}
+	localGroupList.width(localGroupList.width());//FOR IE BUG
+}
+//-->
+</SCRIPT>
+
+</head>
+<body>
+<!-- 增加群組成員的模板 -->
+<div id="template" style="display:none">
+  <div style="text-align:left;margin-left:40px">
+	<select class="memberType" name="memberType">
+	  <option value="group">群組</option>
+	  <option value="user">用戶</option>
+	</select>
+  </div>
+</div>
+
+<include file="Public:header" />
+<!-- 主要內容 -->
+<div id="content">
+  <!-- 左框架 -->
+  <include file="Public:left" />
+  <!-- 右框架 -->
+  <div id="rightWrap">
+    <!-- 所在位置地址 -->
+    <div class="addressBar">權限管理 > 系統功能</div>
+
+    <div class="accessLevelsWrap">
+    <h2>系統功能</h2>
+	  <table id="moduleTable">
+		<tr class="tableHeader">
+		  <th class="groupNameF">名稱</th>
+		  <th class="descriptionF">描述</th>
+		  <?php if ($_SESSION[C('ADMIN_AUTH_KEY')]) { ?>
+		  <th class="tableActionTD">操作</th>
+		  <?php } ?>
+		</tr>
+		<?php foreach ($list as $vo) { ?>
+		<!--admin显示所有功能权限-->
+		<?php if ($vo['isHidden'] && !$_SESSION[C('ADMIN_AUTH_KEY')]) continue; ?>
+		<tr sysID="{$vo['sysID']}">
+		  <td class="mouseClick">{:htmlspecialcharsx($vo['name'])}</td>
+		  <td>{:htmlspecialcharsx($vo['description'])}</td>
+		  <?php if ($_SESSION[C('ADMIN_AUTH_KEY')]) { ?>
+		  <td><input type="button" value="<?php if($vo['isHidden']) echo '顯示';else echo '隱藏'; ?>" class="tableActionButton"/></td>
+		  <?php } ?>
+		</tr>
+		<?php } ?>
+	  </table>
+    </div>
+    <!--模块权限列表-->
+	<div id="membersContainer" class="membersModule">
+        <h2>模組權限<span id="moduleTitle"></span></h2>
+        <form id="accessRightForm">
+          <table id="memberTable">
+            <tr class="tableHeader">
+              <th class="selectState"></th>
+              <th class="groupName">用戶/組</th>
+			  <th class="userType">類型</th>
+			  <th class="choice">查看<INPUT TYPE="checkbox" NAME="list"></th>
+              <th class="choice">新增<INPUT TYPE="checkbox" NAME="create"></th>
+              <th class="choice">編輯<INPUT TYPE="checkbox" NAME="edit"></th>
+			  <th class="choice">刪除<INPUT TYPE="checkbox" NAME="delete"></th>
+			  <th class="choice">導出<INPUT TYPE="checkbox" NAME="export"></th>
+			  <th class="choice">打印<INPUT TYPE="checkbox" NAME="print"></th>
+            </tr>
+          </table>
+		  <?php if (Auth::AccessDecision('Admin','SysAuth','updateSysAccess')) { ?>
+		  <input id="addMember" type="button" value="新增" class="actionButton" />
+          <input id='saveMember' type="button" value="保存" class="actionButton" />
+		  <?php } ?>
+		  <?php if (Auth::AccessDecision('Admin','SysAuth','removeAccessRight')) { ?>
+          <input id='removeMember' type="button" value="刪除" class="actionButton" />
+		  <?php } ?>
+        </form>
+    </div>
+  </div>
+</div>
+</body>
+</html>
