@@ -1,0 +1,148 @@
+@charset "utf-8";
+body,ul,li,table,tbody,tr,td {
+	margin: 0;
+	padding: 0;
+	font-family: Arial;	
+}
+body {
+	background-color: #EBEBEB;
+}
+#header {
+	background: rgb(10,10,10); /* Old browsers */
+	background: -moz-linear-gradient(left,  rgba(10,10,10,1) 0%, rgba(60,60,60,1) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(10,10,10,1)), color-stop(100%,rgba(60,60,60,1))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(left,  rgba(10,10,10,1) 0%,rgba(60,60,60,1) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(left,  rgba(10,10,10,1) 0%,rgba(60,60,60,1) 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(left,  rgba(10,10,10,1) 0%,rgba(60,60,60,1) 100%); /* IE10+ */
+	background: linear-gradient(left,  rgba(10,10,10,1) 0%,rgba(60,60,60,1) 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0a0a0a', endColorstr='#3c3c3c',GradientType=1 ); /* IE6-9 */
+	
+	height: 90px;
+	min-width: 1000px;
+}
+#internalBox {
+	min-width: 1000;
+	width: auto;
+	height: 90px;
+	margin-top: 18px;
+	float: left;
+}
+#loginWrap {
+	width: 500px;
+	margin: auto;
+	border-radius: 5px 5px 5px 5px;
+	margin-top: 150px;
+}
+#loginWrap .formLine {
+	margin-left: 35px;
+	height:40px;
+}
+#loginWrap .loginTitle {
+	padding: 10px;
+	font-size: 22px;
+	font-weight: bold;
+	color: #FFFFFF;
+	text-shadow: 0 -0.5px 0px #000000;
+	border-radius: 5px 5px 0px 0px;
+	
+	background: rgb(166,184,242); /* Old browsers */
+	background: -moz-linear-gradient(top,  rgba(166,184,242,1) 0%, rgba(135,158,196,1) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(166,184,242,1)), color-stop(100%,rgba(135,158,196,1))); 
+	/* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  rgba(166,184,242,1) 0%,rgba(135,158,196,1) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  rgba(166,184,242,1) 0%,rgba(135,158,196,1) 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  rgba(166,184,242,1) 0%,rgba(135,158,196,1) 100%); /* IE10+ */
+	background: linear-gradient(top,  rgba(166,184,242,1) 0%,rgba(135,158,196,1) 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a6b8f2', endColorstr='#879ec4',GradientType=0 ); /* IE6-9 */
+}
+#loginWrap .inputBox {
+	width: 498px;
+	height: 180px;
+	padding-top: 20px;
+	background-color: #FFFFFF;
+	border: 1px ridge #C1C1C1;
+	border-radius: 0px 0px 5px 5px;
+}
+#loginWrap label {
+	color: #888888;
+	margin-right: 10px;
+	font-weight: bold;
+}
+#loginWrap input {
+	height: 20px;
+	width: 250px;
+	background-color: #F2F2F2;
+	border: 1px inset #C4C7BD;
+	float:left;
+	margin-bottom:10px;
+}
+#loginWrap input[name=verifyCode] {
+	margin-right:20px;
+	width: 100px;
+}
+#loginWrap button {
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #828282;
+	width: 60px;
+	height: 25px;
+	float: right;
+	margin-right: 60px;
+	margin-top: 10px;
+	
+	background: #e6e6e6; /* Old browsers */
+	background: -moz-linear-gradient(top,  #e6e6e6 40%, #d7d7d7 70%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(40%,#e6e6e6), color-stop(70%,#d7d7d7)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #e6e6e6 40%,#d7d7d7 70%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #e6e6e6 40%,#d7d7d7 70%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #e6e6e6 40%,#d7d7d7 70%); /* IE10+ */
+	background: linear-gradient(top,  #e6e6e6 40%,#d7d7d7 70%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e6e6e6', endColorstr='#d7d7d7',GradientType=0 ); /* IE6-9 */
+}
+#loginWrap button:hover{
+	background: #d7d7d7; /* Old browsers */
+	background: -moz-linear-gradient(top,  #d7d7d7 40%, #e6e6e6 70%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(40%,#d7d7d7), color-stop(70%,#e6e6e6)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #d7d7d7 40%,#e6e6e6 70%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #d7d7d7 40%,#e6e6e6 70%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #d7d7d7 40%,#e6e6e6 70%); /* IE10+ */
+	background: linear-gradient(top,  #d7d7d7 40%,#e6e6e6 70%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d7d7d7', endColorstr='#e6e6e6',GradientType=0 ); /* IE6-9 */
+}
+#loginWrap button:active{
+	background: #a6b8f2; /* Old browsers */
+	background: -moz-linear-gradient(top,  #a6b8f2 0%, #879ec4 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#a6b8f2), color-stop(100%,#879ec4)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #a6b8f2 0%,#879ec4 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #a6b8f2 0%,#879ec4 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #a6b8f2 0%,#879ec4 100%); /* IE10+ */
+	background: linear-gradient(top,  #a6b8f2 0%,#879ec4 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a6b8f2', endColorstr='#879ec4',GradientType=0 ); /* IE6-9 */
+}
+
+.loginErrorInfo {
+    padding-left:35px;
+	color:red;
+}
+
+.loginLabel {
+	width:100px;
+	display:block;
+	float:left;
+	text-align:right;
+}
+
+.verifyImage {
+	cursor:pointer;
+	float:left;
+}
+
+.verifyNotice {
+    display:block;
+	float:left;
+	margin-left:10px;
+	font-size:12px;
+	margin-top:3px;
+	cursor:pointer;
+	color:#6699FF;
+
+}

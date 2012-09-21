@@ -1,0 +1,1203 @@
+@charset "utf-8";
+body,ul,li,table,tbody,tr,td,button,form {
+	margin: 0;
+	padding: 0;
+	font-family: Arial;
+}
+ul,li {
+	list-style-type: none;	
+}
+a {
+	text-decoration: none;	
+	color: #888888;
+}
+a:link {
+	text-decoration: none;	
+}
+a:visit {
+	text-decoration: none;
+}
+a:hover {
+	text-decoration: none;	
+	color: #000000;
+}
+a:active {
+	text-decoration: none;	
+}
+body {
+	background-color: #EBEBEB;
+}
+#header {
+	background: rgb(10,10,10); /* Old browsers */
+	background: -moz-linear-gradient(left,  rgba(10,10,10,1) 0%, rgba(60,60,60,1) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(10,10,10,1)), color-stop(100%,rgba(60,60,60,1))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(left,  rgba(10,10,10,1) 0%,rgba(60,60,60,1) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(left,  rgba(10,10,10,1) 0%,rgba(60,60,60,1) 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(left,  rgba(10,10,10,1) 0%,rgba(60,60,60,1) 100%); /* IE10+ */
+	background: linear-gradient(left,  rgba(10,10,10,1) 0%,rgba(60,60,60,1) 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0a0a0a', endColorstr='#3c3c3c',GradientType=1 ); /* IE6-9 */
+	
+	height: 90px;
+	min-width: 1200px;
+}
+/*頭內框架*/
+#internalBox {
+	min-width: 1000;
+	width: auto;
+	height: 90px;
+}
+#headerLogo {
+	width: 200px;
+	height: 72px;
+	padding-top: 18px;
+	float: left;
+}
+#loginInfo {
+	max-width: 300px;
+	height: 90px;
+	float: right;
+	color: #FFFFFF;
+	word-wrap:break-word;/* 強制換行 */
+	margin-right:10px;
+}
+#loginInfo button {
+	float: right;
+	margin-top: 5px;
+	width: 60px;
+	height: 25px;
+	border-top-style: none;
+	border-right-style: none;
+	border-bottom-style: none;
+	border-left-style: none;
+	border-radius: 5px 5px 5px 5px;
+	margin-right: 20px;
+	cursor: pointer;
+	
+	background: #e6e6e6; /* Old browsers */
+	background: -moz-linear-gradient(top,  #e6e6e6 40%, #d7d7d7 70%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(40%,#e6e6e6), color-stop(70%,#d7d7d7)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #e6e6e6 40%,#d7d7d7 70%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #e6e6e6 40%,#d7d7d7 70%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #e6e6e6 40%,#d7d7d7 70%); /* IE10+ */
+	background: linear-gradient(top,  #e6e6e6 40%,#d7d7d7 70%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e6e6e6', endColorstr='#d7d7d7',GradientType=0 ); /* IE6-9 */
+}
+#nav {
+	background: rgb(166,184,242); /* Old browsers */
+	background: -moz-linear-gradient(top,  rgba(166,184,242,1) 0%, rgba(135,158,196,1) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(166,184,242,1)), color-stop(100%,rgba(135,158,196,1))); 
+	/* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  rgba(166,184,242,1) 0%,rgba(135,158,196,1) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  rgba(166,184,242,1) 0%,rgba(135,158,196,1) 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  rgba(166,184,242,1) 0%,rgba(135,158,196,1) 100%); /* IE10+ */
+	background: linear-gradient(top,  rgba(166,184,242,1) 0%,rgba(135,158,196,1) 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a6b8f2', endColorstr='#879ec4',GradientType=0 ); /* IE6-9 */
+	
+	height: 35px;
+	min-width: 1200px;
+	border: 1px solid #777777;
+	box-shadow: 0px 0px 3px #000000;
+}
+#nav ul {
+	width: 600px;
+	height: 35px;
+	float: right;
+}
+#nav li {
+	width: 130px;
+	height: 25px;
+	float: right;
+	list-style-type: none;
+	padding-top: 10px;
+	padding-left: 20px;
+	font-weight: bold;
+	color: #FFFFFF;
+	text-shadow: 0px -0.5px 0px #000000;
+	background-image: url(../img/line.png);
+	background-repeat: no-repeat;
+	background-position: right center;
+	cursor: pointer;
+}
+#nav .selectButton {
+	color: #4D4D4D;
+	text-shadow: 0px 1px 0px #FFFFFF;
+	background-image: url(../img/navButton.png);
+	background-repeat: no-repeat;
+	padding-top: 5px;
+	height: 30px;
+}
+
+#content {
+	min-width: 1200px;
+}
+#leftWrap {
+	width: 250px;
+	margin-left: 20px;
+	float: left;
+}
+#leftWrap ul {
+	width: 250px;
+	list-style-type: none;
+}
+#leftWrap li {
+	width: 195px;
+	border: 1px solid #CCCCCC;
+	color: #666666;
+	font-weight: bold;
+	line-height: 29px;
+	padding-top: 5px;
+	padding-left: 5px;
+	text-shadow: 0 1px 1px #FFFFFF;
+	cursor: pointer;
+	
+	background: #fffef3; /* Old browsers */
+	background: -moz-linear-gradient(top,  #fffef3 0%, #e2e5e9 50%, #e6e6e6 87%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fffef3), color-stop(50%,#e2e5e9), color-stop(87%,#e6e6e6)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #fffef3 0%,#e2e5e9 50%,#e6e6e6 87%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #fffef3 0%,#e2e5e9 50%,#e6e6e6 87%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #fffef3 0%,#e2e5e9 50%,#e6e6e6 87%); /* IE10+ */
+	background: linear-gradient(top,  #fffef3 0%,#e2e5e9 50%,#e6e6e6 87%); /* W3C */
+	/*filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fffef3', endColorstr='#e6e6e6',GradientType=0 ); /* IE6-9 */
+}
+#leftWrap li li {
+	color: #888888;
+}
+#leftWrap li li:hover {
+	color: #000000;
+}
+/* 左邊框架裏面嘅用戶管理框架(未選定時) */
+#leftWrap .userManagement {
+	list-style-position: inside;
+	list-style-image: url(../img/userManagement.png);
+}
+/* 左邊框架裏面嘅權限管理礦機(未選定時) */
+#leftWrap .rightsManagement {
+	list-style-position: inside;
+	list-style-image: url(../img/rightsManagement.png);
+}
+
+/* 通用左邊菜單樣式 */
+#leftWrap .leftMenus {
+	background-image: url(../img/select_button.png);
+	background-repeat: no-repeat;
+	background-color: transparent;
+	width: 215px;
+	height: 29px;
+	border-top-style: none;
+	border-right-style: none;
+	border-bottom-style: none;
+	border-left-style: none;
+	margin-top: -1px;
+	margin-left: -1px;
+	line-height: 29px;
+	color: #FFFFFF;
+	text-shadow: 0 -0.5px 0px #000000;
+	filter: none;
+	list-style-position: inside;
+	
+}
+
+/* 左邊框架裏面嘅用戶管理框架(選定時) */
+#leftWrap .UMSelect {
+	background-image: url(../img/select_button.png);
+	background-repeat: no-repeat;
+	background-color: transparent;
+	width: 215px;
+	height: 29px;
+	border-top-style: none;
+	border-right-style: none;
+	border-bottom-style: none;
+	border-left-style: none;
+	margin-top: -1px;
+	margin-left: -1px;
+	line-height: 29px;
+	color: #FFFFFF;
+	text-shadow: 0 -0.5px 0px #000000;
+	list-style-image: url(../img/UMSelect.png);
+	filter: none;
+	
+	min-height: 109px;
+}
+/* 左邊框架裏面嘅權限管理框架(選定時) */
+#leftWrap .RMSelect {
+	background-image: url(../img/select_button.png);
+	background-repeat: no-repeat;
+	background-color: transparent;
+	width: 215px;
+	height: 29px;
+	border-top-style: none;
+	border-right-style: none;
+	border-bottom-style: none;
+	border-left-style: none;
+	margin-top: -1px;
+	margin-left: -1px;
+	line-height: 29px;
+	color: #FFFFFF;
+	text-shadow: 0 -0.5px 0px #000000;
+	list-style-image: url(../img/RMSelect.png);
+	filter: none;
+	
+	min-height: 50px;
+}
+/* 下面兩個為最上面和最下面分項的樣式 */
+#leftWrap #sideNav .top {
+	border-top-style: solid;
+}
+#leftWrap #sideNav .bottom {
+	border-bottom-style: solid;
+}
+/* 分項的基本樣式 */
+#sideNav .Breakdown {
+	display: block;
+	margin-left: -4px;
+	height: 20px;
+	background: #FFFFFF;
+	border-top-width: 1px;
+	border-bottom-width: 1px;
+	border-top-style: dashed;
+	border-bottom-style: dashed;
+	font-size: 14px;
+	font-weight: normal;
+	line-height: 20px;
+	text-align: center;
+	filter: none;
+}
+/* 分項選定時的樣式 */
+#leftWrap #sideNav .select {
+	color: #000000;
+/**background-image: url(../img/logo1.png);**/
+	background-repeat: no-repeat;
+	background-position: left 6px;
+}
+/* 左邊框架title前的圖片位置修正 */
+.wrapTitle img {
+	margin-right: 10px;
+}
+#rightWrap {
+	height: 20px;
+	margin-top: 20px;
+	margin-right: 20px;
+	margin-left: 250px;
+}
+#rightWrap .addressBar {
+	border: 1px solid #CCCCCC;
+	height: 20px;
+	border-radius: 5px 5px 5px 5px;
+	color: #323232;
+	font-size: 14px;
+	line-height: 20px;
+	padding-left: 10px;
+	
+	background: rgb(241,241,242); /* Old browsers */
+	background: -moz-linear-gradient(top,  rgba(241,241,242,1) 0%, rgba(222,223,224,1) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(241,241,242,1)), color-stop(100%,rgba(222,223,224,1)));
+	/* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  rgba(241,241,242,1) 0%,rgba(222,223,224,1) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  rgba(241,241,242,1) 0%,rgba(222,223,224,1) 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  rgba(241,241,242,1) 0%,rgba(222,223,224,1) 100%); /* IE10+ */
+	background: linear-gradient(top,  rgba(241,241,242,1) 0%,rgba(222,223,224,1) 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f1f1f2', endColorstr='#dedfe0',GradientType=0 ); /* IE6-9 */
+}
+/* 增加用戶框架 */
+#rightWrap .UMWrap {
+	margin-left: 20px;
+}
+/* 框架標題 */
+#rightWrap .wrapTitle {
+	height: 50px;
+}
+/* 增加用戶嘅內框架 */
+#rightWrap .addUserWrap {
+	border-bottom-width: 1px;
+	border-bottom-style: inset;
+	border-bottom-color: #666666;
+}
+#rightWrap table ,#logTable{
+	border-collapse:collapse;
+	margin-bottom: 20px;
+}
+/* form裏面分行屬性 */
+#rightWrap .formLine {
+	margin-top: 2px;
+	margin-bottom: 2px;
+}
+#rightWrap td ,#logTable td{
+	height: 30px;
+	border: 1px solid #888888 !important;
+	text-align: center;
+	background-color: #FFFFFF;
+	padding-left: 5px;
+	padding-right: 5px;
+	font-size: 15px;
+}
+/* form裏面應該輸入什么的名字的框架 */
+#rightWrap .inputName {
+	font-weight: bold;
+	border: none;
+	text-align: left;
+}
+/* form裏面應該輸入什麽的框架 */
+#rightWrap .inputText {
+    padding-bottom: 5px;
+    padding-top: 5px;
+	border: none;
+	text-align: left;
+}
+/* 下面3個是addUserWrap特殊的屬性 */
+#rightWrap .addUserWrap .inputName {
+	width: 100px;
+	font-weight: bold;
+	border: none !important;
+	text-align: left;
+	background-color: transparent;
+}
+#rightWrap .addUserWrap .inputText {
+    padding-bottom: 5px;
+    padding-top: 5px;
+    width: 250px;
+	border: none !important;
+	text-align: left;
+	background-color: transparent;
+}
+#rightWrap .addUserWrap input {
+    width: 200px;
+}
+/* 按鈕(已經選擇的樣式) */
+#rightWrap .selected {
+	border: 1px solid #1447D4;
+    border-radius: 5px 5px 5px 5px;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-weight: bold;
+    height: 25px;
+	min-width: 80px;
+	
+	background: rgb(177,205,255); /* Old browsers */
+	background: -moz-linear-gradient(top,  rgba(177,205,255,1) 0%, rgba(114,161,255,1) 43%, rgba(86,141,255,1) 45%, rgba(74,127,255,1) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(177,205,255,1)), color-stop(43%,rgba(114,161,255,1)), color-stop(45%,rgba(86,141,255,1)), color-stop(100%,rgba(74,127,255,1))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  rgba(177,205,255,1) 0%,rgba(114,161,255,1) 43%,rgba(86,141,255,1) 45%,rgba(74,127,255,1) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  rgba(177,205,255,1) 0%,rgba(114,161,255,1) 43%,rgba(86,141,255,1) 45%,rgba(74,127,255,1) 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  rgba(177,205,255,1) 0%,rgba(114,161,255,1) 43%,rgba(86,141,255,1) 45%,rgba(74,127,255,1) 100%); /* IE10+ */
+	background: linear-gradient(top,  rgba(177,205,255,1) 0%,rgba(114,161,255,1) 43%,rgba(86,141,255,1) 45%,rgba(74,127,255,1) 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b1cdff', endColorstr='#4a7fff',GradientType=0 ); /* IE6-9 */
+}
+/* 按鈕(還沒選擇的樣式) */
+#rightWrap .noselected {
+    border: 1px solid #1447D4;
+    border-radius: 5px 5px 5px 5px;
+    color: #333333;
+    cursor: pointer;
+    font-weight: bold;
+    height: 25px;
+	min-width: 80px;
+	
+	background: rgb(182,211,255); /* Old browsers */
+	background: -moz-linear-gradient(top,  rgba(182,211,255,1) 0%, rgba(119,170,255,1) 42%, rgba(103,160,255,1) 44%, rgba(97,152,255,1) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(182,211,255,1)), color-stop(42%,rgba(119,170,255,1)), color-stop(44%,rgba(103,160,255,1)), color-stop(100%,rgba(97,152,255,1))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  rgba(182,211,255,1) 0%,rgba(119,170,255,1) 42%,rgba(103,160,255,1) 44%,rgba(97,152,255,1) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  rgba(182,211,255,1) 0%,rgba(119,170,255,1) 42%,rgba(103,160,255,1) 44%,rgba(97,152,255,1) 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  rgba(182,211,255,1) 0%,rgba(119,170,255,1) 42%,rgba(103,160,255,1) 44%,rgba(97,152,255,1) 100%); /* IE10+ */
+	background: linear-gradient(top,  rgba(182,211,255,1) 0%,rgba(119,170,255,1) 42%,rgba(103,160,255,1) 44%,rgba(97,152,255,1) 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b6d3ff', endColorstr='#6198ff',GradientType=0 ); /* IE6-9 */
+}
+.addButton {
+    background: url("../img/create_noselect.png") no-repeat scroll 0 center transparent;
+    border: 1px solid #888888;
+    border-radius: 5px 5px 5px 5px;
+    cursor: pointer;
+    float: right;
+    height: 20px;
+    margin-right: 40px;
+    width: 21px;
+}
+/* addUserWrap特殊的按鈕屬性 */
+#rightWrap .addUserWrap .addButton {
+	min-width: 50px;
+	width: 50px;
+	margin-bottom: 10px;
+}
+/* 選擇的列 */
+#rightWrap .selectState {
+	width: 30px;
+}
+/* F代表Form */
+/* 用戶名的列 */
+#rightWrap .userNameF {
+	width: 200px;
+}
+/* 名字的列 */
+#rightWrap .nameF {
+	width: 300px;
+}
+/* 注意不是Form是From */
+/* 來源的列 */
+#rightWrap .comeFrom {
+	width: 80px;
+}
+#rightWrap th ,#logTable th{
+	height: 30px;
+	color: #FFFFFF;
+	text-align: center;
+	
+	background: #4c4c4c; /* Old browsers */
+	background: -moz-linear-gradient(top,  #4c4c4c 0%, #595959 7%, #2c2c2c 47%, #111111 50%, #0f0f0f 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4c4c4c), color-stop(7%,#595959), color-stop(47%,#2c2c2c), color-stop(50%,#111111), color-stop(100%,#0f0f0f)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #4c4c4c 0%,#595959 7%,#2c2c2c 47%,#111111 50%,#0f0f0f 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #4c4c4c 0%,#595959 7%,#2c2c2c 47%,#111111 50%,#0f0f0f 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #4c4c4c 0%,#595959 7%,#2c2c2c 47%,#111111 50%,#0f0f0f 100%); /* IE10+ */
+	background: linear-gradient(top,  #4c4c4c 0%,#595959 7%,#2c2c2c 47%,#111111 50%,#0f0f0f 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4c4c4c', endColorstr='#0f0f0f',GradientType=0 );
+}
+/* 用戶列表框架 */
+#rightWrap .userListWrap {
+	min-width:600px;
+	max-width:1000px;
+	margin-bottom: 40px;
+	margin-left: 20px;
+}
+/* form裏面鼠標可按效果 */
+.mouseClick {
+	cursor: pointer;
+	color:#6699FF;
+}
+/* 頁碼的按鈕 */
+.pageButton {
+	float: left;
+}
+.pageRecord {
+    clear:both;
+	height:30px;
+}
+.pageRecord span {
+	float: left;
+	margin-right: 5px;
+	padding-top:3px;
+}
+
+/* 修改時的用戶編輯 */
+#rightWrap .modify {
+	display: none;
+	border-top-width: 1px;
+	border-top-style: outset;
+	border-top-color: #666666;
+}
+/* 群組設定框架 */
+.groupSetWrap {
+	margin-bottom: 80px;
+	margin-left: 20px;
+	margin-top: 20px;
+}
+/* 群組模塊 */
+.groupModule {
+	margin-bottom: 20px;
+}
+/* 成員模塊 */
+.membersModule {
+	border-top-width: 1px;
+	border-top-style: outset;
+	border-top-color: #666666;
+	display:none;
+}
+/* F代表Form */
+/* form裏面群組名字 */
+#rightWrap .groupNameF {
+	width: 200px;
+}
+/* form裏面描述*/
+#rightWrap .descriptionF {
+	width: 300px;
+}
+/* form裏面用戶或者組的列 */
+#rightWrap .nameOrGroup {
+	width: 830px;
+}
+/* form裏面用戶類型的列 */
+#rightWrap .userType {
+	width: 80px;
+}
+/* 訪問級別的框架 */
+.accessLevelsWrap {
+	margin-bottom: 40px;
+	margin-left: 20px;
+}
+/* form裏面訪問級別的列 */
+#rightWrap .accessLevelsF {
+	width: 300px;
+}
+/* 訪問級別的form裏面要選擇的列 */
+#rightWrap .choice {
+	width: 100px;
+}
+/* 訪問級別裏面的刪除按鈕 */
+#rightWrap .delete {
+	background-color: transparent;
+	background-image: url(../img/delete.png);
+	background-repeat: no-repeat;
+	float: left;
+	border-top-style: none;
+	border-right-style: none;
+	border-bottom-style: none;
+	border-left-style: none;
+	width: 16px;
+	height: 16px;
+	cursor: pointer;
+}
+
+/* 操作列 */
+.tableActionTD {
+	width:260px;
+}
+
+/* 表格裡面的操作按紐 */
+.tableActionButton {
+    margin-left:10px;
+    margin-right:10px;
+}
+
+/* 用户搜索区域 */
+.searchUserDIV {
+    float:right;
+	margin-top: -50px;
+}
+
+.searchUserDIV span {
+    display:block;
+	float:left;
+	margin-left:5px;
+}
+
+/* 搜索按纽 */
+#searchButton {
+    background-color: transparent;
+	background-image: url(../img/search.png);
+	background-repeat: no-repeat;
+	border-top-style: none;
+	border-right-style: none;
+	border-bottom-style: none;
+	border-left-style: none;
+	width: 20px;
+	height: 20px;
+	cursor: pointer;
+
+
+}
+
+#rightWrap .addUserWrap .cancelButton {
+	min-width: 60px;
+	width: 60px;
+	margin-bottom: 10px;
+}
+
+/* 分頁按紐和系統的普通動作按紐 */
+.actionButton,.pageButton {
+    border: 1px solid #1447D4;
+    border-radius: 5px 5px 5px 5px;
+    color: #333333;
+    cursor: pointer;
+    font-weight: bold;
+    height: 25px;
+	min-width: 70px;
+	max-width:90px;
+	margin-right:10px;
+	
+	background: rgb(182,211,255); /* Old browsers */
+	background: -moz-linear-gradient(top,  rgba(182,211,255,1) 0%, rgba(119,170,255,1) 42%, rgba(103,160,255,1) 44%, rgba(97,152,255,1) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(182,211,255,1)), color-stop(42%,rgba(119,170,255,1)), color-stop(44%,rgba(103,160,255,1)), color-stop(100%,rgba(97,152,255,1))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  rgba(182,211,255,1) 0%,rgba(119,170,255,1) 42%,rgba(103,160,255,1) 44%,rgba(97,152,255,1) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  rgba(182,211,255,1) 0%,rgba(119,170,255,1) 42%,rgba(103,160,255,1) 44%,rgba(97,152,255,1) 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  rgba(182,211,255,1) 0%,rgba(119,170,255,1) 42%,rgba(103,160,255,1) 44%,rgba(97,152,255,1) 100%); /* IE10+ */
+	background: linear-gradient(top,  rgba(182,211,255,1) 0%,rgba(119,170,255,1) 42%,rgba(103,160,255,1) 44%,rgba(97,152,255,1) 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b6d3ff', endColorstr='#6198ff',GradientType=0 ); /* IE6-9 */
+}
+
+.actionButton:hover,.pageButton:hover {
+    border: 1px solid #1447D4;
+    border-radius: 5px 5px 5px 5px;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-weight: bold;
+    height: 25px;
+	min-width: 70px;
+	max-width:90px;
+	margin-right:10px;
+	
+	background: rgb(177,205,255); /* Old browsers */
+	background: -moz-linear-gradient(top,  rgba(177,205,255,1) 0%, rgba(114,161,255,1) 43%, rgba(86,141,255,1) 45%, rgba(74,127,255,1) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(177,205,255,1)), color-stop(43%,rgba(114,161,255,1)), color-stop(45%,rgba(86,141,255,1)), color-stop(100%,rgba(74,127,255,1))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  rgba(177,205,255,1) 0%,rgba(114,161,255,1) 43%,rgba(86,141,255,1) 45%,rgba(74,127,255,1) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  rgba(177,205,255,1) 0%,rgba(114,161,255,1) 43%,rgba(86,141,255,1) 45%,rgba(74,127,255,1) 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  rgba(177,205,255,1) 0%,rgba(114,161,255,1) 43%,rgba(86,141,255,1) 45%,rgba(74,127,255,1) 100%); /* IE10+ */
+	background: linear-gradient(top,  rgba(177,205,255,1) 0%,rgba(114,161,255,1) 43%,rgba(86,141,255,1) 45%,rgba(74,127,255,1) 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b1cdff', endColorstr='#4a7fff',GradientType=0 ); /* IE6-9 */
+}
+
+.memberType {
+    margin-right:10px;
+}
+
+/* 系統權限管理裡的模塊權限中的用戶組 */
+.groupName {
+    width:300px;
+}
+/* 新增部份(2012.5.22) */
+#rightWrap .PSearch {
+	margin: 20px;
+}
+#leftWrap .typeButton  {
+	list-style-position: inside;
+	list-style-image: url(../img/orderLogo_noSelect.png);
+}
+#leftWrap .vocabulary  {
+	list-style-position: inside;
+	list-style-image: url(../img/vocabulary_noselect.png);
+}
+#leftWrap .PMouseover {
+    background-color: transparent;
+    background-image: url("../img/select_button.png");
+    background-repeat: no-repeat;
+    border-style: none;
+    color: #FFFFFF;
+    filter: none;
+    line-height: 29px;
+    list-style-image: url("../img/orderLogo.png");
+    margin-left: -1px;
+    margin-top: -1px;
+    text-shadow: 0 -0.5px 0 #000000;
+    width: 215px;
+}
+#sideNav .typeButton ul {
+	display: none;
+}
+#sideNav .PMouseover ul {
+	display: block;
+}
+#sideNav .PMouseover .PType {
+	display: block;
+	margin-left: -4px;
+	height: 20px;
+	background: #FFFFFF;
+	border-top-width: 1px;
+	border-bottom-width: 1px;
+	border-top-style: dashed;
+	border-bottom-style: dashed;
+	font-size: 14px;
+	font-weight: normal;
+	line-height: 20px;
+	text-align: center;
+	filter: none; 
+}
+#sideNav .PMouseover .PTypeSelect {
+	color: #000000;
+/**background-image: url(../img/logo1.png);**/
+	background-repeat: no-repeat;
+	background-position: left 6px;
+}
+#sideNav .PMouseover .PTypeSelect a {
+	color: #000000;
+}
+#leftWrap .VMouseover {
+    background-color: transparent;
+    background-image: url("../img/select_button.png");
+    background-repeat: no-repeat;
+    border-style: none;
+    color: #FFFFFF;
+    filter: none;
+    height: 29px;
+    line-height: 29px;
+    list-style-image: url("../img/vocabulary_select.png");
+    margin-left: -1px;
+    margin-top: -1px;
+    min-height: 81px;
+    text-shadow: 0 -0.5px 0 #000000;
+    width: 215px;
+}
+#sideNav .VMouseover .VType {
+	display: block;
+	margin-left: -4px;
+	height: 20px;
+	background: #FFFFFF;
+	border-top-width: 1px;
+	border-bottom-width: 1px;
+	border-top-style: dashed;
+	border-bottom-style: dashed;
+	font-size: 14px;
+	font-weight: normal;
+	line-height: 20px;
+	text-align: center;
+	filter: none;
+	 
+}
+#sideNav .VMouseover .VTypeSelect {
+	color: #000000;
+/**background-image: url(../img/logo1.png);***/
+	background-repeat: no-repeat;
+	background-position: left 6px;
+}
+#sideNav .VMouseover .VTypeSelect a {
+	color: #000000;
+}
+
+#rightWrap .PSearch {
+	margin: 20px;
+}
+.locationInfo {
+	margin: 20px;
+}
+#nav .searchEnter {
+	height: 29px;
+	width: 150px;
+	border-radius: 5px 5px 5px 5px;
+	border: 1px solid #888888;
+	background-image: url(../img/searchRecord.png);
+	background-repeat: no-repeat;
+	background-position: left center;
+	padding-left: 32px;
+}
+.addNewBookWrap {
+	min-height: 500px;
+	border-bottom-width: 5px;
+	border-bottom-style: solid;
+	border-bottom-color: #7FA4BA;
+	border-right-width: 5px;
+	border-right-style: solid;
+	border-right-color: #7FA4BA;
+	border-radius: 15px 15px 15px 15px;
+	background-color: #FFFFFF;
+	padding: 20px;
+	width: 900px;
+}
+.addNewBook {
+	height: 160px;
+	background-color: #EBEBEB;
+	border-radius: 15px 15px 15px 15px;
+}
+.appendNew {
+	margin: 70px;
+	cursor: pointer;
+}
+#nav button {
+	cursor: pointer;
+}
+.articleInfo {
+	padding: 20px;
+	float: left;
+	width: 150px;
+}
+.sequenceNumber {
+    background-color: #999999;
+    border-radius: 0 0 8px 8px;
+    color: #FFFFFF;
+    margin: auto auto 20px;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    text-align: center;
+    width: 40px;
+}
+.picList {
+	float: right;
+	width: 600px;
+}
+#rightWrap .addNewBookWrap li {
+	height: 120px;
+	width: 80px;
+	float: left;
+	margin: 30px;
+	margin-top: 20px;
+	list-style-type: none;
+	background-color: #515F6C;
+}
+#rightWrap .addNewBookWrap .direction {
+	margin: 0px;
+	margin-top: 70px;
+	width: 18px;
+	height: 18px;
+	background-color: transparent;
+}
+.atlas ul {
+	float: left;
+	margin-right: 20px;
+}
+.atlasList button {
+	border-top-style: none;
+	border-right-style: none;
+	border-bottom-style: none;
+	border-left-style: none;
+	background-color: transparent;
+	cursor: pointer;
+}
+#rightWrap .addNewBookWrap .atlasList table {
+	margin: auto;
+}
+#rightWrap .atlasList input {
+	margin-right: 10px;
+}
+
+
+.atlasList {
+	padding: 10px;
+	border-bottom-width: 1px;
+	border-bottom-style: inset;
+	border-bottom-color: #666666;
+}
+#rightWrap .atlasPic {
+	background-color: #515F6C;
+    height: 60px;
+    width: 100px;
+}
+.downloadBtn {
+    background-image: url("../img/downloadBtn.png");
+    background-repeat: no-repeat;
+}
+.requestBtn {
+    background-image: url("../img/requestBtn.png");
+    background-repeat: no-repeat;
+}
+.lockedBtn {
+    background-image: url("../img/lockedBtn.png");
+    background-repeat: no-repeat;
+}
+.moreInfoButton {
+    background-color: transparent;
+    border-style: none;
+    color: #FFFFFF;
+    height: 40px;
+    width: 138px;
+}
+.atlasListBtn {
+    text-align:center;
+	margin-top: 10px;
+}
+.nameForm {
+	margin: 20px;
+}
+
+.smallButton {
+    border: 1px solid #1447D4;
+    border-radius: 5px 5px 5px 5px;
+    color: #333333;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 12px;
+	padding-left: 5px;
+    padding-right: 5px;
+	
+	background: rgb(182,211,255); /* Old browsers */
+	background: -moz-linear-gradient(top,  rgba(182,211,255,1) 0%, rgba(119,170,255,1) 42%, rgba(103,160,255,1) 44%, rgba(97,152,255,1) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(182,211,255,1)), color-stop(42%,rgba(119,170,255,1)), color-stop(44%,rgba(103,160,255,1)), color-stop(100%,rgba(97,152,255,1))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  rgba(182,211,255,1) 0%,rgba(119,170,255,1) 42%,rgba(103,160,255,1) 44%,rgba(97,152,255,1) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  rgba(182,211,255,1) 0%,rgba(119,170,255,1) 42%,rgba(103,160,255,1) 44%,rgba(97,152,255,1) 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  rgba(182,211,255,1) 0%,rgba(119,170,255,1) 42%,rgba(103,160,255,1) 44%,rgba(97,152,255,1) 100%); /* IE10+ */
+	background: linear-gradient(top,  rgba(182,211,255,1) 0%,rgba(119,170,255,1) 42%,rgba(103,160,255,1) 44%,rgba(97,152,255,1) 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b6d3ff', endColorstr='#6198ff',GradientType=0 ); /* IE6-9 */	
+}
+.smallButton:hover {
+	border: 1px solid #1447D4;
+    border-radius: 5px 5px 5px 5px;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 12px;
+    padding-left: 5px;
+    padding-right: 5px;
+	
+	background: rgb(177,205,255); /* Old browsers */
+	background: -moz-linear-gradient(top,  rgba(177,205,255,1) 0%, rgba(114,161,255,1) 43%, rgba(86,141,255,1) 45%, rgba(74,127,255,1) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(177,205,255,1)), color-stop(43%,rgba(114,161,255,1)), color-stop(45%,rgba(86,141,255,1)), color-stop(100%,rgba(74,127,255,1))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  rgba(177,205,255,1) 0%,rgba(114,161,255,1) 43%,rgba(86,141,255,1) 45%,rgba(74,127,255,1) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  rgba(177,205,255,1) 0%,rgba(114,161,255,1) 43%,rgba(86,141,255,1) 45%,rgba(74,127,255,1) 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  rgba(177,205,255,1) 0%,rgba(114,161,255,1) 43%,rgba(86,141,255,1) 45%,rgba(74,127,255,1) 100%); /* IE10+ */
+	background: linear-gradient(top,  rgba(177,205,255,1) 0%,rgba(114,161,255,1) 43%,rgba(86,141,255,1) 45%,rgba(74,127,255,1) 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b1cdff', endColorstr='#4a7fff',GradientType=0 ); /* IE6-9 */
+}
+
+#rightWrap .noBackground {
+	background-color: transparent;
+	border: none !important;
+}
+.inputAdd {
+    cursor: pointer;
+    margin-left: 20px;
+    margin-top: 10px;
+    padding-left: 20px;
+	padding-right: 20px;
+}
+textarea {
+	width: 480px;
+	height: 70px;
+	margin: 5px;
+}
+.insideText {
+	width: 480px;
+	height: 100px;
+	margin: 5px;
+}
+#rightWrap .pageTitle {
+	float: left;
+	margin: 10px;
+}
+#rightWrap .buttonList {
+	margin-top: 10px;
+}
+#rightWrap .groupTitle {
+	height: 50px;
+	border-bottom-width: 1px;
+	border-bottom-style: inset;
+	border-bottom-color: #666666;
+}
+h2 .inputAdd {
+	margin-left: 5px;
+	cursor: pointer;
+	width: 70px;
+	margin-top: 0px;
+	margin-left: 20px;
+}
+
+.bookName {
+	width:150px;
+}
+
+#levelTabel .bookList {
+	width:140px;
+}
+
+.levelMemberUL div {
+    float:left;
+	width:268px;
+	height:20px;
+	overflow:hidden;
+}
+
+.levelMemberUL li {
+	display:block;
+	width:300px;
+	height:25px;
+}
+
+.authRadioUL {
+	margin-top:30px;
+}
+
+.authRadioUL li {
+	display:block;
+	width:90px;
+	height:25px;
+}
+
+.levelName {
+    margin:5px;
+}
+
+.levelNameText {
+	font-size:22px;
+}
+
+#levelTabel .memberType {
+	margin-right: 13px;
+}
+
+.insertItem {
+	cursor:pointer;
+	display:block;
+	float:left;
+	margin-left:10px;
+}
+
+.itemsManage span {
+    display:block;
+	float:left;
+	margin-left:20px;
+	margin-right:10px;
+}
+
+
+.itemsManage a {
+    background: url("../img/xit.gif") no-repeat scroll 0 0 transparent;
+	cursor: pointer;
+    display: block;
+    float: left;
+    height: 10px;
+    margin: 6px 0 0 -15px;
+    overflow: hidden;
+    position: absolute;
+    text-indent: -9999px;
+    width: 10px;
+}
+
+.itemsManage a:hover {
+    background: url("../img/xit.gif") no-repeat scroll -10px 0 transparent;
+}
+
+#nicknameTableDiv {
+    display: block;
+	width:530px;
+	height:500px;
+	overflow-x:hidden;
+	overflow-y:auto;
+	margin-top:40px;
+}
+
+#nicknameTable {
+    margin-left:20px;
+}
+
+.center {
+    text-align:center;
+}
+
+.groupList li {
+	border-bottom: 1px solid #777777;
+	height:30px;
+	line-height:30px;
+	padding-left:20px;
+}
+
+.privilegesTable .sysAuthName {
+    width:250px;
+}
+
+.privilegesTable {
+    border-collapse: collapse;
+	margin-bottom:0px;
+	width:978px;
+}
+.expandIcon {
+    background-image: url(../img/expand.png);
+	background-repeat: no-repeat;
+	width:20px;
+	height:20px;
+	display:block;
+	float:right;
+	cursor:pointer;
+}
+
+.shrinkIcon {
+    background-image: url(../img/shrink.png);
+	background-repeat: no-repeat;
+	width:20px;
+	height:20px;
+	display:block;
+	float:right;
+	cursor:pointer;
+}
+
+.privilegesTable .accessType {
+    float:right;
+	width:40px;
+	height:20px;
+	display:block;
+	margin-right:35px;
+}
+
+.privilegesTable td {
+	width:100px;
+
+}
+.grayText {
+	color:#DBDBDB;
+}
+
+.authMember {
+	text-align:left;
+	padding-left:20px;
+	margin:5px;
+}
+
+.authCopyWrapper {
+	height:400px;
+	text-align:center;
+}
+
+.authCopyWrapper span {
+	margin:5px;
+}
+
+.phoneNum {
+	width: 50px;
+}
+.longtext {
+	width: 300px;
+}
+#rightWrap .titleChoice {
+	position: relative;
+	top: 1px;
+	float: left;
+	padding: 4px 10px;
+	margin: 0px 1px 0px 0px;
+	background-color: #DDD;
+	list-style: none;
+	border-left: solid 1px #CCC;
+	border-bottom: solid 1px #999;
+	border-top: solid 1px #999;
+	border-right: solid 1px #999;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	cursor: pointer;
+	border-radius: 5px 5px 0px 0px;
+}
+.titleChoiceHover {
+	background-color: #CCC;
+}
+.titleChoiceSelected {
+	background-color: #EEE !important; 
+	border-bottom: 1px solid #EEE !important; 
+}
+#rightWrap .TinputName {
+	width: 250px;
+	font-weight: bold;
+	border: none !important;
+	text-align: left;
+	background-color: transparent;
+}
+#rightWrap .TinputText {
+    padding-bottom: 5px;
+    padding-top: 5px;
+    width: 400px;
+	border: none !important;
+	text-align: left;
+	background-color: transparent;
+}
+.BGstyle {
+    background-color: #FFFFFF;
+    border-bottom: 5px solid #7FA4BA;
+    border-radius: 15px 15px 15px 15px;
+    border-right: 5px solid #7FA4BA;
+    margin-bottom: 50px;
+    min-height: 500px;
+    padding: 20px;
+    width: 900px;
+}
+.TinputAdd {
+    cursor: pointer;
+    padding-left: 20px;
+	padding-right: 20px;
+	margin-left:20px;
+	margin-right:20px;
+	margin-bottom:20px;
+}
+input[type="checkbox"] {
+	cursor: pointer;
+}
+#searchBookForm td{
+	border:none !important;
+}
+#addBookTb td.noborder{
+	border:none !important;
+}
+#listTb td{
+	text-align:left;
+}
+/**选择按钮**/
+input.hiddenBtn{
+	display:none;
+}
+#chooseWrap {
+	height: 20px;
+	margin: 20px;
+}
+/**所有只读的输入框加上灰色背景色**/
+input[readonly]{
+	background-color:#ccc;
+}
+.delImg{
+	pointer:hand;
+}
