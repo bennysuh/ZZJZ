@@ -68,9 +68,10 @@ class AssessAction extends EntryAction {
 	{
 		$assessId = $_GET['assessId'];//已有记录
 		$orderId = $_GET['orderId'];
+		Log::write($assessId);
 		if($assessId){//assess列表过来的
 			$M = D('AssessView');
-			$result = $M->where("id=" . $assessId)->find();
+			$result = $M->where("zz_assess.id=" . $assessId)->find();
 			if($result){
 				$this->assign("staffId",$result['staffId']);
 				$this->assign("orderId",$result['orderId']);
