@@ -8,30 +8,29 @@
 // +----------------------------------------------------------------------
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
-// $Id: RestAction.class.php 2795 2012-03-02 15:34:18Z liu21st $
 
+defined('THINK_PATH') or exit();
 /**
- +------------------------------------------------------------------------------
- * ThinkPHP RESTFul 控制器扩展类
- +------------------------------------------------------------------------------
+ * ThinkPHP Restful 控制器扩展 
+ * @category   Extend
+ * @package  Extend
+ * @subpackage  Action
+ * @author    liu21st <liu21st@gmail.com>
  */
 abstract class RestAction {
 
     // 当前Action名称
-    private $name =  '';
+    private     $name       =   '';
     // 视图实例
-    protected $view   =  null;
-    protected $_method =  ''; // 当前请求类型
-    protected $_type = ''; // 当前资源类型
+    protected   $view       =   null;
+    protected   $_method    =   ''; // 当前请求类型
+    protected   $_type      =   ''; // 当前资源类型
     // 输出类型
-    protected $_types = array();
+    protected   $_types     =   array();
 
    /**
-     +----------------------------------------------------------
      * 架构函数 取得模板对象实例
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      */
     public function __construct() {
         //实例化视图类
@@ -70,11 +69,8 @@ abstract class RestAction {
     }
 
    /**
-     +----------------------------------------------------------
      * 获取当前Action名称
-     +----------------------------------------------------------
      * @access protected
-     +----------------------------------------------------------
      */
     protected function getActionName() {
         if(empty($this->name)) {
@@ -85,13 +81,9 @@ abstract class RestAction {
     }
 
     /**
-     +----------------------------------------------------------
      * 是否AJAX请求
-     +----------------------------------------------------------
      * @access protected
-     +----------------------------------------------------------
-     * @return bool
-     +----------------------------------------------------------
+     * @return boolean
      */
     protected function isAjax() {
         if(isset($_SERVER['HTTP_X_REQUESTED_WITH']) ) {
@@ -105,16 +97,11 @@ abstract class RestAction {
     }
 
     /**
-     +----------------------------------------------------------
      * 魔术方法 有不存在的操作的时候执行
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @param string $method 方法名
      * @param array $args 参数
-     +----------------------------------------------------------
      * @return mixed
-     +----------------------------------------------------------
      */
     public function __call($method,$args) {
         if( 0 === strcasecmp($method,ACTION_NAME)) {
@@ -163,35 +150,25 @@ abstract class RestAction {
     }
 
     /**
-     +----------------------------------------------------------
      * 模板显示
      * 调用内置的模板引擎显示方法，
-     +----------------------------------------------------------
      * @access protected
-     +----------------------------------------------------------
      * @param string $templateFile 指定要调用的模板文件
      * 默认为空 由系统自动定位模板文件
      * @param string $charset 输出编码
      * @param string $contentType 输出类型
-     +----------------------------------------------------------
      * @return void
-     +----------------------------------------------------------
      */
     protected function display($templateFile='',$charset='',$contentType='') {
         $this->view->display($templateFile,$charset,$contentType);
     }
 
     /**
-     +----------------------------------------------------------
      * 模板变量赋值
-     +----------------------------------------------------------
      * @access protected
-     +----------------------------------------------------------
      * @param mixed $name 要显示的模板变量
      * @param mixed $value 变量的值
-     +----------------------------------------------------------
      * @return void
-     +----------------------------------------------------------
      */
     protected function assign($name,$value='') {
         $this->view->assign($name,$value);
@@ -202,16 +179,11 @@ abstract class RestAction {
     }
 
     /**
-     +----------------------------------------------------------
      * 设置页面输出的CONTENT_TYPE和编码
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @param string $type content_type 类型对应的扩展名
      * @param string $charset 页面输出编码
-     +----------------------------------------------------------
      * @return void
-     +----------------------------------------------------------
      */
     public function setContentType($type, $charset=''){
         if(headers_sent()) return;
@@ -222,17 +194,12 @@ abstract class RestAction {
     }
 
     /**
-     +----------------------------------------------------------
      * 输出返回数据
-     +----------------------------------------------------------
      * @access protected
-     +----------------------------------------------------------
      * @param mixed $data 要返回的数据
      * @param String $type 返回类型 JSON XML
      * @param integer $code HTTP状态
-     +----------------------------------------------------------
      * @return void
-     +----------------------------------------------------------
      */
     protected function response($data,$type='',$code=200) {
         // 保存日志
@@ -242,16 +209,11 @@ abstract class RestAction {
     }
 
     /**
-     +----------------------------------------------------------
      * 编码数据
-     +----------------------------------------------------------
      * @access protected
-     +----------------------------------------------------------
      * @param mixed $data 要返回的数据
      * @param String $type 返回类型 JSON XML
-     +----------------------------------------------------------
      * @return void
-     +----------------------------------------------------------
      */
     protected function encodeData($data,$type='') {
         if(empty($data))  return '';
@@ -327,28 +289,25 @@ abstract class RestAction {
         }
     }
     /**
-     +----------------------------------------------------------
      * 获取当前请求的Accept头信息
-     +----------------------------------------------------------
      * @return string
-     +----------------------------------------------------------
      */
     protected function getAcceptType(){
         $type = array(
-            'html'=>'text/html,application/xhtml+xml,*/*',
-            'xml'=>'application/xml,text/xml,application/x-xml',
-            'json'=>'application/json,text/x-json,application/jsonrequest,text/json',
-            'js'=>'text/javascript,application/javascript,application/x-javascript',
-            'css'=>'text/css',
-            'rss'=>'application/rss+xml',
-            'yaml'=>'application/x-yaml,text/yaml',
-            'atom'=>'application/atom+xml',
-            'pdf'=>'application/pdf',
-            'text'=>'text/plain',
-            'png'=>'image/png',
-            'jpg'=>'image/jpg,image/jpeg,image/pjpeg',
-            'gif'=>'image/gif',
-            'csv'=>'text/csv'
+            'html'  =>  'text/html,application/xhtml+xml,*/*',
+            'xml'   =>  'application/xml,text/xml,application/x-xml',
+            'json'  =>  'application/json,text/x-json,application/jsonrequest,text/json',
+            'js'    =>  'text/javascript,application/javascript,application/x-javascript',
+            'css'   =>  'text/css',
+            'rss'   =>  'application/rss+xml',
+            'yaml'  =>  'application/x-yaml,text/yaml',
+            'atom'  =>  'application/atom+xml',
+            'pdf'   =>  'application/pdf',
+            'text'  =>  'text/plain',
+            'png'   =>  'image/png',
+            'jpg'   =>  'image/jpg,image/jpeg,image/pjpeg',
+            'gif'   =>  'image/gif',
+            'csv'   =>  'text/csv'
         );
         
         foreach($type as $key=>$val){

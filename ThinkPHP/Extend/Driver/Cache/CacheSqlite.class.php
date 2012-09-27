@@ -8,69 +8,61 @@
 // +----------------------------------------------------------------------
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
-// $Id: CacheSqlite.class.php 2734 2012-02-14 06:55:15Z liu21st $
 
+defined('THINK_PATH') or exit();
 /**
- +--------------------------------
- * Sqlite缓存类
- +--------------------------------
+ * Sqlite缓存驱动
+ * @category   Extend
+ * @package  Extend
+ * @subpackage  Driver.Cache
+ * @author    liu21st <liu21st@gmail.com>
  */
 class CacheSqlite extends Cache {
 
     /**
-     +----------------------------------------------------------
      * 架构函数
-     +----------------------------------------------------------
+     * @param array $options 缓存参数
      * @access public
-     +----------------------------------------------------------
      */
-    public function __construct($options='') {
+    public function __construct($options=array()) {
         if ( !extension_loaded('sqlite') ) {
             throw_exception(L('_NOT_SUPPERT_').':sqlite');
         }
-        if(empty($options)){
-            $options= array (
-                'db'        => ':memory:',
-                'table'     => 'sharedmemory',
-                'expire'    => C('DATA_CACHE_TIME'),
-                'persistent'=> false,
-                'length'   =>0,
+        if(empty($options)) {
+            $options = array (
+                'db'        =>  ':memory:',
+                'table'     =>  'sharedmemory',
             );
         }
-        $this->options = $options;
+        $this->options  =   $options;      
+        $this->options['prefix']    =   isset($options['prefix'])?  $options['prefix']  :   C('DATA_CACHE_PREFIX');
+        $this->options['length']    =   isset($options['length'])?  $options['length']  :   0;        
+        $this->options['expire']    =   isset($options['expire'])?  $options['expire']  :   C('DATA_CACHE_TIME');
+        
         $func = $this->options['persistent'] ? 'sqlite_popen' : 'sqlite_open';
-        $this->handler = $func($this->options['db']);
-        $this->connected = is_resource($this->handler);
+        $this->handler      = $func($this->options['db']);
+        $this->connected    = is_resource($this->handler);
     }
 
     /**
-     +----------------------------------------------------------
      * 是否连接
-     +----------------------------------------------------------
      * @access private
-     +----------------------------------------------------------
      * @return boolen
-     +----------------------------------------------------------
      */
     private function isConnected() {
         return $this->connected;
     }
 
     /**
-     +----------------------------------------------------------
      * 读取缓存
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @param string $name 缓存变量名
-     +----------------------------------------------------------
      * @return mixed
-     +----------------------------------------------------------
      */
     public function get($name) {
         N('cache_read',1);
-		$name   = sqlite_escape_string($name);
-        $sql = 'SELECT value FROM '.$this->options['table'].' WHERE var=\''.$name.'\' AND (expire=0 OR expire >'.time().') LIMIT 1';
+		$name   = $this->options['prefix'].sqlite_escape_string($name);
+        $sql    = 'SELECT value FROM '.$this->options['table'].' WHERE var=\''.$name.'\' AND (expire=0 OR expire >'.time().') LIMIT 1';
         $result = sqlite_query($this->handler, $sql);
         if (sqlite_num_rows($result)) {
             $content   =  sqlite_fetch_single($result);
@@ -84,22 +76,17 @@ class CacheSqlite extends Cache {
     }
 
     /**
-     +----------------------------------------------------------
      * 写入缓存
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @param string $name 缓存变量名
      * @param mixed $value  存储数据
      * @param integer $expire  有效时间（秒）
-     +----------------------------------------------------------
      * @return boolen
-     +----------------------------------------------------------
      */
     public function set($name, $value,$expire=null) {
         N('cache_write',1);
         $expire =  !empty($expireTime)? $expireTime : C('DATA_CACHE_TIME');
-        $name  = sqlite_escape_string($name);
+        $name  = $this->options['prefix'].sqlite_escape_string($name);
         $value = sqlite_escape_string(serialize($value));
         if(is_null($expire)) {
             $expire  =  $this->options['expire'];
@@ -121,31 +108,22 @@ class CacheSqlite extends Cache {
     }
 
     /**
-     +----------------------------------------------------------
      * 删除缓存
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @param string $name 缓存变量名
-     +----------------------------------------------------------
      * @return boolen
-     +----------------------------------------------------------
      */
     public function rm($name) {
-        $name  = sqlite_escape_string($name);
+        $name  = $this->options['prefix'].sqlite_escape_string($name);
         $sql  = 'DELETE FROM '.$this->options['table'].' WHERE var=\''.$name.'\'';
         sqlite_query($this->handler, $sql);
         return true;
     }
 
     /**
-     +----------------------------------------------------------
      * 清除缓存
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @return boolen
-     +----------------------------------------------------------
      */
     public function clear() {
         $sql  = 'DELETE FROM '.$this->options['table'];

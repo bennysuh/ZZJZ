@@ -7,18 +7,21 @@
 // | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
 // +----------------------------------------------------------------------
 // | Author: liu21st <liu21st@gmail.com>
+// |         lanfengye <zibin_5257@163.com>
 // +----------------------------------------------------------------------
-// $Id: Page.class.php 2712 2012-02-06 10:12:49Z liu21st $
 
 class Page {
+    
     // 分页栏每页显示的页数
     public $rollPage = 5;
     // 页数跳转时要带的参数
     public $parameter  ;
+    // 分页URL地址
+    public $url     =   '';
     // 默认列表每页显示行数
     public $listRows = 20;
     // 起始行数
-    public $firstRow	;
+    public $firstRow    ;
     // 分页总页面数
     protected $totalPages  ;
     // 总行数
@@ -28,35 +31,31 @@ class Page {
     // 分页的栏的总页数
     protected $coolPages   ;
     // 分页显示定制
-    protected $config  =	array('header'=>'条记录','prev'=>'上一页','next'=>'下一页','first'=>'第一页','last'=>'最后一页','theme'=>' %totalRow% %header% %nowPage%/%totalPage% 页 %upPage% %downPage% %first%  %prePage%  %linkPage%  %nextPage% %end%');
+    protected $config  =    array('header'=>'条记录','prev'=>'上一页','next'=>'下一页','first'=>'第一页','last'=>'最后一页','theme'=>' %totalRow% %header% %nowPage%/%totalPage% 页 %upPage% %downPage% %first%  %prePage%  %linkPage%  %nextPage% %end%');
     // 默认分页变量名
     protected $varPage;
 
     /**
-     +----------------------------------------------------------
      * 架构函数
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @param array $totalRows  总的记录数
      * @param array $listRows  每页显示记录数
      * @param array $parameter  分页跳转的参数
-     +----------------------------------------------------------
      */
-    public function __construct($totalRows,$listRows='',$parameter='') {
-        $this->totalRows = $totalRows;
-        $this->parameter = $parameter;
-        $this->varPage = C('VAR_PAGE') ? C('VAR_PAGE') : 'p' ;
+    public function __construct($totalRows,$listRows='',$parameter='',$url='') {
+        $this->totalRows    =   $totalRows;
+        $this->parameter    =   $parameter;
+        $this->varPage      =   C('VAR_PAGE') ? C('VAR_PAGE') : 'p' ;
         if(!empty($listRows)) {
-            $this->listRows = intval($listRows);
+            $this->listRows =   intval($listRows);
         }
-        $this->totalPages = ceil($this->totalRows/$this->listRows);     //总页数
-        $this->coolPages  = ceil($this->totalPages/$this->rollPage);
-        $this->nowPage  = !empty($_GET[$this->varPage])?intval($_GET[$this->varPage]):1;
+        $this->totalPages   =   ceil($this->totalRows/$this->listRows);     //总页数
+        $this->coolPages    =   ceil($this->totalPages/$this->rollPage);
+        $this->nowPage      =   !empty($_GET[$this->varPage])?intval($_GET[$this->varPage]):1;
         if(!empty($this->totalPages) && $this->nowPage>$this->totalPages) {
-            $this->nowPage = $this->totalPages;
+            $this->nowPage  =   $this->totalPages;
         }
-        $this->firstRow = $this->listRows*($this->nowPage-1);
+        $this->firstRow     =   $this->listRows*($this->nowPage-1);
     }
 
     public function setConfig($name,$value) {
@@ -66,62 +65,71 @@ class Page {
     }
 
     /**
-     +----------------------------------------------------------
      * 分页显示输出
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      */
     public function show() {
         if(0 == $this->totalRows) return '';
-        $p = $this->varPage;
-        $nowCoolPage      = ceil($this->nowPage/$this->rollPage);
-        $url  =  $_SERVER['REQUEST_URI'].(strpos($_SERVER['REQUEST_URI'],'?')?'':"?").$this->parameter;
-        $parse = parse_url($url);
-        if(isset($parse['query'])) {
-            parse_str($parse['query'],$params);
-            unset($params[$p]);
-            $url   =  $parse['path'].'?'.http_build_query($params);
+        $p              =   $this->varPage;
+        $nowCoolPage    =   ceil($this->nowPage/$this->rollPage);
+
+        // 分析分页参数
+        if($this->url){
+            $depr       =   C('URL_PATHINFO_DEPR');
+            $url        =   rtrim(U('/'.$this->url),$depr).$depr.'__PAGE__';
+        }else{
+            if($this->parameter && is_string($this->parameter)) {
+                parse_str($this->parameter,$parameter);
+            }elseif(empty($this->parameter)){
+                unset($_GET[C('VAR_URL_PARAMS')]);
+                if(empty($_GET)) {
+                    $parameter  =   array();
+                }else{
+                    $parameter  =   $_GET;
+                }
+            }
+            $parameter[$p]  =   '__PAGE__';
+            $url            =   U('',$parameter);
         }
         //上下翻页字符串
-        $upRow   = $this->nowPage-1;
-        $downRow = $this->nowPage+1;
+        $upRow          =   $this->nowPage-1;
+        $downRow        =   $this->nowPage+1;
         if ($upRow>0){
-            $upPage="<a href='".$url."&".$p."=$upRow'>".$this->config['prev']."</a>";
+            $upPage     =   "<a href='".str_replace('__PAGE__',$upRow,$url)."'>".$this->config['prev']."</a>";
         }else{
-            $upPage="";
+            $upPage     =   '';
         }
 
         if ($downRow <= $this->totalPages){
-            $downPage="<a href='".$url."&".$p."=$downRow'>".$this->config['next']."</a>";
+            $downPage   =   "<a href='".str_replace('__PAGE__',$downRow,$url)."'>".$this->config['next']."</a>";
         }else{
-            $downPage="";
+            $downPage   =   '';
         }
         // << < > >>
         if($nowCoolPage == 1){
-            $theFirst = "";
-            $prePage = "";
+            $theFirst   =   '';
+            $prePage    =   '';
         }else{
-            $preRow =  $this->nowPage-$this->rollPage;
-            $prePage = "<a href='".$url."&".$p."=$preRow' >上".$this->rollPage."页</a>";
-            $theFirst = "<a href='".$url."&".$p."=1' >".$this->config['first']."</a>";
+            $preRow     =   $this->nowPage-$this->rollPage;
+            $prePage    =   "<a href='".str_replace('__PAGE__',$preRow,$url)."' >上".$this->rollPage."页</a>";
+            $theFirst   =   "<a href='".str_replace('__PAGE__',1,$url)."' >".$this->config['first']."</a>";
         }
         if($nowCoolPage == $this->coolPages){
-            $nextPage = "";
-            $theEnd="";
+            $nextPage   =   '';
+            $theEnd     =   '';
         }else{
-            $nextRow = $this->nowPage+$this->rollPage;
-            $theEndRow = $this->totalPages;
-            $nextPage = "<a href='".$url."&".$p."=$nextRow' >下".$this->rollPage."页</a>";
-            $theEnd = "<a href='".$url."&".$p."=$theEndRow' >".$this->config['last']."</a>";
+            $nextRow    =   $this->nowPage+$this->rollPage;
+            $theEndRow  =   $this->totalPages;
+            $nextPage   =   "<a href='".str_replace('__PAGE__',$nextRow,$url)."' >下".$this->rollPage."页</a>";
+            $theEnd     =   "<a href='".str_replace('__PAGE__',$theEndRow,$url)."' >".$this->config['last']."</a>";
         }
         // 1 2 3 4 5
         $linkPage = "";
         for($i=1;$i<=$this->rollPage;$i++){
-            $page=($nowCoolPage-1)*$this->rollPage+$i;
+            $page       =   ($nowCoolPage-1)*$this->rollPage+$i;
             if($page!=$this->nowPage){
                 if($page<=$this->totalPages){
-                    $linkPage .= "&nbsp;<a href='".$url."&".$p."=$page'>&nbsp;".$page."&nbsp;</a>";
+                    $linkPage .= "&nbsp;<a href='".str_replace('__PAGE__',$page,$url)."'>&nbsp;".$page."&nbsp;</a>";
                 }else{
                     break;
                 }
@@ -131,7 +139,7 @@ class Page {
                 }
             }
         }
-        $pageStr	 =	 str_replace(
+        $pageStr     =   str_replace(
             array('%header%','%nowPage%','%totalRow%','%totalPage%','%upPage%','%downPage%','%first%','%prePage%','%linkPage%','%nextPage%','%end%'),
             array($this->config['header'],$this->nowPage,$this->totalRows,$this->totalPages,$upPage,$downPage,$theFirst,$prePage,$linkPage,$nextPage,$theEnd),$this->config['theme']);
         return $pageStr;

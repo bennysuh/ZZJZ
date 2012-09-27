@@ -44,13 +44,13 @@ $(document).ready(function(){
 		if ($(this).attr('value') == '隐藏') {
 			isHidden = 0;
 			$(this).attr('value',"显示");
-			$.post('{:U("__ROOT__/Admin/Staff/saveStaff")}', "staffId=" + staffId + "&isHidden=" + isHidden);
+			$.post('{:U("__ROOT__/Admin/Staff/changeShowStatus")}', "staffId=" + staffId + "&isHidden=" + isHidden);
 			return;
 		}
 		if ($(this).attr('value') == '显示') {
 			isHidden = 1;
 			$(this).attr('value',"隐藏");
-			$.post('{:U("__ROOT__/Admin/Staff/saveStaff")}', "staffId=" + staffId + "&isHidden=" + isHidden);
+			$.post('{:U("__ROOT__/Admin/Staff/changeShowStatus")}', "staffId=" + staffId + "&isHidden=" + isHidden);
 			return;
 		}
 		if ($(this).attr('value') == '刪除') {

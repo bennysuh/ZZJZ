@@ -8,13 +8,14 @@
 // +----------------------------------------------------------------------
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
-// $Id: WriteHtmlCacheBehavior.class.php 2766 2012-02-20 15:58:21Z luofei614@gmail.com $
 
+defined('THINK_PATH') or exit();
 /**
- +------------------------------------------------------------------------------
- * 系统行为扩展 静态缓存写入
- * 增加配置参数如下：
- +------------------------------------------------------------------------------
+ * 系统行为扩展：静态缓存写入
+ * @category   Think
+ * @package  Think
+ * @subpackage  Behavior
+ * @author   liu21st <liu21st@gmail.com>
  */
 class WriteHtmlCacheBehavior extends Behavior {
 
@@ -28,7 +29,7 @@ class WriteHtmlCacheBehavior extends Behavior {
             $kv = Think::instance('SaeKVClient');
             if (!$kv->init())
                 halt('您没有初始化KVDB，请在SAE平台进行初始化');
-            trace('[SAE]静态缓存',HTML_FILE_NAME);
+            if(APP_DEBUG) trace(HTML_FILE_NAME,'静态缓存','SAE');
             $kv->set(HTML_FILE_NAME,time().$content);
         }
     }

@@ -8,11 +8,18 @@
 // +----------------------------------------------------------------------
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
-// $Id: RobotCheckBehavior.class.php 2616 2012-01-16 08:36:46Z liu21st $
 
+defined('THINK_PATH') or exit();
+/**
+ * 机器人检测
+ * @category   Extend
+ * @package  Extend
+ * @subpackage  Behavior
+ * @author   liu21st <liu21st@gmail.com>
+ */
 class RobotCheckBehavior extends Behavior {
     protected $options   =  array(
-            'LIMIT_ROBOT_VISIT'=>true,
+            'LIMIT_ROBOT_VISIT' =>  true, // 禁止机器人访问
         );
     public function run(&$params) {
         // 机器人访问检测

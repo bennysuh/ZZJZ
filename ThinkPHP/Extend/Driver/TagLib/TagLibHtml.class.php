@@ -8,37 +8,34 @@
 // +----------------------------------------------------------------------
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
-// $Id: TagLibHtml.class.php 2730 2012-02-12 04:45:34Z liu21st $
 
+defined('THINK_PATH') or exit();
 /**
- +-------------------------------
  * Html标签库驱动
- +-------------------------------
+ * @category   Extend
+ * @package  Extend
+ * @subpackage  Driver.Taglib
+ * @author    liu21st <liu21st@gmail.com>
  */
 class TagLibHtml extends TagLib{
     // 标签定义
     protected $tags   =  array(
         // 标签定义： attr 属性列表 close 是否闭合（0 或者1 默认1） alias 标签别名 level 嵌套层次
-        'editor'       => array('attr'=>'id,name,style,width,height,type','close'=>1),
-        'select'      => array('attr'=>'name,options,values,output,multiple,id,size,first,change,selected,dblclick','close'=>0),
-        'grid'          => array('attr'=>'id,pk,style,action,actionlist,show,datasource','close'=>0),
-        'list'           => array('attr'=>'id,pk,style,action,actionlist,show,datasource,checkbox','close'=>0),
+        'editor'    => array('attr'=>'id,name,style,width,height,type','close'=>1),
+        'select'    => array('attr'=>'name,options,values,output,multiple,id,size,first,change,selected,dblclick','close'=>0),
+        'grid'      => array('attr'=>'id,pk,style,action,actionlist,show,datasource','close'=>0),
+        'list'      => array('attr'=>'id,pk,style,action,actionlist,show,datasource,checkbox','close'=>0),
         'imagebtn'  => array('attr'=>'id,name,value,type,style,click','close'=>0),
         'checkbox'  => array('attr'=>'name,checkboxes,checked,separator','close'=>0),
-        'radio'        => array('attr'=>'name,radios,checked,separator','close'=>0)
+        'radio'     => array('attr'=>'name,radios,checked,separator','close'=>0)
         );
 
     /**
-     +----------------------------------------------------------
      * editor标签解析 插入可视化编辑器
      * 格式： <html:editor id="editor" name="remark" type="FCKeditor" style="" >{$vo.remark}</html:editor>
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @param string $attr 标签属性
-     +----------------------------------------------------------
      * @return string|void
-     +----------------------------------------------------------
      */
     public function _editor($attr,$content) {
         $tag        =	$this->parseXmlAttr($attr,'editor');
@@ -76,16 +73,11 @@ class TagLibHtml extends TagLib{
     }
 
     /**
-     +----------------------------------------------------------
      * imageBtn标签解析
      * 格式： <html:imageBtn type="" value="" />
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @param string $attr 标签属性
-     +----------------------------------------------------------
      * @return string|void
-     +----------------------------------------------------------
      */
     public function _imageBtn($attr) {
         $tag        = $this->parseXmlAttr($attr,'imageBtn');
@@ -106,16 +98,11 @@ class TagLibHtml extends TagLib{
     }
 
     /**
-     +----------------------------------------------------------
      * imageLink标签解析
      * 格式： <html:imageLink type="" value="" />
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @param string $attr 标签属性
-     +----------------------------------------------------------
      * @return string|void
-     +----------------------------------------------------------
      */
     public function _imgLink($attr) {
         $tag        = $this->parseXmlAttr($attr,'imgLink');
@@ -134,16 +121,11 @@ class TagLibHtml extends TagLib{
     }
 
     /**
-     +----------------------------------------------------------
      * select标签解析
      * 格式： <html:select options="name" selected="value" />
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @param string $attr 标签属性
-     +----------------------------------------------------------
      * @return string|void
-     +----------------------------------------------------------
      */
     public function _select($attr) {
         $tag        = $this->parseXmlAttr($attr,'select');
@@ -196,16 +178,11 @@ class TagLibHtml extends TagLib{
     }
 
     /**
-     +----------------------------------------------------------
      * checkbox标签解析
      * 格式： <html:checkbox checkboxes="" checked="" />
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @param string $attr 标签属性
-     +----------------------------------------------------------
      * @return string|void
-     +----------------------------------------------------------
      */
     public function _checkbox($attr) {
         $tag        = $this->parseXmlAttr($attr,'checkbox');
@@ -227,16 +204,11 @@ class TagLibHtml extends TagLib{
     }
 
     /**
-     +----------------------------------------------------------
      * radio标签解析
      * 格式： <html:radio radios="name" checked="value" />
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @param string $attr 标签属性
-     +----------------------------------------------------------
      * @return string|void
-     +----------------------------------------------------------
      */
     public function _radio($attr) {
         $tag        = $this->parseXmlAttr($attr,'radio');
@@ -259,17 +231,11 @@ class TagLibHtml extends TagLib{
     }
 
     /**
-     +----------------------------------------------------------
      * list标签解析
      * 格式： <html:grid datasource="" show="vo" />
-     *
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @param string $attr 标签属性
-     +----------------------------------------------------------
      * @return string
-     +----------------------------------------------------------
      */
     public function _grid($attr) {
         $tag        = $this->parseXmlAttr($attr,'grid');
@@ -405,17 +371,11 @@ class TagLibHtml extends TagLib{
     }
 
     /**
-     +----------------------------------------------------------
      * list标签解析
      * 格式： <html:list datasource="" show="" />
-     *
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @param string $attr 标签属性
-     +----------------------------------------------------------
      * @return string
-     +----------------------------------------------------------
      */
     public function _list($attr) {
         $tag        = $this->parseXmlAttr($attr,'list');
@@ -567,6 +527,4 @@ class TagLibHtml extends TagLib{
         $parseStr	.= "\n<!-- Think 系统列表组件结束 -->\n";
         return $parseStr;
     }
-
 }
-?>

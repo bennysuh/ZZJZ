@@ -8,30 +8,28 @@
 // +----------------------------------------------------------------------
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
-// $Id: DbMongo.class.php 2745 2012-02-18 12:20:36Z liu21st $
 
+defined('THINK_PATH') or exit();
 /**
- +-----------------------------------------------
- * Mongo数据库驱动类 需要配合MongoModel使用
- +-----------------------------------------------
+ * Mongo数据库驱动 必须配合MongoModel使用
+ * @category   Extend
+ * @package  Extend
+ * @subpackage  Driver.Db
+ * @author    liu21st <liu21st@gmail.com>
  */
 class DbMongo extends Db{
 
-    protected $_mongo = null; // MongoDb Object
-    protected $_collection    = null; // MongoCollection Object
-    protected $_dbName = ''; // dbName
-    protected $_collectionName = ''; // collectionName
-    protected $_cursor   =  null; // MongoCursor Object
-    protected $comparison      = array('neq'=>'ne','ne'=>'ne','gt'=>'gt','egt'=>'gte','gte'=>'gte','lt'=>'lt','elt'=>'lte','lte'=>'lte','in'=>'in','not in'=>'nin','nin'=>'nin');
+    protected $_mongo           =   null; // MongoDb Object
+    protected $_collection      =   null; // MongoCollection Object
+    protected $_dbName          =   ''; // dbName
+    protected $_collectionName  =   ''; // collectionName
+    protected $_cursor          =   null; // MongoCursor Object
+    protected $comparison       =   array('neq'=>'ne','ne'=>'ne','gt'=>'gt','egt'=>'gte','gte'=>'gte','lt'=>'lt','elt'=>'lte','lte'=>'lte','in'=>'in','not in'=>'nin','nin'=>'nin');
 
     /**
-     +----------------------------------------------------------
      * 架构函数 读取数据库配置信息
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @param array $config 数据库配置数组
-     +----------------------------------------------------------
      */
     public function __construct($config=''){
         if ( !class_exists('mongo') ) {
@@ -46,13 +44,8 @@ class DbMongo extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * 连接数据库方法
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
-     * @throws ThinkExecption
-     +----------------------------------------------------------
      */
     public function connect($config='',$linkNum=0) {
         if ( !isset($this->linkID[$linkNum]) ) {
@@ -72,17 +65,12 @@ class DbMongo extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * 切换当前操作的Db和Collection
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @param string $collection  collection
      * @param string $db  db
      * @param boolean $master 是否主服务器
-     +----------------------------------------------------------
      * @return void
-     +----------------------------------------------------------
      */
     public function switchCollection($collection,$db='',$master=true){
         // 当前没有连接 则首先进行数据库连接
@@ -94,7 +82,7 @@ class DbMongo extends Db{
                 $this->_mongo = $this->_linkID->selectDb($db);
             }
             // 当前MongoCollection对象
-            if($this->debug) {
+            if(C('DB_SQL_LOG')) {
                 $this->queryStr   =  $this->_dbName.'.getCollection('.$collection.')';
             }
             if($this->_collectionName != $collection) {
@@ -111,28 +99,18 @@ class DbMongo extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * 释放查询结果
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      */
     public function free() {
         $this->_cursor = null;
     }
 
     /**
-     +----------------------------------------------------------
      * 执行命令
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @param array $command  指令
-     +----------------------------------------------------------
      * @return array
-     +----------------------------------------------------------
-     * @throws ThinkExecption
-     +----------------------------------------------------------
      */
     public function command($command=array()) {
         N('db_write',1);
@@ -148,18 +126,11 @@ class DbMongo extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * 执行语句
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @param string $code  sql指令
      * @param array $args  参数
-     +----------------------------------------------------------
      * @return mixed
-     +----------------------------------------------------------
-     * @throws ThinkExecption
-     +----------------------------------------------------------
      */
     public function execute($code,$args=array()) {
         N('db_write',1);
@@ -176,11 +147,8 @@ class DbMongo extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * 关闭数据库
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      */
     public function close() {
         if($this->_linkID) {
@@ -193,31 +161,23 @@ class DbMongo extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * 数据库错误信息
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @return string
-     +----------------------------------------------------------
      */
     public function error() {
         $this->error = $this->_mongo->lastError();
+        trace($this->error,'','ERR');
         return $this->error;
     }
 
     /**
-     +----------------------------------------------------------
      * 插入记录
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @param mixed $data 数据
      * @param array $options 参数表达式
      * @param boolean $replace 是否replace
-     +----------------------------------------------------------
      * @return false | integer
-     +----------------------------------------------------------
      */
     public function insert($data,$options=array(),$replace=false) {
         if(isset($options['table'])) {
@@ -225,7 +185,7 @@ class DbMongo extends Db{
         }
         $this->model  =   $options['model'];
         N('db_write',1);
-        if($this->debug) {
+        if(C('DB_SQL_LOG')) {
             $this->queryStr   =  $this->_dbName.'.'.$this->_collectionName.'.insert(';
             $this->queryStr   .= $data?json_encode($data):'{}';
             $this->queryStr   .= ')';
@@ -249,16 +209,11 @@ class DbMongo extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * 插入多条记录
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @param array $dataList 数据
      * @param array $options 参数表达式
-     +----------------------------------------------------------
      * @return bool
-     +----------------------------------------------------------
      */
     public function insertAll($dataList,$options=array()) {
         if(isset($options['table'])) {
@@ -278,19 +233,14 @@ class DbMongo extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * 生成下一条记录ID 用于自增非MongoId主键
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @param string $pk 主键名
-     +----------------------------------------------------------
      * @return integer
-     +----------------------------------------------------------
      */
     public function mongo_next_id($pk) {
         N('db_read',1);
-        if($this->debug) {
+        if(C('DB_SQL_LOG')) {
             $this->queryStr   =  $this->_dbName.'.'.$this->_collectionName.'.find({},{'.$pk.':1}).sort({'.$pk.':-1}).limit(1)';
         }
         try{
@@ -306,16 +256,11 @@ class DbMongo extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * 更新记录
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @param mixed $data 数据
      * @param array $options 表达式
-     +----------------------------------------------------------
      * @return bool
-     +----------------------------------------------------------
      */
     public function update($data,$options) {
         if(isset($options['table'])) {
@@ -325,7 +270,7 @@ class DbMongo extends Db{
         N('db_write',1);
         $query   = $this->parseWhere($options['where']);
         $set  =  $this->parseSet($data);
-        if($this->debug) {
+        if(C('DB_SQL_LOG')) {
             $this->queryStr   =  $this->_dbName.'.'.$this->_collectionName.'.update(';
             $this->queryStr   .= $query?json_encode($query):'{}';
             $this->queryStr   .=  ','.json_encode($set).')';
@@ -342,15 +287,10 @@ class DbMongo extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * 删除记录
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @param array $options 表达式
-     +----------------------------------------------------------
      * @return false | integer
-     +----------------------------------------------------------
      */
     public function delete($options=array()) {
         if(isset($options['table'])) {
@@ -359,7 +299,7 @@ class DbMongo extends Db{
         $query   = $this->parseWhere($options['where']);
         $this->model  =   $options['model'];
         N('db_write',1);
-        if($this->debug) {
+        if(C('DB_SQL_LOG')) {
             $this->queryStr   =  $this->_dbName.'.'.$this->_collectionName.'.remove('.json_encode($query).')';
         }
         try{
@@ -374,15 +314,10 @@ class DbMongo extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * 清空记录
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @param array $options 表达式
-     +----------------------------------------------------------
      * @return false | integer
-     +----------------------------------------------------------
      */
     public function clear($options=array()){
         if(isset($options['table'])) {
@@ -390,7 +325,7 @@ class DbMongo extends Db{
         }
         $this->model  =   $options['model'];
         N('db_write',1);
-        if($this->debug) {
+        if(C('DB_SQL_LOG')) {
             $this->queryStr   =  $this->_dbName.'.'.$this->_collectionName.'.remove({})';
         }
         try{
@@ -405,15 +340,10 @@ class DbMongo extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * 查找记录
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @param array $options 表达式
-     +----------------------------------------------------------
      * @return iterator
-     +----------------------------------------------------------
      */
     public function select($options=array()) {
         if(isset($options['table'])) {
@@ -432,7 +362,7 @@ class DbMongo extends Db{
         $query  =  $this->parseWhere($options['where']);
         $field =  $this->parseField($options['field']);
         try{
-            if($this->debug) {
+            if(C('DB_SQL_LOG')) {
                 $this->queryStr   =  $this->_dbName.'.'.$this->_collectionName.'.find(';
                 $this->queryStr  .=  $query? json_encode($query):'{}';
                 $this->queryStr  .=  $field? ','.json_encode($field):'';
@@ -443,7 +373,7 @@ class DbMongo extends Db{
             $_cursor   = $this->_collection->find($query,$field);
             if($options['order']) {
                 $order   =  $this->parseOrder($options['order']);
-                if($this->debug) {
+                if(C('DB_SQL_LOG')) {
                     $this->queryStr .= '.sort('.json_encode($order).')';
                 }
                 $_cursor =  $_cursor->sort($order);
@@ -462,12 +392,12 @@ class DbMongo extends Db{
             if(isset($options['limit'])) {
                 list($offset,$length) =  $this->parseLimit($options['limit']);
                 if(!empty($offset)) {
-                    if($this->debug) {
+                    if(C('DB_SQL_LOG')) {
                         $this->queryStr .= '.skip('.intval($offset).')';
                     }
                     $_cursor =  $_cursor->skip(intval($offset));
                 }
-                if($this->debug) {
+                if(C('DB_SQL_LOG')) {
                     $this->queryStr .= '.limit('.intval($length).')';
                 }
                 $_cursor =  $_cursor->limit(intval($length));
@@ -485,15 +415,10 @@ class DbMongo extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * 查找某个记录
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @param array $options 表达式
-     +----------------------------------------------------------
      * @return array
-     +----------------------------------------------------------
      */
     public function find($options=array()){
         if(isset($options['table'])) {
@@ -511,8 +436,8 @@ class DbMongo extends Db{
         N('db_query',1);
         $query  =  $this->parseWhere($options['where']);
         $fields    = $this->parseField($options['field']);
-        if($this->debug) {
-            $this->queryStr = $this->_dbName.'.'.$this->_collectionName.'.fineOne(';
+        if(C('DB_SQL_LOG')) {
+            $this->queryStr = $this->_dbName.'.'.$this->_collectionName.'.findOne(';
             $this->queryStr .= $query?json_encode($query):'{}';
             $this->queryStr .= $fields?','.json_encode($fields):'';
             $this->queryStr .= ')';
@@ -532,15 +457,10 @@ class DbMongo extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * 统计记录数
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @param array $options 表达式
-     +----------------------------------------------------------
      * @return iterator
-     +----------------------------------------------------------
      */
     public function count($options=array()){
         if(isset($options['table'])) {
@@ -549,7 +469,7 @@ class DbMongo extends Db{
         $this->model  =   $options['model'];
         N('db_query',1);
         $query  =  $this->parseWhere($options['where']);
-        if($this->debug) {
+        if(C('DB_SQL_LOG')) {
             $this->queryStr   =  $this->_dbName.'.'.$this->_collectionName;
             $this->queryStr   .= $query?'.find('.json_encode($query).')':'';
             $this->queryStr   .= '.count()';
@@ -570,20 +490,16 @@ class DbMongo extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * 取得数据表的字段信息
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @return array
-     +----------------------------------------------------------
      */
     public function getFields($collection=''){
         if(!empty($collection) && $collection != $this->_collectionName) {
             $this->switchCollection($collection,'',false);
         }
         N('db_query',1);
-        if($this->debug) {
+        if(C('DB_SQL_LOG')) {
             $this->queryStr   =  $this->_dbName.'.'.$this->_collectionName.'.findOne()';
         }
         try{
@@ -609,14 +525,11 @@ class DbMongo extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * 取得当前数据库的collection信息
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      */
     public function getTables(){
-        if($this->debug) {
+        if(C('DB_SQL_LOG')) {
             $this->queryStr   =  $this->_dbName.'.getCollenctionNames()';
         }
         N('db_query',1);
@@ -632,15 +545,10 @@ class DbMongo extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * set分析
-     +----------------------------------------------------------
      * @access protected
-     +----------------------------------------------------------
      * @param array $data
-     +----------------------------------------------------------
      * @return string
-     +----------------------------------------------------------
      */
     protected function parseSet($data) {
         $result   =  array();
@@ -671,15 +579,10 @@ class DbMongo extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * order分析
-     +----------------------------------------------------------
      * @access protected
-     +----------------------------------------------------------
      * @param mixed $order
-     +----------------------------------------------------------
      * @return array
-     +----------------------------------------------------------
      */
     protected function parseOrder($order) {
         if(is_string($order)) {
@@ -699,15 +602,10 @@ class DbMongo extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * limit分析
-     +----------------------------------------------------------
      * @access protected
-     +----------------------------------------------------------
      * @param mixed $limit
-     +----------------------------------------------------------
      * @return array
-     +----------------------------------------------------------
      */
     protected function parseLimit($limit) {
         if(strpos($limit,',')) {
@@ -719,15 +617,10 @@ class DbMongo extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * field分析
-     +----------------------------------------------------------
      * @access protected
-     +----------------------------------------------------------
      * @param mixed $fields
-     +----------------------------------------------------------
      * @return array
-     +----------------------------------------------------------
      */
     public function parseField($fields){
         if(empty($fields)) {
@@ -740,15 +633,10 @@ class DbMongo extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * where分析
-     +----------------------------------------------------------
      * @access protected
-     +----------------------------------------------------------
      * @param mixed $where
-     +----------------------------------------------------------
      * @return array
-     +----------------------------------------------------------
      */
     public function parseWhere($where){
         $query   = array();
@@ -786,16 +674,11 @@ class DbMongo extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * 特殊条件分析
-     +----------------------------------------------------------
      * @access protected
-     +----------------------------------------------------------
      * @param string $key
      * @param mixed $val
-     +----------------------------------------------------------
      * @return string
-     +----------------------------------------------------------
      */
     protected function parseThinkWhere($key,$val) {
         $query   = array();
@@ -815,16 +698,11 @@ class DbMongo extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * where子单元分析
-     +----------------------------------------------------------
      * @access protected
-     +----------------------------------------------------------
      * @param string $key
      * @param mixed $val
-     +----------------------------------------------------------
      * @return array
-     +----------------------------------------------------------
      */
     protected function parseWhereItem($key,$val) {
         $query   = array();

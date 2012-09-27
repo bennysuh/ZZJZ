@@ -219,12 +219,9 @@ class StaffAction extends EntryAction {
 		if ($_POST['name']) {//保存编辑信息
 			$data = $staff->create();
 			$data['languages'] = join(",", $_POST['lang']);
-			//david保存
-		} else {
-			$data["isHidden"] = $_POST['isHidden'];
-			//列表中操作显示和隐藏员工状态
+			$pathArr = explode($data['images'], ",");
+			$result = $staff -> where("staffid='" . $_POST['staffId'] . "'") -> save($data);
 		}
-		$result = $staff -> where("staffid='" . $_POST['staffId'] . "'") -> save($data);
 		//保存成功返回影响的记录数不成功返回false。有可能返回0
 		if (is_int($result)) {
 			$this -> success('保存成功');
@@ -232,7 +229,68 @@ class StaffAction extends EntryAction {
 			$this -> error('保存失敗');
 		}
 	}
-
+	//新增上传 
+	public function addUpload()
+	{
+		$json = $_POST["json"];
+		if($json){
+			$json = str_replace("\\","",$json);
+			$arr=json_decode($json);
+			$M = D('Upload');
+			
+			foreach ($arr as $key => $value) {
+				$arr['tablename'] = "zz_staff";
+				$arr['type'] = "pic";
+				$result = $M->addFile($arr);
+				if(!$result){
+					$this->error("上传失败");
+				}
+			}
+			$this->success("上传成功");
+		}else{
+			$this->error("no params");
+		}
+	}
+	public function removeUpload()
+	{
+		if($_POST("pid")){
+			$data['pid'] = $_POST['pid'];
+			$data['tablename'] = $_POST['tablename'];
+			$data['index'] = $_POST['index'];
+			$M = D('Upload');
+			$result = $M->removeFile($data);
+			if($result){
+				$this->success("success");
+			}else{
+				$this->error("error");
+			}
+		}else{
+			$this->error("no params");
+		}
+	}
+	//更新上传文件索引
+	public function updateFileIndex()
+	{
+		
+	}
+	/**
+	 +----------------------------------------------------------
+	 * 更新是否显示
+	 +----------------------------------------------------------
+	 * @access public
+	 +----------------------------------------------------------
+	 */
+	public function changeShowStatus()
+	{
+		$staff = M('zz_staff');
+		$data["isHidden"] = $_POST['isHidden'];
+		$result = $staff -> where("staffId='" . $_POST['staffId'] . "'") -> save($data);
+		if (is_int($result)) {
+			$this -> success('保存成功');
+		} else {
+			$this -> error('保存失敗');
+		}
+	}
 	//更新联系方式
 	public function saveContact() {
 		$json = $_POST["json"];
@@ -320,6 +378,12 @@ class StaffAction extends EntryAction {
 	/**
 	 +----------------------------------------------------------
 	 * 上传图片
+	 * 上传规则：
+	 * 1 点击上传按钮上传图片并保存到zz_upload
+	 * 2 点击删除按钮删除图片路径并从zz_upload删除对应记录
+	 * 3 点击图片列表保存按钮，保存zz_upload的tip字段
+	 * 4 点击图片列表up按钮，保存zz_upload的index字段
+	 * 5 点击图片列表down按钮，保存zz_upload的index字段
 	 +----------------------------------------------------------
 	 * @access public
 	 +----------------------------------------------------------
@@ -367,7 +431,6 @@ class StaffAction extends EntryAction {
 		$upload -> thumbRemoveOrigin = true;
 		//执行上传操作
 		if (!$upload -> upload()) {
-			Log::write($upload -> getErrorMsg());
 			//ajax上传失败
 			if ($this -> isAjax() && isset($_POST['_uploadFileResult'])) {
 				$uploadSuccess = false;
@@ -496,7 +559,6 @@ class StaffAction extends EntryAction {
 			$name = $_GET['name'];
 			$data['name'] = array('like',"%$name%");
 		}
-		
 		$count = $M->where($data)->count();
 		$p = new Page($count, 10);
 		$page = $p -> show();

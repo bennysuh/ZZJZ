@@ -4,6 +4,15 @@ body,ul,li,table,tbody,tr,td,button,form {
 	padding: 0;
 	font-family: Arial;
 }
+form {
+	padding-left: 20px;
+}
+#itemDiv,#locationDiv {
+	padding-left: 20px;
+}
+.TabbedPanelsContent form {
+	padding-left: 0px;
+}
 ul,li {
 	list-style-type: none;	
 }
@@ -150,7 +159,7 @@ body {
 	text-shadow: 0 1px 1px #FFFFFF;
 	cursor: pointer;
 	
-	background: #fffef3; /* Old browsers */
+	background: #DDDDDD; /* Old browsers */
 	background: -moz-linear-gradient(top,  #fffef3 0%, #e2e5e9 50%, #e6e6e6 87%); /* FF3.6+ */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fffef3), color-stop(50%,#e2e5e9), color-stop(87%,#e6e6e6)); /* Chrome,Safari4+ */
 	background: -webkit-linear-gradient(top,  #fffef3 0%,#e2e5e9 50%,#e6e6e6 87%); /* Chrome10+,Safari5.1+ */
@@ -159,12 +168,15 @@ body {
 	background: linear-gradient(top,  #fffef3 0%,#e2e5e9 50%,#e6e6e6 87%); /* W3C */
 	/*filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fffef3', endColorstr='#e6e6e6',GradientType=0 ); /* IE6-9 */
 }
+
 #leftWrap li li {
-	color: #888888;
+	color: #000;
 }
+/**
 #leftWrap li li:hover {
 	color: #000000;
 }
+**/
 /* 左邊框架裏面嘅用戶管理框架(未選定時) */
 #leftWrap .userManagement {
 	list-style-position: inside;
@@ -265,7 +277,7 @@ body {
 /* 分項選定時的樣式 */
 #leftWrap #sideNav .select {
 	color: #000000;
-/**background-image: url(../img/logo1.png);**/
+	background-image: url(../img/point.png);
 	background-repeat: no-repeat;
 	background-position: left 6px;
 }
@@ -329,18 +341,19 @@ body {
 	padding-left: 5px;
 	padding-right: 5px;
 	font-size: 15px;
+	min-width: 75px;
 }
 /* form裏面應該輸入什么的名字的框架 */
 #rightWrap .inputName {
 	font-weight: bold;
-	border: none;
+	border: none !important;
 	text-align: left;
 }
 /* form裏面應該輸入什麽的框架 */
 #rightWrap .inputText {
     padding-bottom: 5px;
     padding-top: 5px;
-	border: none;
+	border: none !important;
 	text-align: left;
 }
 /* 下面3個是addUserWrap特殊的屬性 */
@@ -465,7 +478,7 @@ body {
 	float: left;
 }
 .pageRecord {
-    clear:both;
+ /**  clear:both;***/
 	height:30px;
 }
 .pageRecord span {
@@ -729,7 +742,7 @@ body {
 }
 #sideNav .VMouseover .VTypeSelect {
 	color: #000000;
-/**background-image: url(../img/logo1.png);***/
+/**background-image: url(../img/logo1.png);**/
 	background-repeat: no-repeat;
 	background-position: left 6px;
 }
@@ -943,6 +956,7 @@ textarea {
 	border-bottom-width: 1px;
 	border-bottom-style: inset;
 	border-bottom-color: #666666;
+	margin-bottom: 20px;
 }
 h2 .inputAdd {
 	margin-left: 5px;
@@ -1114,6 +1128,12 @@ h2 .inputAdd {
 .phoneNum {
 	width: 50px;
 }
+.phoneNum8 {
+	width: 80px;
+}
+#Remarks {
+ width: 360px;
+}
 .longtext {
 	width: 300px;
 }
@@ -1170,34 +1190,98 @@ h2 .inputAdd {
     cursor: pointer;
     padding-left: 20px;
 	padding-right: 20px;
-	margin-left:20px;
-	margin-right:20px;
-	margin-bottom:20px;
 }
 input[type="checkbox"] {
 	cursor: pointer;
 }
-#searchBookForm td{
+
+#rightWrap .checkboxTd {
+	min-width: 0;
+}
+#supplierForm {
+	padding: 20px;
+	padding-top:0;
+}
+#rightWrap .selectType {
+	width: 200px;
+	height: 100px;
+	background-color: #FFFFCC;
+	border-radius: 15px 15px 15px 15px;
+	border-top-style: solid;
+	border-right-style: solid;
+	border-bottom-style: solid;
+	border-left-style: solid;
+	border-top-color: #00FF40;
+	border-right-color: #00FF40;
+	border-bottom-color: #00FF40;
+	border-left-color: #00FF40;
+	font-size: 28px;
+	color: #804000;
+	font-weight: bold;
+	cursor: pointer;
+}
+.noSelectType {
+	width: 200px;
+	height: 100px;
+	background-color: #80FFFF;
+	border-radius: 15px 15px 15px 15px;
+	border-top-style: solid;
+	border-right-style: solid;
+	border-bottom-style: solid;
+	border-left-style: solid;
+	border-top-color: #990066;
+	border-right-color: #990066;
+	border-bottom-color: #990066;
+	border-left-color: #990066;
+	font-size: 28px;
+	color: #333333;
+	font-weight: bold;
+	cursor: pointer;
+}
+.whiteBG {
+    background-color: #FFFFFF;
+    border-bottom: 5px solid #CDDCEB;
+    border-radius: 10px 10px 10px 10px;
+    border-right: 5px solid #CDDCEB;
+    margin-left: 30px;
+    margin-top: 10px;
+    width: 550px;
+}
+.fontSelect {
+	font-weight: bold;
+	color: #666666;
+	text-decoration: underline;
+	cursor:pointer;
+}
+#searchCont {
+	margin-right: 10px;
+}
+.listTitle {
+	margin: 10px;
+}
+#geneSumDiv label,#itemDiv label,#viewLocationDiv label{
+	cursor: pointer;	
+}
+#geneSumDiv label:hover,#itemDiv label:hover {
+	cursor: pointer;
+	font-weight: bold;
+	color: #666666;
+}
+/* projectContent**/
+.contentTd {
+	width: 120px;
 	border:none !important;
 }
-#addBookTb td.noborder{
-	border:none !important;
+<<<<<<< HEAD
+
+=======
+/**查询INPUT**/
+.searchInput{
+	width:250px;
+	margin-right: 10px;
 }
-#listTb td{
-	text-align:left;
+
+#searchBtn1,#searchBtn2,#searchBtn3 {
+	margin-left: 10px;
 }
-/**选择按钮**/
-input.hiddenBtn{
-	display:none;
-}
-#chooseWrap {
-	height: 20px;
-	margin: 20px;
-}
-/**所有只读的输入框加上灰色背景色**/
-input[readonly]{
-	background-color:#ccc;
-}
-.delImg{
-	pointer:hand;
-}
+>>>>>>> e6c838ef24cf4c8f51ef3a205b0e0d6e0f08ecbb

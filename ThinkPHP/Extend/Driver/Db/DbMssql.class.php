@@ -8,23 +8,21 @@
 // +----------------------------------------------------------------------
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
-// $Id: DbMssql.class.php 2729 2012-02-12 04:13:34Z liu21st $
 
+defined('THINK_PATH') or exit();
 /**
- +-----------------------------------------
- * MSsql数据库驱动类 针对sqlserver2005
- +-----------------------------------------
+ * MSsql数据库驱动 要求sqlserver2005
+ * @category   Extend
+ * @package  Extend
+ * @subpackage  Driver.Db
+ * @author    liu21st <liu21st@gmail.com>
  */
 class DbMssql extends Db{
-    protected $selectSql  =     'SELECT T1.* FROM (SELECT ROW_NUMBER() OVER (%ORDER%) AS ROW_NUMBER, thinkphp.* FROM (SELECT %DISTINCT% %FIELD% FROM %TABLE%%JOIN%%WHERE%%GROUP%%HAVING%) AS thinkphp) AS T1 WHERE %LIMIT%';
+    protected $selectSql  =     'SELECT T1.* FROM (SELECT thinkphp.*, ROW_NUMBER() OVER (%ORDER%) AS ROW_NUMBER FROM (SELECT %DISTINCT% %FIELD% FROM %TABLE%%JOIN%%WHERE%%GROUP%%HAVING%) AS thinkphp) AS T1 WHERE %LIMIT%';
     /**
-     +----------------------------------------------------------
      * 架构函数 读取数据库配置信息
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @param array $config 数据库配置数组
-     +----------------------------------------------------------
      */
     public function __construct($config=''){
         if ( !function_exists('mssql_connect') ) {
@@ -39,13 +37,8 @@ class DbMssql extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * 连接数据库方法
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
-     * @throws ThinkExecption
-     +----------------------------------------------------------
      */
     public function connect($config='',$linkNum=0) {
         if ( !isset($this->linkID[$linkNum]) ) {
@@ -69,11 +62,8 @@ class DbMssql extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * 释放查询结果
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      */
     public function free() {
         mssql_free_result($this->queryID);
@@ -81,17 +71,10 @@ class DbMssql extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * 执行查询  返回数据集
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @param string $str  sql指令
-     +----------------------------------------------------------
      * @return mixed
-     +----------------------------------------------------------
-     * @throws ThinkExecption
-     +----------------------------------------------------------
      */
     public function query($str) {
         $this->initConnect(false);
@@ -114,17 +97,10 @@ class DbMssql extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * 执行语句
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @param string $str  sql指令
-     +----------------------------------------------------------
      * @return integer
-     +----------------------------------------------------------
-     * @throws ThinkExecption
-     +----------------------------------------------------------
      */
     public function execute($str) {
         $this->initConnect(true);
@@ -148,13 +124,9 @@ class DbMssql extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * 用于获取最后插入的ID
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @return integer
-     +----------------------------------------------------------
      */
     public function mssql_insert_id() {
         $query  =   "SELECT @@IDENTITY as last_insert_id";
@@ -165,13 +137,9 @@ class DbMssql extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * 启动事务
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @return void
-     +----------------------------------------------------------
      */
     public function startTrans() {
         $this->initConnect(true);
@@ -185,55 +153,43 @@ class DbMssql extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * 用于非自动提交状态下面的查询提交
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @return boolen
-     +----------------------------------------------------------
      */
     public function commit() {
         if ($this->transTimes > 0) {
             $result = mssql_query('COMMIT TRAN', $this->_linkID);
             $this->transTimes = 0;
             if(!$result){
-                throw_exception($this->error());
+                $this->error();
+                return false;
             }
         }
         return true;
     }
 
     /**
-     +----------------------------------------------------------
      * 事务回滚
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @return boolen
-     +----------------------------------------------------------
      */
     public function rollback() {
         if ($this->transTimes > 0) {
             $result = mssql_query('ROLLBACK TRAN', $this->_linkID);
             $this->transTimes = 0;
             if(!$result){
-                throw_exception($this->error());
+                $this->error();
+                return false;
             }
         }
         return true;
     }
 
     /**
-     +----------------------------------------------------------
      * 获得所有的查询数据
-     +----------------------------------------------------------
      * @access private
-     +----------------------------------------------------------
      * @return array
-     +----------------------------------------------------------
-     * @throws ThinkExecption
-     +----------------------------------------------------------
      */
     private function getAll() {
         //返回数据集
@@ -246,13 +202,9 @@ class DbMssql extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * 取得数据表的字段信息
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @return array
-     +----------------------------------------------------------
      */
     public function getFields($tableName) {
         $result =   $this->query("SELECT   column_name,   data_type,   column_default,   is_nullable
@@ -279,13 +231,9 @@ class DbMssql extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * 取得数据表的字段信息
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @return array
-     +----------------------------------------------------------
      */
     public function getTables($dbName='') {
         $result   =  $this->query("SELECT TABLE_NAME
@@ -300,31 +248,22 @@ class DbMssql extends Db{
     }
 
 	/**
-     +----------------------------------------------------------
      * order分析
-     +----------------------------------------------------------
      * @access protected
-     +----------------------------------------------------------
      * @param mixed $order
-     +----------------------------------------------------------
      * @return string
-     +----------------------------------------------------------
      */
     protected function parseOrder($order) {
         return !empty($order)?  ' ORDER BY '.$order:' ORDER BY rand()';
     }
 
     /**
-     +----------------------------------------------------------
      * limit
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @return string
-     +----------------------------------------------------------
      */
     public function parseLimit($limit) {
-		if(empty($limit)) $limit=1;
+		if(empty($limit)) return '1=1';
         $limit	=	explode(',',$limit);
         if(count($limit)>1)
             $limitStr	=	'(T1.ROW_NUMBER BETWEEN '.$limit[0].' + 1 AND '.$limit[0].' + '.$limit[1].')';
@@ -334,11 +273,8 @@ class DbMssql extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * 关闭数据库
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      */
     public function close() {
         if ($this->_linkID){
@@ -348,21 +284,17 @@ class DbMssql extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * 数据库错误信息
      * 并显示当前的SQL语句
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @return string
-     +----------------------------------------------------------
      */
     public function error() {
         $this->error = mssql_get_last_message();
-        if($this->debug && '' != $this->queryStr){
+        if('' != $this->queryStr){
             $this->error .= "\n [ SQL语句 ] : ".$this->queryStr;
         }
+        trace($this->error,'','ERR');
         return $this->error;
     }
-
 }

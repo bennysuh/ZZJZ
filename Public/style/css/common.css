@@ -94,7 +94,7 @@ a:hover{color:#F60; border-bottom:1px dashed gray}
 .inline{display:inline}
 input, textarea, select{border:1px solid gray; padding:3px 3px; margin:0; overflow:auto; background:white; font:100%/1.0em Arial,Helvetica,sans-serif; color:#444}
 input.focus{filter:blur(strength=50); border:1pt solid green}
-div.impBtn{background:url(../img/idx_btnbg.gif) top repeat-x; border:1px solid gray; border-right:1px solid #316835; border-bottom:1px solid #316835; filter:progid:DXImageTransform.Microsoft.Shadow(Color=gray,Direction=120,strength=3)}
+div.impBtn{width:250px;background:url(../img/idx_btnbg.gif) top repeat-x; border:1px solid gray; border-right:1px solid #316835; border-bottom:1px solid #316835; filter:progid:DXImageTransform.Microsoft.Shadow(Color=gray,Direction=120,strength=3)}
 span.impBtn{background:url(../img/bgcolor.gif) top repeat-x; border:1px solid #316835}
 input.button{ height:23px; min-width:65px; margin:0; border:0; padding-top:5px; letter-spacing:3px; font-weight:bold; text-align:center; background-color:transparent; background-position:5px 40%; cursor:pointer}
 
@@ -125,7 +125,6 @@ input.output{background-image:url(../Images/sort.gif)}
 input.recommend{background-image:url(../Images/brand.gif)}
 input.ok{background-image:url(../Images/allow.gif)}
 input.top{background-image:url(../Images/top.gif)}
-input.tip{background-image:url(../Images/tips.gif)}
 input.help{background-image:url(../Images/help.gif)}
 input.high{background-image:url(../Images/high.gif)}
 input.import{background-image:url(../Images/high.gif)}

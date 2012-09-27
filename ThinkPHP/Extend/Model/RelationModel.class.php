@@ -8,12 +8,14 @@
 // +----------------------------------------------------------------------
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
-// $Id: RelationModel.class.php 2702 2012-02-02 12:35:01Z liu21st $
 
+defined('THINK_PATH') or exit();
 /**
- +------------------------------------------------------------------------------
- * ThinkPHP 关联模型类扩展
- +------------------------------------------------------------------------------
+ * ThinkPHP关联模型扩展 
+ * @category   Extend
+ * @package  Extend
+ * @subpackage  Model
+ * @author    liu21st <liu21st@gmail.com>
  */
 define('HAS_ONE',1);
 define('BELONGS_TO',2);
@@ -25,16 +27,11 @@ class RelationModel extends Model {
     protected    $_link = array();
 
     /**
-     +----------------------------------------------------------
      * 动态方法实现
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @param string $method 方法名称
      * @param array $args 调用参数
-     +----------------------------------------------------------
      * @return mixed
-     +----------------------------------------------------------
      */
     public function __call($method,$args) {
         if(strtolower(substr($method,0,8))=='relation'){
@@ -49,13 +46,9 @@ class RelationModel extends Model {
     }
 
     /**
-     +----------------------------------------------------------
      * 得到关联的数据表名
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @return string
-     +----------------------------------------------------------
      */
     public function getRelationTableName($relation) {
         $relationTable  = !empty($this->tablePrefix) ? $this->tablePrefix : '';
@@ -100,15 +93,10 @@ class RelationModel extends Model {
     }
 
     /**
-     +----------------------------------------------------------
      * 对保存到数据库的数据进行处理
-     +----------------------------------------------------------
      * @access protected
-     +----------------------------------------------------------
      * @param mixed $data 要操作的数据
-     +----------------------------------------------------------
      * @return boolean
-     +----------------------------------------------------------
      */
      protected function _facade($data) {
         $this->_before_write($data);
@@ -116,16 +104,11 @@ class RelationModel extends Model {
      }
 
     /**
-     +----------------------------------------------------------
      * 获取返回数据集的关联记录
-     +----------------------------------------------------------
      * @access protected
-     +----------------------------------------------------------
      * @param array $resultSet  返回数据
      * @param string|array $name  关联名称
-     +----------------------------------------------------------
      * @return array
-     +----------------------------------------------------------
      */
     protected function getRelations(&$resultSet,$name='') {
         // 获取记录集的主键列表
@@ -137,17 +120,12 @@ class RelationModel extends Model {
     }
 
     /**
-     +----------------------------------------------------------
      * 获取返回数据的关联记录
-     +----------------------------------------------------------
      * @access protected
-     +----------------------------------------------------------
      * @param mixed $result  返回数据
      * @param string|array $name  关联名称
      * @param boolean $return 是否返回关联数据本身
-     +----------------------------------------------------------
      * @return array
-     +----------------------------------------------------------
      */
     protected function getRelation(&$result,$name='',$return=false) {
         if(!empty($this->_link)) {
@@ -158,6 +136,7 @@ class RelationModel extends Model {
                         $mappingClass  = !empty($val['class_name'])?$val['class_name']:$key;            //  关联类名
                         $mappingFields = !empty($val['mapping_fields'])?$val['mapping_fields']:'*';     // 映射字段
                         $mappingCondition = !empty($val['condition'])?$val['condition']:'1=1';          // 关联条件
+                        $mappingKey =!empty($val['mapping_key'])? $val['mapping_key'] : $this->getPk(); // 关联键名
                         if(strtoupper($mappingClass)==strtoupper($this->name)) {
                             // 自引用关联 获取父键名
                             $mappingFk   =   !empty($val['parent_key'])? $val['parent_key'] : 'parent_id';
@@ -168,7 +147,7 @@ class RelationModel extends Model {
                         $model = D($mappingClass);
                         switch($mappingType) {
                             case HAS_ONE:
-                                $pk   =  $result[$this->getPk()];
+                                $pk   =  $result[$mappingKey];
                                 $mappingCondition .= " AND {$mappingFk}='{$pk}'";
                                 $relationData   =  $model->where($mappingCondition)->field($mappingFields)->find();
                                 break;
@@ -184,7 +163,7 @@ class RelationModel extends Model {
                                 $relationData   =  $model->where($mappingCondition)->field($mappingFields)->find();
                                 break;
                             case HAS_MANY:
-                                $pk   =  $result[$this->getPk()];
+                                $pk   =  $result[$mappingKey];
                                 $mappingCondition .= " AND {$mappingFk}='{$pk}'";
                                 $mappingOrder =  !empty($val['mapping_order'])?$val['mapping_order']:'';
                                 $mappingLimit =  !empty($val['mapping_limit'])?$val['mapping_limit']:'';
@@ -192,7 +171,7 @@ class RelationModel extends Model {
                                 $relationData   =  $model->where($mappingCondition)->field($mappingFields)->order($mappingOrder)->limit($mappingLimit)->select();
                                 break;
                             case MANY_TO_MANY:
-                                $pk   =  $result[$this->getPk()];
+                                $pk   =  $result[$mappingKey];
                                 $mappingCondition = " {$mappingFk}='{$pk}'";
                                 $mappingOrder =  $val['mapping_order'];
                                 $mappingLimit =  $val['mapping_limit'];
@@ -218,8 +197,8 @@ class RelationModel extends Model {
                                 $fields =   explode(',',$val['as_fields']);
                                 foreach ($fields as $field){
                                     if(strpos($field,':')) {
-                                        list($name,$nick) = explode(':',$field);
-                                        $result[$nick]  =  $relationData[$name];
+                                        list($relationName,$nick) = explode(':',$field);
+                                        $result[$nick]  =  $relationData[$relationName];
                                     }else{
                                         $result[$field]  =  $relationData[$field];
                                     }
@@ -238,17 +217,12 @@ class RelationModel extends Model {
     }
 
     /**
-     +----------------------------------------------------------
      * 操作关联数据
-     +----------------------------------------------------------
      * @access protected
-     +----------------------------------------------------------
      * @param string $opType  操作方式 ADD SAVE DEL
      * @param mixed $data  数据对象
      * @param string $name 关联名称
-     +----------------------------------------------------------
      * @return mixed
-     +----------------------------------------------------------
      */
     protected function opRelation($opType,$data='',$name='') {
         $result =   false;
@@ -267,15 +241,21 @@ class RelationModel extends Model {
                         // 操作制定的关联
                         $mappingType = !empty($val['mapping_type'])?$val['mapping_type']:$val;  //  关联类型
                         $mappingClass  = !empty($val['class_name'])?$val['class_name']:$key;            //  关联类名
+                        $mappingKey =!empty($val['mapping_key'])? $val['mapping_key'] : $this->getPk(); // 关联键名
                         // 当前数据对象主键值
-                        $pk =   $data[$this->getPk()];
+                        $pk =   $data[$mappingKey];
                         if(strtoupper($mappingClass)==strtoupper($this->name)) {
                             // 自引用关联 获取父键名
                             $mappingFk   =   !empty($val['parent_key'])? $val['parent_key'] : 'parent_id';
                         }else{
                             $mappingFk   =   !empty($val['foreign_key'])?$val['foreign_key']:strtolower($this->name).'_id';     //  关联外键
                         }
-                        $mappingCondition = !empty($val['condition'])?  $val['condition'] :  "{$mappingFk}='{$pk}'";
+                        if(!empty($val['condition'])) {
+                            $mappingCondition   =   $val['condition'];
+                        }else{
+                            $mappingCondition               =   array();
+                            $mappingCondition[$mappingFk]   =   $pk;
+                        }
                         // 获取关联model对象
                         $model = D($mappingClass);
                         $mappingData    =   isset($data[$mappingName])?$data[$mappingName]:false;
@@ -315,7 +295,7 @@ class RelationModel extends Model {
                                                 $mappingCondition   =  "$pk ={$vo[$pk]}";
                                                 $result   =  $model->where($mappingCondition)->save($vo);
                                             }else{ // 新增数据
-                                                $vo[$mappingFk] =  $data[$this->getPk()];
+                                                $vo[$mappingFk] =  $data[$mappingKey];
                                                 $result   =  $model->add($vo);
                                             }
                                         }
@@ -332,7 +312,7 @@ class RelationModel extends Model {
                                     if(is_array($mappingData)) {
                                         $ids   = array();
                                         foreach ($mappingData as $vo)
-                                            $ids[]   =   $vo[$model->getPk()];
+                                            $ids[]   =   $vo[$mappingKey];
                                         $relationId =   implode(',',$ids);
                                     }
                                     switch (strtoupper($opType)){
@@ -367,15 +347,10 @@ class RelationModel extends Model {
     }
 
     /**
-     +----------------------------------------------------------
      * 进行关联查询
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @param mixed $name 关联名称
-     +----------------------------------------------------------
      * @return Model
-     +----------------------------------------------------------
      */
     public function relation($name) {
         $this->options['link']  =   $name;
@@ -383,15 +358,10 @@ class RelationModel extends Model {
     }
 
     /**
-     +----------------------------------------------------------
      * 关联数据获取 仅用于查询后
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @param string $name 关联名称
-     +----------------------------------------------------------
      * @return array
-     +----------------------------------------------------------
      */
     public function relationGet($name) {
         if(empty($this->data))

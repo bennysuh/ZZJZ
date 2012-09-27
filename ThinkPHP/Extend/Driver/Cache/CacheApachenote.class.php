@@ -8,63 +8,59 @@
 // +----------------------------------------------------------------------
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
-// $Id: CacheApachenote.class.php 2728 2012-02-12 04:12:51Z liu21st $
 
+defined('THINK_PATH') or exit();
 /**
- +-----------------------------------------
- * Apachenote缓存驱动类
- +-----------------------------------------
+ * Apachenote缓存驱动
+ * @category   Extend
+ * @package  Extend
+ * @subpackage  Driver
+ * @author    liu21st <liu21st@gmail.com>
  */
 class CacheApachenote extends Cache {
 
     /**
-     +----------------------------------------------------------
      * 架构函数
-     +----------------------------------------------------------
+     * @param array $options 缓存参数
      * @access public
-     +----------------------------------------------------------
      */
-    public function __construct($options='') {
-        if(empty($options)){
-            $options = array(
-                'host' => '127.0.0.1',
-                'port' => 1042,
-                'timeout' => 10,
-                'length'   =>0
+    public function __construct($options=array()) {
+        if(!empty($options)) {
+            $this->options =  $options;
+        }
+        if(empty($options)) {
+            $options = array (
+                'host'        =>  '127.0.0.1',
+                'port'        =>  1042,
+                'timeout'     =>  10,
             );
         }
+        $this->options  =   $options;
+        $this->options['prefix']    =   isset($options['prefix'])?  $options['prefix']  :   C('DATA_CACHE_PREFIX');
+        $this->options['length']    =   isset($options['length'])?  $options['length']  :   0;
         $this->handler = null;
         $this->open();
-        $this->options = $options;
     }
 
     /**
-     +----------------------------------------------------------
      * 是否连接
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @return boolen
-     +----------------------------------------------------------
      */
     public function isConnected() {
         return $this->connected;
     }
 
     /**
-     +----------------------------------------------------------
      * 读取缓存
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @param string $name 缓存变量名
-     +----------------------------------------------------------
      * @return mixed
-     +----------------------------------------------------------
      */
      public function get($name) {
          $this->open();
-         $s = 'F' . pack('N', strlen($name)) . $name;
+         $name  =   $this->options['prefix'].$name;
+         $s     =   'F' . pack('N', strlen($name)) . $name;
          fwrite($this->handler, $s);
 
          for ($data = ''; !feof($this->handler);) {
@@ -76,22 +72,18 @@ class CacheApachenote extends Cache {
      }
 
     /**
-     +----------------------------------------------------------
      * 写入缓存
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @param string $name 缓存变量名
      * @param mixed $value  存储数据
-     +----------------------------------------------------------
      * @return boolen
-     +----------------------------------------------------------
      */
     public function set($name, $value) {
         N('cache_write',1);
         $this->open();
-        $value = serialize($value);
-        $s = 'S' . pack('NN', strlen($name), strlen($value)) . $name . $value;
+        $value  =   serialize($value);
+        $name   =   $this->options['prefix'].$name;        
+        $s      =   'S' . pack('NN', strlen($name), strlen($value)) . $name . $value;
 
         fwrite($this->handler, $s);
         $ret = fgets($this->handler);
@@ -107,31 +99,24 @@ class CacheApachenote extends Cache {
     }
 
     /**
-     +----------------------------------------------------------
      * 删除缓存
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @param string $name 缓存变量名
-     +----------------------------------------------------------
      * @return boolen
-     +----------------------------------------------------------
      */
      public function rm($name) {
-         $this->open();
-         $s = 'D' . pack('N', strlen($name)) . $name;
-         fwrite($this->handler, $s);
-         $ret = fgets($this->handler);
-         $this->close();
-         return $ret === "OK\n";
+        $this->open();
+        $name   =   $this->options['prefix'].$name;         
+        $s      =   'D' . pack('N', strlen($name)) . $name;
+        fwrite($this->handler, $s);
+        $ret    = fgets($this->handler);
+        $this->close();
+        return $ret === "OK\n";
      }
 
     /**
-     +----------------------------------------------------------
      * 关闭缓存
-     +----------------------------------------------------------
      * @access private
-     +----------------------------------------------------------
      */
      private function close() {
          fclose($this->handler);
@@ -139,11 +124,8 @@ class CacheApachenote extends Cache {
      }
 
     /**
-     +----------------------------------------------------------
      * 打开缓存
-     +----------------------------------------------------------
      * @access private
-     +----------------------------------------------------------
      */
      private function open() {
          if (!is_resource($this->handler)) {

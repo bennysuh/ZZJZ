@@ -6,29 +6,27 @@
 // +----------------------------------------------------------------------
 // | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
 // +----------------------------------------------------------------------
-// | Author: ZhangXuehun <zhangxuehun@sohu.com>
+// | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
-// $Id: DbOracle.class.php 2729 2012-02-12 04:13:34Z liu21st $
 
+defined('THINK_PATH') or exit();
 /**
-+------------------------------
-* Oracle数据库驱动类
-+------------------------------
-*/
+ * Oracle数据库驱动
+ * @category   Extend
+ * @package  Extend
+ * @subpackage  Driver.Db
+ * @author    ZhangXuehun <zhangxuehun@sohu.com>
+ */
 class DbOracle extends Db{
 
-    private $mode = OCI_COMMIT_ON_SUCCESS;
-    private $table  =  '';
-    protected $selectSql  =     'SELECT * FROM (SELECT thinkphp.*, rownum AS numrow FROM (SELECT  %DISTINCT% %FIELD% FROM %TABLE%%JOIN%%WHERE%%GROUP%%HAVING%%ORDER%) thinkphp ) %LIMIT%';
+    private     $mode         = OCI_COMMIT_ON_SUCCESS;
+    private     $table        = '';
+    protected   $selectSql    = 'SELECT * FROM (SELECT thinkphp.*, rownum AS numrow FROM (SELECT  %DISTINCT% %FIELD% FROM %TABLE%%JOIN%%WHERE%%GROUP%%HAVING%%ORDER%) thinkphp ) %LIMIT%';
 
     /**
-     +----------------------------------------------------------
      * 架构函数 读取数据库配置信息
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @param array $config 数据库配置数组
-     +----------------------------------------------------------
      */
     public function __construct($config=''){
         putenv("NLS_LANG=AMERICAN_AMERICA.UTF8");
@@ -44,13 +42,8 @@ class DbOracle extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * 连接数据库方法
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
-     * @throws ThinkExecption
-     +----------------------------------------------------------
      */
     public function connect($config='',$linkNum=0) {
         if ( !isset($this->linkID[$linkNum]) ) {
@@ -60,8 +53,7 @@ class DbOracle extends Db{
             $this->linkID[$linkNum] = $conn($config['username'], $config['password'],$config['database']);//modify by wyfeng at 2008.12.19
 
             if (!$this->linkID[$linkNum]){
-                $error = $this->error(false);
-                throw_exception($error["message"], '', $error["code"]);
+                $this->error(false);
             }
             // 标记连接成功
             $this->connected = true;
@@ -72,11 +64,8 @@ class DbOracle extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * 释放查询结果
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      */
      public function free() {
         oci_free_statement($this->queryID);
@@ -84,17 +73,10 @@ class DbOracle extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * 执行查询 返回数据集
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @param string $str  sql指令
-     +----------------------------------------------------------
      * @return mixed
-     +----------------------------------------------------------
-     * @throws ThinkExecption
-     +----------------------------------------------------------
      */
     public function query($str) {
         $this->initConnect(false);
@@ -118,17 +100,10 @@ class DbOracle extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * 执行语句
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @param string $str  sql指令
-     +----------------------------------------------------------
      * @return integer
-     +----------------------------------------------------------
-     * @throws ThinkExecption
-     +----------------------------------------------------------
      */
      public function execute($str) {
         $this->initConnect(true);
@@ -161,15 +136,9 @@ class DbOracle extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * 启动事务
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @return void
-     +----------------------------------------------------------
-     * @throws ThinkExecption
-     +----------------------------------------------------------
      */
      public function startTrans() {
         $this->initConnect(true);
@@ -183,21 +152,16 @@ class DbOracle extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * 用于非自动提交状态下面的查询提交
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @return boolen
-     +----------------------------------------------------------
-     * @throws ThinkExecption
-     +----------------------------------------------------------
      */
     public function commit(){
         if ($this->transTimes > 0) {
             $result = oci_commit($this->_linkID);
             if(!$result){
-                throw_exception($this->error());
+                $this->error();
+                return false;
             }
             $this->transTimes = 0;
         }
@@ -205,21 +169,16 @@ class DbOracle extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * 事务回滚
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @return boolen
-     +----------------------------------------------------------
-     * @throws ThinkExecption
-     +----------------------------------------------------------
      */
      public function rollback(){
         if ($this->transTimes > 0) {
             $result = oci_rollback($this->_linkID);
             if(!$result){
-                throw_exception($this->error());
+                $this->error();
+                return false;
             }
             $this->transTimes = 0;
         }
@@ -227,15 +186,9 @@ class DbOracle extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * 获得所有的查询数据
-     +----------------------------------------------------------
      * @access private
-     +----------------------------------------------------------
      * @return array
-     +----------------------------------------------------------
-     * @throws ThinkExecption
-     +----------------------------------------------------------
      */
      private function getAll() {
         //返回数据集
@@ -252,13 +205,8 @@ class DbOracle extends Db{
 
 
     /**
-     +----------------------------------------------------------
      * 取得数据表的字段信息
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
-     * @throws ThinkExecption
-     +----------------------------------------------------------
      */
      public function getFields($tableName) {
         $result = $this->query("select a.column_name,data_type,decode(nullable,'Y',0,1) notnull,data_default,decode(a.column_name,b.column_name,1,0) pk "
@@ -282,13 +230,8 @@ class DbOracle extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * 取得数据库的表信息（暂时实现取得用户表信息）
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
-     * @throws ThinkExecption
-     +----------------------------------------------------------
      */
     public function getTables($dbName='') {
         $result = $this->query("select table_name from user_tables");
@@ -300,11 +243,8 @@ class DbOracle extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * 关闭数据库
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      */
     public function close() {
         if($this->_linkID){
@@ -314,50 +254,38 @@ class DbOracle extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * 数据库错误信息
      * 并显示当前的SQL语句
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @return string
-     +----------------------------------------------------------
-     * @throws ThinkExecption
-     +----------------------------------------------------------
      */
      public function error($result = true) {
         if($result){
-           $this->error = oci_error($this->queryID);
+           $error = oci_error($this->queryID);
         }elseif(!$this->_linkID){
-            $this->error = oci_error();
+            $error = oci_error();
         }else{
-            $this->error = oci_error($this->_linkID);
+            $error = oci_error($this->_linkID);
         }
-        if($this->debug && '' != $this->queryStr){
-            $this->error .= "\n [ SQL语句 ] : ".$this->queryStr;
+        if('' != $this->queryStr){
+            $error['message'] .= "\n [ SQL语句 ] : ".$this->queryStr;
         }
+        $result? trace($error['message'],'','ERR'):throw_exception($error['message'],'',$error['code']);
+        $this->error    =   $error['message'];
         return $this->error;
     }
 
     /**
-     +----------------------------------------------------------
      * SQL指令安全过滤
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @param mix $str  SQL指令
-     +----------------------------------------------------------
      * @return string
-     +----------------------------------------------------------
-     * @throws ThinkExecption
-     +----------------------------------------------------------
      */
     public function escapeString($str) {
         return str_ireplace("'", "''", $str);
     }
 
     /**
-     +----------------------------------------------------------
      * 获取最后插入id ,仅适用于采用序列+触发器结合生成ID的方式
      * 在config.php中指定
      'DB_TRIGGER_PREFIX'	=>	'tr_',
@@ -378,13 +306,8 @@ class DbOracle extends Db{
      begin
      select "TS_USER".nextval into :NEW.ID from dual;
      end;
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @return integer
-     +----------------------------------------------------------
-     * @throws ThinkExecption
-     +----------------------------------------------------------
      */
     public function insertLastId() {
         if(empty($this->table)) {
@@ -396,13 +319,9 @@ class DbOracle extends Db{
     }
 
     /**
-     +----------------------------------------------------------
      * limit
-     +----------------------------------------------------------
      * @access public
-     +----------------------------------------------------------
      * @return string
-     +----------------------------------------------------------
      */
 	public function parseLimit($limit) {
         $limitStr    = '';
