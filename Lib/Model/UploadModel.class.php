@@ -14,11 +14,13 @@ class UploadModel extends Model {
 			return false;
 		}
 	}
-	public function updateFile($data)
+	//更新tip 和isshow
+	public function updateFile($data,$cond)
 	{
 		if($data){
-			$result = M("zz_upload")->data($data)->save();
-			if($result){
+			$result = M("zz_upload")->where($cond)->data($data)->save();
+			Log::write(M()->getLastSql());
+			if(is_int($result)){
 				return true;
 			}else{
 				return false;
@@ -27,7 +29,19 @@ class UploadModel extends Model {
 			return false;
 		}
 	}
-
+	public function getFiles($data)
+	{
+		if($data){
+			$result = M("zz_upload")->where($data)->order("sortIndex asc")->select();
+			if($result){
+				return $result;
+			}else{
+				return false;
+			}
+		}else{
+			return false;
+		}	
+	}
 	/**
 	 +----------------------------------------------------------
 	 * 删除文件

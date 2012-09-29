@@ -21,7 +21,7 @@ class StaffAction extends EntryAction {
 		//导入分页类
 		$keyword = $_GET['name'];
 		$M = new Model();
-		$sql = "SELECT parent.staffid, parent.name,parent.isHidden,sub.fieldA as contact,sub.type,sub.id
+		$sql = "SELECT parent.staffid,parent.ygbh,parent.updatetime, parent.name,parent.isHidden,sub.fieldA as contact,sub.type,sub.id
 			FROM  `zz_staff` AS parent, zz_contact AS sub
 			WHERE parent.staffId = sub.no and parent.isHidden = 1 and parent.name like '%$keyword%' 
 			GROUP BY parent.name 
@@ -136,6 +136,7 @@ class StaffAction extends EntryAction {
 			$this -> assign("birthday", $staffInfo["birthday"]);
 			$this -> assign("whcd", $staffInfo["whcd"]);
 			$this -> assign("gzjy", $staffInfo["gzjy"]);
+			$this -> assign("ygbh", $staffInfo["ygbh"]);
 			// $this -> assign("phone", $staffInfo["phone"]);
 			$this -> assign("staffId", $staffId);
 			$this -> assign("images", $staffInfo["images"]);
@@ -153,10 +154,17 @@ class StaffAction extends EntryAction {
 			$contact = M("zz_contact");
 			$contactArr = $contact -> where("no = " . $staffId . " and tableName = 'zz_staff'") -> order("id") -> select();
 			$this -> assign("contactList", $contactArr);
+			$data['pid'] = $staffInfo["ygbh"];
+			$data['tablename'] = "zz_staff";
+			$picList = D("Upload")->getFiles($data);
+			Log::write(M()->getLastSql());
+			$this->assign("picList",$picList);
 			$this -> display();
 			//不要显示2次display。
 		} else {
 			$this -> initOptions();
+			$no = $this->createYgbh();
+			$this->assign("ygbh",$no);
 			$this -> assign('jg_province', '20');//默认广东
 			$this -> display();
 		}
@@ -235,13 +243,13 @@ class StaffAction extends EntryAction {
 		$json = $_POST["json"];
 		if($json){
 			$json = str_replace("\\","",$json);
-			$arr=json_decode($json);
+			$json=json_decode($json);
+			$arr = objectToArray($json);
 			$M = D('Upload');
-			
 			foreach ($arr as $key => $value) {
-				$arr['tablename'] = "zz_staff";
-				$arr['type'] = "pic";
-				$result = $M->addFile($arr);
+				$value['tablename'] = "zz_staff";
+				$value['type'] = "pic";
+				$result = $M->addFile($value);
 				if(!$result){
 					$this->error("上传失败");
 				}
@@ -251,12 +259,15 @@ class StaffAction extends EntryAction {
 			$this->error("no params");
 		}
 	}
+	//删除上传
 	public function removeUpload()
 	{
-		if($_POST("pid")){
-			$data['pid'] = $_POST['pid'];
-			$data['tablename'] = $_POST['tablename'];
-			$data['index'] = $_POST['index'];
+		if($_POST["json"]){
+			$json = $_POST["json"];
+			$json = str_replace("\\","",$json);
+			$json=json_decode($json);
+			$data = objectToArray($json);
+			$data['tablename'] = "zz_staff";
 			$M = D('Upload');
 			$result = $M->removeFile($data);
 			if($result){
@@ -268,10 +279,67 @@ class StaffAction extends EntryAction {
 			$this->error("no params");
 		}
 	}
-	//更新上传文件索引
-	public function updateFileIndex()
+	//更新上传文件简介
+	public function updateTip()
 	{
-		
+		if($_POST["json"]){
+			$json = $_POST["json"];
+			$json = str_replace("\\","",$json);
+			$json=json_decode($json);
+			$data = objectToArray($json);
+			$M = D('Upload');
+			$cond = "path = '" . $data['path'] . "' and tablename='zz_staff' and pid='" . $data['pid'] ."'";
+			unset($data['path']);
+			unset($data['pid']);
+			$result = $M->updateFile($data,$cond);
+			if($result){
+				$this->success("success");
+			}else{
+				$this->error("save error");
+			}
+		}else{
+			$this->error("no params");
+		}
+	}
+	//更新上传文件排列顺序
+	public function updateIndex()
+	{
+		if($_POST["json"]){
+			$json = $_POST["json"];
+			$json = str_replace("\\","",$json);
+			$json=json_decode($json);
+			$data = objectToArray($json);
+			$M = D('Upload');
+			$cond = "id='" . $data['id'] ."'";
+			switch ($data['action']) {
+				case 'up':
+					$changeData['sortIndex'] = $data['upIndex'];
+					break;
+				case 'down':
+					$changeData['sortIndex'] = $data['downIndex'];
+					break;
+			}
+			//将更改的两个记录的index调换
+			$result = $M->updateFile($changeData,$cond);
+			switch ($data['action']) {
+				case 'up':
+					$cond = "id='" . $data['upId'] ."'";
+					break;
+				case 'down':
+					$cond = "id='" . $data['downId'] ."'";
+					break;
+			}
+			$cond = "id='" . $data['upId'] ."'";
+			$changeData['sortIndex'] = $data['index'];
+			$result2 = $M->updateFile($changeData,$cond);
+			if($result && $result2){
+				$this->success("success");
+			}else{
+				$this->error("save error");
+			}
+		}else{
+			$this->error("no params");
+		}
 	}
 	/**
 	 +----------------------------------------------------------
@@ -365,11 +433,10 @@ class StaffAction extends EntryAction {
 		$json=json_decode($json);
 		$postData = objectToArray($json);//若json带引号则无法取到
 		$s_thumb = $postData["thumbUrl"];
-		$s_thumb = substr($s_thumb, strpos($s_thumb, "/")+1);
+		$s_thumb = "Public/Uploads/Staff/" . $s_thumb;
 		$m_thumb = str_replace("s_", "m_", $s_thumb);
-		Log::write($s_thumb . "," . $m_thumb);
 		if(unlink($s_thumb) && unlink($m_thumb)){
-			$this -> success($postData["index"]);
+			$this -> success($postData["thumbUrl"]);
 		}else{
 			$this -> error("删除失败");
 		}
@@ -567,6 +634,32 @@ class StaffAction extends EntryAction {
 		$this -> assign('page', $page);
 		$this -> assign('list', $list);
 		$this -> display();
+	}
+	
+	/**
+     +----------------------------------------------------------
+     * 生成編號
+     +----------------------------------------------------------
+	 * @access public
+     +----------------------------------------------------------
+     */
+	private function createYgbh()
+	{
+		//当前年份
+		$date = getdate();
+		$maxNo = M("zz_staff")->max("ygbh");//获取最近的编号
+		if($maxNo){//若存在
+			$num = (int)substr($maxNo,9) + 1;
+			if(strlen($num) == 1){
+				$num = "00" . $num;
+			}elseif(strlen($num) == 2){
+				$num = "0" . $num;				
+			}
+			$maxNo = substr($maxNo,0,9) . $num;
+		}else{
+			$maxNo = "ZZ_STAFF_".$year."001";
+		}
+		return $maxNo;
 	}
 }
 ?>

@@ -108,14 +108,18 @@ $(document).ready(function(){
             <table id="staffList">
               <tr class="tableHeader">
                 <!-- F代表Form -->
+                <th class="nameF">员工编号</th>
                 <th class="nameF">姓名</th>
                 <th class="emailField">联系方式</th>
+                <th class="emailField">更新日期</th>
 				<th class="tableActionTD">操作</th>
               </tr>
               <volist name="list" id="vo">
 			  <tr staffId={$vo['staffid']}>
+			  	<td>{$vo['ygbh']}</td>
                 <td>{$vo['name']}</td>
 				<td>{$vo['contact']}</td>
+				<td>{$vo['updatetime']}</td>
 				<td style="width:350px;">
 					<input type="button" value="編輯" class="tableActionButton"/>
 					<input type="button" value="刪除" class="tableActionButton"/>

@@ -1272,9 +1272,7 @@ input[type="checkbox"] {
 	width: 120px;
 	border:none !important;
 }
-<<<<<<< HEAD
 
-=======
 /**查询INPUT**/
 .searchInput{
 	width:250px;
@@ -1284,4 +1282,6 @@ input[type="checkbox"] {
 #searchBtn1,#searchBtn2,#searchBtn3 {
 	margin-left: 10px;
 }
->>>>>>> e6c838ef24cf4c8f51ef3a205b0e0d6e0f08ecbb
+.delImg {
+	cursor:hand;
+}

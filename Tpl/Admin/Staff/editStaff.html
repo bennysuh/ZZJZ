@@ -105,16 +105,8 @@
 			}
 			//联系方式回调
 			function relHandler(r){
-				// 保存上传图片
-				if(fileArr.length > 0){
-					$.post(root + '/Admin/Staff/addUpload',{json:$.toJSON(fileArr)},function(response){
-						loading.hide();
-						alert(response.info);
-						window.location.href = root + "/Staff";
-					},"json");
-				}
 				loading.hide();
-				alert(response.info);
+				alert(r.info);
 				window.location.href = root + "/Staff";
 			}
 				
@@ -131,62 +123,98 @@
             $("input[name=showWeb]").live("click",function(){
             	$("#imgShowIndex").val(this.selectedIndex);
             });
-            //删除上传图片
-            $("#thumbList").delegate("input[type='button']","click",function(){
+            //图片action 操作
+            $("#thumbList").delegate("input.action","click",function(){
+            	loading.show();
             	var operate = $(this).attr("operate");
             	var data = {};
             	switch(operate){
             		case "del":
-            			var imgSrc = $(this).prev().attr("src");// 格式：/Public/Uploads/Staff/XX.JPG
-		            	data.thumbUrl = imgSrc.substr(1);// 去掉首个“/” 带个/表示的是web地址？在action中删除操作的地址是不能带/的
-		            	data.index = $(this).parents("tr").attr("index");
-		            	$.post(root + '/Admin/Staff/removeThumb',$.toJSON(data),removeThumbHandler,"json");
+        				var tr = $(this).parents("tr");
+            			var imgSrc = tr.attr("path");
+		            	data.thumbUrl = imgSrc;
+		            	$.post(root + '/Admin/Staff/removeThumb',{json:$.toJSON(data)},removeThumbHandler,"json");
+		            	tr.remove();
             			break;
             		case "up":
+            			var tr = $(this).parents("tr");
+            			if(tr.index() == 0) return;//在第一行
+            			//当前行的index和id
+            			data.index = tr.attr("index");
+		            	data.id = tr.attr("uploadId");
+		            	//获取上一行的index和id
+		            	var preTr = tr.prev();
+		            	data.upId = preTr.attr("uploadId");
+		            	data.upIndex = preTr.attr("index");
+		            	data.action = "up";
+		            	$.post(root + '/Admin/Staff/updateIndex',{json:$.toJSON(data)},function(response){
+		            		loading.hide();
+		            		if(response.status){
+		            			console.log("up成功");
+		            			tr.insertBefore(tr.prev());//将当前tr放入前一个tr中
+		            		}else{
+		            			alert(response.info);
+		            		}
+		            		
+		            	},"json");
             			break;
             		case "down":
+            			var tr = $(this).parents("tr");
+            			if(tr.index() == 0) return;//在第一行
+            			//当前行的index和id
+            			data.index = tr.attr("index");
+		            	data.id = tr.attr("uploadId");
+		            	//获取上一行的index和id
+		            	var nextTr = tr.next();
+		            	data.downId = nextTr.attr("uploadId");
+		            	data.downIndex = nextTr.attr("index");
+		            	data.action = "down";
+		            	$.post(root + '/Admin/Staff/updateIndex',{json:$.toJSON(data)},function(response){
+		            		loading.hide();
+		            		if(response.status){
+		            			console.log("down成功");
+		            			tr.insertBefore(tr.prev());//将当前tr放入前一个tr中
+		            		}else{
+		            			alert(response.info);
+		            		}
+		            		
+		            	},"json");
             			break;
             		case "update":
+            			var tr = $(this).parents("tr");
+		            	data.tip = tr.find(".tip").val();
+		            	data.pid = $("#ygbh").val();
+		            	data.isShow = tr.find("select.action").val();
+		            	data.path = tr.attr("path");
+		            	$.post(root + '/Admin/Staff/updateTip',{json:$.toJSON(data)},function(response){
+		            		loading.hide();
+		            		if(response.status){
+		            			alert("保存成功");
+		            		}else{
+		            			alert(response.info);
+		            		}
+		            		
+		            	},"json");
+            			break;
+            		default:
+            			loading.hide();
             			break;
             	}
-            	
-            });
-            // $("#thumbList").delegate(".upBtn","click",function(){
-            	// var data = {};
-            	// data.thumbUrl = imgSrc.substr(1);// 去掉首个“/” 带个/表示的是web地址？在action中删除操作的地址是不能带/的
-            	// data.index = $(this).parent().index();
-            	// $.post(root + '/Admin/Staff/updateFileIndex',{json:$.toJSON(data)},function(response){
-//             		
-            	// },"json");
-            // })
-            // $("#thumbList").delegate(".downBtn","click",function(){
-            	// var data = {};
-            	// data.thumbUrl = imgSrc.substr(1);// 去掉首个“/” 带个/表示的是web地址？在action中删除操作的地址是不能带/的
-            	// data.index = $(this).parent().index();
-            	// $.post(root + '/Admin/Staff/updateFileIndex',{json:$.toJSON(data)},function(response){
-//             		
-            	// },"json");
-            // })
-            // $("#thumbList").delegate(".updateBtn","click",function(){
-            	// var data = {};
-            	// data.thumbUrl = imgSrc.substr(1);// 去掉首个“/” 带个/表示的是web地址？在action中删除操作的地址是不能带/的
-            	// data.index = $(this).parent().index();
-            	// $.post(root + '/Admin/Staff/updateFileIndex',{json:$.toJSON(data)},function(response){
-//             		
-            	// },"json");
-            // })
+            })
+
             function removeThumbHandler(response){
+            	loading.hide();
             	if(response.status){
             		//删除Li图片
 	            	$("#thumbList tr").eq(response.info).remove();//info表示第几个图片
 	            	//重置上传图片地址 INPUT
-	            	// $("#uploadImages").val("");
-	            	// var images = "";
-	            	// $("#thumbList tr").each(function(){
-	            		// images += $(this).find(".uploadImg").eq(0).attr("src") + ",";
-	            	// });
-	            	// images = images.substr(0,1);
-	            	// //$("#uploadImages").val(images);
+	            	$("#uploadImages").val("");
+	            	var images = "";
+	            	$("#thumbList tr").each(function(){
+	            		images += $(this).find(".uploadImg").eq(0).attr("src") + ",";
+	            	});
+	            	images = images.substr(0,1);
+	            	$("#uploadImages").val(images);
 	            	removeFileData(response.info);
             	}else{
             		alert(response.info);
@@ -264,47 +292,47 @@
 		});
 		//上传完后回调 
 		function uploadComplete(name){
-			// var oldImgName = $("#uploadImages").val();
-			// if(oldImgName)
-				// $("#uploadImages").val(oldImgName+","+name);
-			// else
-				// $("#uploadImages").val(name);
+			var oldImgName = $("#uploadImages").val();
+			if(oldImgName)
+				$("#uploadImages").val(oldImgName+","+name);
+			else
+				$("#uploadImages").val(name);
 			var tmp = name.split(",");
         	var ele = "";
-        	        	// $.each(tmp,function(i){
-        		// var obj = this;
-    			// ele += "<tr><td><img  src='__PUBLIC__/Uploads/Staff/" + obj + "' class='uploadImg'/></td>"
-    			 // + "<td><input value=" + fileArr[i].tip + " /></td>" 
-    			 // + "<td><select ><option value='1'>显示</option><option value='0'>隐藏</option></select></td>" 
-    			 // + "<td><input value=" + obj.index + " /></td>" 
-    			 // + "<td><input type='button' value='up' operate='up'/><input operate='down' type='button' value='down' /></td>" 
-    			 // + "<td><input type='button' value='保存' operate='update'/></td>"
-    			 // + "<td><img class='delImg' src='__PUBLIC__/style/img/delete.png' /></td></tr>";
-	        // }) 
+        	$.each(tmp,function(i){
+        		var obj = this;
+    			ele += "<tr><td><img  src='__PUBLIC__/Uploads/Staff/" + obj + "' class='uploadImg'/></td>"
+    			 + "<td><input value=" + fileArr[i].tip + " /></td>" ;
+    			if(fileArr[i].isShow==true){
+    				ele += "<td><select class='action' ><option value='1' selected='true'>显示</option><option value='0'>隐藏</option></select></td>";
+    			}else{
+    				ele += "<td><select class='action' ><option value='1'>显示</option><option value='0' selected='true'>隐藏</option></select></td>";
+    			} 
+    			 ele += "<td><input type='button' value='up' operate='up' class='action'/><input class='action' operate='down' type='button' value='down' /></td>" 
+    			 + "<td><input operate='update' class='action'  value='保存' /></td>"
+    			 + "<td><input type='button' value='删除' operate='del' class='action'/></td></tr>";
+	        }) 
 	        //显示上传的缩略图
-        	//$("#thumbList tbody").append(ele);
+        	$("#thumbList tbody").append(ele);
         	addUpload(tmp);
         }
-        //上传信息写入数据库
+        //上传信息写入数据库 
+        //paths:生成的缩略图文件名
         function addUpload(paths)
         {
-        	console.log(paths);
-        	var fileInfo={};
-        	var data = [];
         	if(paths){
         		$.each(paths,function(i){
-        			fileInfo.path = this.toString();
-        			$("#tbl").find("tr").each(function(){
-	        			fileInfo = {};//必须重置对象否则会导致所有项都是最后一项
-		        		fileInfo.tip = $(this).find(".tip").val();
-		        		fileInfo.isShow = $(this).find(".isShow").eq(0).val();
-		        		fileInfo.index = $(this).index();
-		        		console.log(fileInfo);
-		        		data.push(fileInfo);
-		        	});
+        			var path = this.toString();
+        			if(fileArr.length > 0 ){
+        				$.each(fileArr,function(k){
+        					if(k === i){
+        						fileArr[k].path = path;
+        					}
+        				})
+        			}
         		});
-	        	$.post(root + "/Admin/Staff/addUpload",{json:$.toJSON(data)},function uploadHandler (response) {
-				  alert(response.info);
+	        	$.post(root + "/Admin/Staff/addUpload",{json:$.toJSON(fileArr)},function uploadHandler (response) {
+				  //alert(response.info);
 				},"json");
         	}else{
         		console.log("no file upload");
@@ -335,46 +363,37 @@
         //上传
         function uploading(){
         	if($("#tbl").find("input[type=file]").length == 0) return;
-        	
+        	getFileInfo();
             $('#result').css("display",'block');
             $('#result').html('<img src="__PUBLIC__/style/img/ajaxloading.gif" width="16" height="16" border="0" alt="" align="absmiddle"> 文件上传中～');
             $('#upload')[0].submit();  
-            getFileInfo();
         }
-        //获取上传文件信息
+        //上传前获取上传文件信息
         function getFileInfo(paths)
         {
-        	fileInfo={};
+        	fileArr = [];
         	if(paths){
         		$.each(paths,function(i){
         			fileArr[i].path = this.toString();
         		});
         	}else{
         		$("#tbl").find("tr").each(function(){
-        			fileInfo = {};//必须重置对象否则会导致所有项都是最后一项
+        			var fileInfo = {};
 	        		fileInfo.tip = $(this).find(".tip").val();
 	        		fileInfo.isShow = $(this).find(".isShow").eq(0).val();
 	        		fileInfo.index = $(this).index();
+	        		fileInfo.pid = $("#ygbh").val();
 	        		fileArr.push(fileInfo);
 	        	});
         	}
         }
         //删除上传信息
-        function removeFileData(index)
+        function removeFileData(path)
         {
-        	$.each(fileArr,function(i){
-        		if(i === index){
-        			fileArr.splice(i,1);
-        		}else if(i > index){
-        			fileArr[i-1].index -= 1;//删除图片之后的索引递减1
-        		}
-        	})
-        	if(status == "add") return;
         	var data = {};
-        	data.index = index;
-        	data.pid = $("#staffId").val();
-        	data.tablename = "zz_staff";
-        	$.post(root+"/Admin/Staff/removeUpload",data,function(response){
+        	data.path = path;
+        	data.pid = $("#ygbh").val();
+        	$.post(root+"/Admin/Staff/removeUpload",{json:$.toJSON(data)},function(response){
         		console.log(response.info);
         	},"json");
         }
@@ -408,12 +427,18 @@
 				<!--<div class="groupTitle">
 					<h2 class="pageTitle">新增/編輯员工</h2>
 				</div>-->
-				<div class="locationInfo">
+				<div class="locationInfo" id="locationInfo">
 					<form id="staffInfoForm">
 						<input name="staffId" id="staffId" type="text" style="display:none;" value="{$staffId}" />
 						<input name="images" id="uploadImages" type="text" style="display:none;" value="{$images}" />
 						<input name="imgShowIndex" id="imgShowIndex" type="text" style="display:none;" value="{$imageShowIndex}" />
 						<table class="noBackground">
+							<tr>
+								<td class="noBackground inputName">员工编号:</td>
+								<td class="noBackground inputText">
+								<input name="ygbh" id="ygbh" type="text" style="width: 300px;" readonly="readonly" value="{$ygbh}" />
+								</td>
+							</tr>
 							<tr>
 								<td class="noBackground inputName">姓名:</td>
 								<td class="noBackground inputText">
@@ -553,6 +578,7 @@
 										<input type="submit" value="上 传" onclick="uploading();" class="actionButton" />
 										<!--上传文件列表-->
 	                                    <table id='tbl' style="clear:both">
+	                                    	
 	                                    </table>
 	                                </td>
 	                            </tr>
@@ -570,14 +596,14 @@
 								<th>保存</th>
 								<th>删除</th>
 							</tr>
-							<volist name='list' id='vo' key="k">
-								<tr uploadId="{$vo['id']}" index="{$vo['index']}">
-									<td><img  src="__PUBLIC__/Uploads/Staff/{$vo[path]}"  class='uploadImg'></td>
-									<td><input value="$vo[tip]"/></td>
-									<td><input value="$vo[isShow]"/></td>
-									<td><input type="button" value="up" operate="up"/><input operate="down" type="button" value="down" /></td>
-									<td><input type="button" value="保存" operate="update"/></td>
-									<td><input type="button" value="删除" operate="del"/></td>
+							<volist name='picList' id='picVo' key="k">
+								<tr uploadId="{$picVo['id']}" index="{$picVo['sortIndex']}" path="{$picVo['path']}">
+									<td><img  src="__PUBLIC__/Uploads/Staff/{$picVo[path]}"  class='uploadImg'></td>
+									<td><input value="{$picVo[tip]}" class="tip"/></td>
+									<td><select class="action" operation="isShow"><option value='1' <if condition="$picVo[isShow] eq true">selected="selected"</if> >显示</option><option value='0' <if condition='$picVo[isShow] eq false'>selected="selected"</if> >隐藏</option></select></td>
+									<td><input type="button" value="up" operate="up" class="action"/><input operate="down" class="action" type="button" value="down" /></td>
+									<td><input type="button" value="保存" operate="update" class="action"/></td>
+									<td><input type="button" value="删除" operate="del" class="action"/></td>
 								</tr>
 							</volist>
 						</table>
