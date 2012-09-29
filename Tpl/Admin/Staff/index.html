@@ -21,8 +21,7 @@
 <!--
 var actionName = '__ACTION__';
 $(document).ready(function(){
-     //导航选中
-	$(".navList li[name=setting]").addClass('selectButton');
+	var loading = new ol.loading({id:"staffInfoForm"});
 	$('#searchBtn').click(function(){
 	    var postData = $("#searchForm").serialize();
 		var url = "__ROOT__/Admin/Staff/?" + postData;
@@ -55,6 +54,7 @@ $(document).ready(function(){
 		}
 		if ($(this).attr('value') == '刪除') {
 		    if (!confirm('你確定要刪除此员工？')) return; 
+		    loading.show();
 		    $.post('{:U("__ROOT__/Admin/Staff/removeStaff")}', "staffId="+staffId, removeStaffHandler, 'json');
 		}
 		if ($(this).attr('value') == '评价记录') {
@@ -63,6 +63,7 @@ $(document).ready(function(){
 		}
 	});
 	function removeStaffHandler(response) {
+		loading.hide();
 		if (response.status) {
 		    window.location.reload();
 		}else{

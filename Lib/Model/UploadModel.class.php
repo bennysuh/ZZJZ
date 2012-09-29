@@ -6,7 +6,7 @@ class UploadModel extends Model {
 			$result = M("zz_upload")->data($data)->add();
 			Log::write(M()->getLastSql());
 			if($result){
-				return true;
+				return $result;
 			}else{
 				return false;
 			}

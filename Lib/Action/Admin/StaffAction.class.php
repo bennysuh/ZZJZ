@@ -60,29 +60,13 @@ class StaffAction extends EntryAction {
 			//保存图片到zz_upload
 			if($data["images"]){
 				$imgArr = explode(",", $data['images']);
-				$this->saveImages($imgArr);
 			}
 			$this -> success($key);
 		} else {
 			$this -> error('增加失敗');
 		}
 	}
-	/**
-	 +----------------------------------------------------------
-	 * 新增图片
-	 +----------------------------------------------------------
-	 * @access public
-	 * @param $imgArr array 图片路径数组
-	 +----------------------------------------------------------
-	 */
-	private function saveImages($imgArr)
-	{
-		$M = M("zz_upload");
-		foreach ($imgArr as $key => $value) {
-			$data["tablename"] = "zz_staff";
-			$M->data($data)->add();	
-		}
-	}
+
 	/**
 	 +----------------------------------------------------------
 	 * 新增联系方式
@@ -246,15 +230,19 @@ class StaffAction extends EntryAction {
 			$json=json_decode($json);
 			$arr = objectToArray($json);
 			$M = D('Upload');
+			$data = array();
 			foreach ($arr as $key => $value) {
 				$value['tablename'] = "zz_staff";
 				$value['type'] = "pic";
+				$value['sortIndex'] = $value['index'];
 				$result = $M->addFile($value);
+				$value['id'] = $result;
+				array_push($data,$value);
 				if(!$result){
 					$this->error("上传失败");
 				}
 			}
-			$this->success("上传成功");
+			$this->success($data);
 		}else{
 			$this->error("no params");
 		}
@@ -329,7 +317,6 @@ class StaffAction extends EntryAction {
 					$cond = "id='" . $data['downId'] ."'";
 					break;
 			}
-			$cond = "id='" . $data['upId'] ."'";
 			$changeData['sortIndex'] = $data['index'];
 			$result2 = $M->updateFile($changeData,$cond);
 			if($result && $result2){
@@ -396,10 +383,32 @@ class StaffAction extends EntryAction {
 	public function removeStaff() {
 		$staffId = $_POST["staffId"];
 		if ($staffId) {
+			$data['pid'] = M('zz_staff') ->field('ygbh')-> where("staffid=" . $staffId) -> find();
 			M('zz_staff') -> where("staffid=" . $staffId) -> delete();
 			$result = $this -> delContact($staffId);
 			if (is_int($result)) {
-				$this -> success('刪除成功');
+				$picData['tablename'] = 'zz_staff';
+				$picData['pic'] = $data['pid'];
+				$result = D("Upload")->getFiles($picData);
+				if($result){
+					foreach ($result as $key => $value) {
+						$s_thumb = $value['path'];
+						$s_thumb = "Public/Uploads/Staff/" . $s_thumb;
+						$m_thumb = str_replace("s_", "m_", $s_thumb);
+						if(unlink($s_thumb) && unlink($m_thumb)){
+							$result = D("Upload")->removeFile($picData);
+							if($result){
+								$this -> success('刪除成功');
+							}else{
+								$this -> error("upload删除失败");
+							}
+						}else{
+							$this -> error("图片删除失败");
+						}
+					}
+				}else{
+					$this -> success('刪除成功');//没有图片
+				}
 			} else {
 				$this -> error('联系方式刪除失败');
 			}

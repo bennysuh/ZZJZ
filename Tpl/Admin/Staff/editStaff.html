@@ -138,7 +138,11 @@
             			break;
             		case "up":
             			var tr = $(this).parents("tr");
-            			if(tr.index() == 0) return;//在第一行
+            			if(tr.index() == 1) 
+            			{
+            				loading.hide();
+            				return;//在第一行除去th
+            			}
             			//当前行的index和id
             			data.index = tr.attr("index");
 		            	data.id = tr.attr("uploadId");
@@ -151,6 +155,10 @@
 		            		loading.hide();
 		            		if(response.status){
 		            			console.log("up成功");
+		            			var prevIndex = tr.prev().attr("index");
+		            			var currIndex = tr.attr("index");
+		            			tr.attr("index",prevIndex);
+		            			tr.prev().attr("index",currIndex);
 		            			tr.insertBefore(tr.prev());//将当前tr放入前一个tr中
 		            		}else{
 		            			alert(response.info);
@@ -160,7 +168,10 @@
             			break;
             		case "down":
             			var tr = $(this).parents("tr");
-            			if(tr.index() == 0) return;//在第一行
+            			if(tr.next().length == 0) {
+            				loading.hide();
+            				return;//不存在下一行
+            			}
             			//当前行的index和id
             			data.index = tr.attr("index");
 		            	data.id = tr.attr("uploadId");
@@ -172,8 +183,11 @@
 		            	$.post(root + '/Admin/Staff/updateIndex',{json:$.toJSON(data)},function(response){
 		            		loading.hide();
 		            		if(response.status){
-		            			console.log("down成功");
-		            			tr.insertBefore(tr.prev());//将当前tr放入前一个tr中
+		            			var nextIndex = tr.next().attr("index");
+		            			var currIndex = tr.attr("index");
+		            			tr.attr("index",nextIndex);
+		            			tr.next().attr("index",currIndex);
+		            			tr.insertAfter(tr.next());//将当前tr放入前一个tr中
 		            		}else{
 		            			alert(response.info);
 		            		}
@@ -298,23 +312,8 @@
 			else
 				$("#uploadImages").val(name);
 			var tmp = name.split(",");
-        	var ele = "";
-        	$.each(tmp,function(i){
-        		var obj = this;
-    			ele += "<tr><td><img  src='__PUBLIC__/Uploads/Staff/" + obj + "' class='uploadImg'/></td>"
-    			 + "<td><input value=" + fileArr[i].tip + " /></td>" ;
-    			if(fileArr[i].isShow==true){
-    				ele += "<td><select class='action' ><option value='1' selected='true'>显示</option><option value='0'>隐藏</option></select></td>";
-    			}else{
-    				ele += "<td><select class='action' ><option value='1'>显示</option><option value='0' selected='true'>隐藏</option></select></td>";
-    			} 
-    			 ele += "<td><input type='button' value='up' operate='up' class='action'/><input class='action' operate='down' type='button' value='down' /></td>" 
-    			 + "<td><input operate='update' class='action'  value='保存' /></td>"
-    			 + "<td><input type='button' value='删除' operate='del' class='action'/></td></tr>";
-	        }) 
-	        //显示上传的缩略图
-        	$("#thumbList tbody").append(ele);
-        	addUpload(tmp);
+			//保存到数据库
+			addUpload(tmp);
         }
         //上传信息写入数据库 
         //paths:生成的缩略图文件名
@@ -331,12 +330,34 @@
         				})
         			}
         		});
-	        	$.post(root + "/Admin/Staff/addUpload",{json:$.toJSON(fileArr)},function uploadHandler (response) {
-				  //alert(response.info);
-				},"json");
+	        	$.post(root + "/Admin/Staff/addUpload",{json:$.toJSON(fileArr)},addUploadHandler,"json");
         	}else{
         		console.log("no file upload");
         	}
+        }
+        function addUploadHandler(response){
+		  	if(response.status){
+		  		var ele = "";
+		  		var data = response.info;
+	        	$.each(data,function(i){
+	        		var obj = this;
+	    			ele += "<tr  path='" + obj.path + "' index='" + obj.sortIndex + "' uploadId='" + obj.id + "'>"
+	    			 + "<td><img  src='__PUBLIC__/Uploads/Staff/" + obj.path + "' class='uploadImg'/></td>"
+	    			 + "<td><input value=" + obj.tip + " /></td>" ;
+	    			if(obj.isShow==true){
+	    				ele += "<td><select class='action' ><option value='1' selected='true'>显示</option><option value='0'>隐藏</option></select></td>";
+	    			}else{
+	    				ele += "<td><select class='action' ><option value='1'>显示</option><option value='0' selected='true'>隐藏</option></select></td>";
+	    			} 
+	    			 ele += "<td><input type='button' value='up' operate='up' class='action'/><input class='action' operate='down' type='button' value='down' /></td>" 
+	    			 + "<td><input operate='update' class='action' type='button'  value='保存' /></td>"
+	    			 + "<td><input type='button' value='删除' operate='del' class='action'/></td></tr>";
+		        }) 
+		        //显示上传的缩略图
+	        	$("#thumbList tbody").append(ele);
+		  	}else{
+		  		alert(response.info);
+		  	}
         }
 		//增加上传行数
 		function addRow(){
@@ -377,11 +398,15 @@
         			fileArr[i].path = this.toString();
         		});
         	}else{
+        		var sortIndex = $("#thumbList tr").last().attr("index");//获取最后一个图片的index
         		$("#tbl").find("tr").each(function(){
         			var fileInfo = {};
 	        		fileInfo.tip = $(this).find(".tip").val();
 	        		fileInfo.isShow = $(this).find(".isShow").eq(0).val();
-	        		fileInfo.index = $(this).index();
+	        		if(sortIndex)
+		        		fileInfo.sortIndex = parseInt(sortIndex) + $(this).index() + 1 ;
+		        	else
+		        		fileInfo.sortIndex = $(this).index() + 1 ;
 	        		fileInfo.pid = $("#ygbh").val();
 	        		fileArr.push(fileInfo);
 	        	});
