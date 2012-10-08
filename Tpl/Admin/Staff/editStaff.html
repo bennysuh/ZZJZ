@@ -367,7 +367,7 @@
             var row = tbl.insertRow(-1);
             //var td = arow.insertCell();
             var cell = document.createElement("td");
-            cell.innerHTML = '<div class="impBtn  fLeft" ><input type="file" id="file' + curFileNum + '" name="file' + curFileNum + '" class="file  huge"></div>';
+            cell.innerHTML = '<div class="impBtn  fLeft" ><input type="file" accept="image/*" id="file' + curFileNum + '" name="file' + curFileNum + '" class="file  huge"></div>';
             cell.align = "center";
             row.appendChild(cell);
             var tipCell = document.createElement("td");
@@ -597,7 +597,7 @@
 										<!--回调函数-->
 										<input type="hidden" name="_uploadResponse" value="uploadComplete">
 										<input type="hidden" name="_uploadFileVerify" value="{$verify}">
-										<input type="hidden" name="_uploadFileType" value="jpeg,jpg,gif,png,doc,rar,zip,mp3,wav,flv,rm,asf">
+										<input type="hidden" name="_uploadFileType" value="jpeg,jpg,gif,png">
 										<input type="hidden" name="_uploadSavePath" value="<?php echo APP_PATH .'Public/Uploads/';?>">
 										<input type="button" value="增 加" onclick="addRow();" class="actionButton">
 										<input type="submit" value="上 传" onclick="uploading();" class="actionButton" />

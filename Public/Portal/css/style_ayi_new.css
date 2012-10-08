@@ -1,0 +1,52 @@
+@charset "UTF-8";
+/* CSS Document */
+/*此css建立是新增需求里面的style， 可独立管理 201203-26 Daisy_Bai*/
+
+/*登录注册*/
+.rw1{ width:970px; background:url(../images/login_bg.png) no-repeat; height:10px; margin:0 auto;}
+.rw2{ width:430px;border-top:1px solid #dfe3e5; padding-top:10px;}
+.rw2 span{ padding-left:75px;}
+.login_new{ width:970px; margin:0 auto; padding-bottom:30px; clear:both; background:#fff;}
+	.login_con{ float:left; width:530px; padding:40px 0 0 50px;}
+	.login_con h3{ font-family: "微软雅黑"; font-size:18px; font-weight:bold; color:#216740; margin-bottom:40px;}
+	.login_con .alab{ float:left;display:block; width:70px; text-align:left;  font-size:14px; line-height:30px;}
+	.login_con .at_text{ float:left;}
+	.login_con .at_text input{ width:240px;height:30px; font-size:14px;border-bottom:1px solid #ddd; border-right:1px solid #ddd; border-left:1px solid #aaa; border-top:1px solid #aaa;}
+	
+	.login_tree{ float:right; width:390px; height:400px; padding-bottom:30px; background:url(../images/login_banner.png) no-repeat 0 50px}
+	.login_con p b{float:left; color:#446655; font-size:14px; font-weight:normal}
+	.login_con p a{ float:left; display:block; width:22px; height:20px; margin-right:10px;}
+	.login_con p a.k01{ background:url(../images/login_logo.png) no-repeat;}
+	.login_con p a.k02{ background:url(../images/login_logo.png) no-repeat 0 -20px;}
+	.login_con p a.k03{ background:url(../images/login_logo.png) no-repeat 0 -40px;}
+
+/*企业域名*/
+	.newlab{ float:left; width:125px}
+	.red{ color:red;}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,20 @@
+.topicbox{border-radius:0 0 6px 6px; padding-top:95px; background:url(../images/topic_bg.gif) no-repeat;}
+.topicbox .topicItem{margin:30px 0; zoom:1; padding:0 30px;}
+
+/*头条新闻*/
+.topicbox .headLines{zoom:1; line-height:26px; font-size:14px;}
+.topicbox .headLines p{margin:26px 0;}
+.topicbox .headLines img.pic{margin-right:15px;}
+.topicbox .headLines h2{line-height:40px; font-size:30px; font-family:Microsoft YaHei,SimHeim,SimSun; color:#3b639f;}
+
+/*专题区 新闻列表 公用*/
+ul.topicList{border-left:1px dashed #eee; padding:8px 0; width:295px; float:left;}
+ul.topicList li{padding-left:28px; line-height:24px; background:url(../images/icon_icon.gif) no-repeat 20px center; font-size:14px;}
+
+/*past topic*/
+.pastTopic{zoom:1;}
+.pastTopic .title{line-height:42px; padding:0 10px; border-bottom:2px solid #54a377; font-size:22px; font-family:Microsoft YaHei,SimHei; color:#54a377;}
+.pastTopic .item{zoom:1; padding:20px; border-bottom:1px dashed #ccc;}
+.pastTopic .picbox{width:200px; float:left;}
+.pastTopic .topicList{width:220px; padding-right:10px;}
+.pastTopic .topicList li{font-size:12px;}

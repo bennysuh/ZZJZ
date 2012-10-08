@@ -1,0 +1,252 @@
+@charset "UTF-8";
+/* CSS Document */
+
+html {
+	background:#FFF none repeat scroll 0 0;
+	color:#333;
+	overflow-y:scroll;
+	font-size:14px
+}
+*{ margin:0; padding:0}
+.mask{
+	position:absolute;
+	background-color:#000;
+	opacity:0.5;
+	filter:alpha(opacity=50);
+	display:none;
+	z-index:999999;
+	left:0;
+	top:0;
+	}
+body, div, td {
+	font-family:Verdana,Arial,"宋体",Helvetica,sans-serif ;
+	line-height:1.4em;
+	font-family:Verdana;
+}
+body, div, ul, li, h1, h2, h3, h4, h5, h6, form, fieldset, legend, input, textarea, p, th, td, dl, dt, dd {
+	margin:0;
+	padding:0;
+}
+table {
+	border-collapse:collapse;
+	border-spacing:0;
+}
+img {
+	border:0 none;
+}
+address, caption, cite, code, dfn, em, th, var {
+	font-style:normal;
+	font-weight:normal;
+}
+ul li {
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type:none;
+}
+caption, th {
+	text-align:left;
+}
+h1, h2, h3, h4, h5, h6 {
+	font-size:100%;
+	font-weight:normal;
+	vertical-align:baseline;
+	zoom:1;
+}
+input, textarea, select, button {
+	font-family:tahoma;
+	font-size:12px;
+	font-weight:inherit;
+}
+input[type=radio], input[type=checkbox] {
+	vertical-align:middle;
+}
+* html input {
+	vertical-align:middle;
+}
+textarea {
+	overflow:auto;
+}
+
+a:hover {
+	text-decoration:underline
+}
+a{text-decoration:none; color:#446655}
+a:focus{outline-style: none;outline-width: 0;}
+a:link, a:visited, a:active{text-decoration: none;}
+.clearfix {
+	zoom:1
+}
+.clearfix:after {
+	clear:both;
+	content:".";
+	display:block;
+	height:0;
+	visibility:hidden;
+}
+body{ background:url(../images/bodyBG.gif) repeat-x 0 0}
+#header, #content,#footer{ width:800px; margin:0 auto; clear:both}
+#header:after,#conter:after,.emp_c:after{
+		clear:both;
+	content:".";
+	display:block;
+	height:0;
+	visibility:hidden;}
+.emp_c{ clear:both}
+#header{ }
+#header .logo{ padding:11px 0 14px}
+#header .logo a{ float:left; width:114px; height:45px; background:url(../images/logo.png) no-repeat 0 0;_filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled='true', sizingMethod='corp', src='images/logo.png');}
+#header .logo span{ display:inline; float:left; font-family:"微软雅黑"; font-size:18px; line-height:21px;margin:10px 0 0 10px;padding:0 10px; border-left:1px solid #b8b8b8}
+.titlebar{ width:770px; margin:0 auto; font-size:14px; color:#fff; background:url(../images/titlebar.gif) no-repeat 10px 7px; line-height:26px; padding:7px 0 7px 30px}
+/* steps*/
+.steps { width:800px; margin:0 auto; font-size:14px; color:#fff; height:40px; line-height:40px}
+.steps b{ padding:0 10px}
+.steps  span{ display:inline; float:left; padding:0 10px; background-color:#3f5a4d; font-size:12px}
+.steps  .now{ font-size:14px; background-color:#ec8b19}
+.steps  .arow{ width:21px; height:40px; background:url(../images/arow.png) no-repeat 0 0; padding:0}
+.steps  .arow1{ background-position:0 -49px}
+.steps  .arow2{ background-position:0 -96px}
+.steps  .arow3{ background-position:0 -144px}
+.steps  .arow4{ background-position:0 -192px}
+#header .ltmenu{ margin-top:-50px}
+#footer{ border-top:1px solid #bbb; font:12px/1.4 tahoma; padding:20px 0; text-align:center; margin-bottom:50px}
+.fr{ float:right}
+.fl{ float:left;}
+/* 字体*/
+.f12{ font-size:12px}
+/*l_box */
+.l_box{ font-size:14px;  padding:30px 0 60px 30px}
+.mb15{ margin-bottom:15px}
+.mb10{ margin-bottom:10px}
+.mb110{ margin-bottom:110px}
+.mb25{ margin-bottom:25px}
+.mt35{ margin-top:35px}
+.mb30{ margin-bottom:30px}
+.pd{ padding:15px 0}
+.p5{ padding:0 5px}
+.pb10{ padding:0 0 10px}
+.pl{font-size:12px; padding:0 0 5px 25px }
+.l_box .error{ float:left; margin-left:10px; line-height:30px; border:1px solid #f0ba7b; background-color:#ffd8aa; color:#f26522; padding:0 8px}
+.l_box .error i{ width:21px; height:20px; background:url(../images/alert.jpg) no-repeat 0 0; float:left; display:inline-block; margin:5px 5px 0 0}
+.l_box .error_t{ width:228px; margin:0}
+.l_box .lab{ float:left; display:inline-block; height:32px; line-height:32px;/* margin-right:10px;*/ text-align:right}
+.star{ display:inline-block; color:#fe0000; padding:0 5px}
+/* lab */
+#login_box .lab{ width:60px} 
+#reg_box .lab{ width:100px}
+#Interm_rg_box .lab{ width:180px}
+#Interm_rg_box dd .orange{ font-size:12px}
+.skip{ font-size:12px; padding:20px 0; text-align:right}
+.l_box dd .text{ border:1px solid #c1c1c1; border-top:1px solid #999;float:left; height:28px; line-height:28px; padding:1px 3px; width:238px}
+.l_box dd .txtsave{ width:150px; margin-right:5px}
+.l_box dd .w125 .text{ float:none;width:125px}
+.l_box dd #ap{width:125px; float:left; padding:6px 5px 3px 3px; border:1px solid #c1c1c1; height:25px}
+.l_box dd #ap .hot-btn{ float:right}
+.l_box dd .pd_l{ vertical-align:middle;padding:0 5px; line-height:32px}
+.l_box .at_text{ float:left}
+#check_input input{width:63px; margin-right:5px}
+#chkimg{ float:left; display:block; margin:0 2px}
+.l_box a.check{  float:left;display:inline-block; width:50px; color:#446655; font-size:12px; margin-right:47px; line-height:14px}
+/*color */
+.orange{ color:#f26522}
+.green{ color:#446655}
+.blue{ color:#137dd7}
+a.grun{ color:#446655; text-decoration:underline; padding-left:5px}
+.gray01{ color:#555}
+
+/*btn */
+.btn,.btngrey,.btnlh24,.btngreylh24,gren26{  text-align:center;color:#fff; font-size:16px; cursor:pointer; display:inline-block; height:36px; line-height:36px; background:url(../images/btn.png) no-repeat right 0;padding-right:12px; margin-right:5px}
+.btn b,.btngrey b,.btnlh24 b,.btngreylh24 b,.gren26 b{ float:left;  width:12px;background:url(../images/btn.png) no-repeat 0 -37px; height:100%; overflow:hidden}
+.btngrey{ height:29px; line-height:29px; font-size:12px; color:#333; background-position:right -75px}
+.btngrey b{ background-position:0 -104px}
+.btnlh24,.btngreylh24{ height:24px; line-height:24px; background-position:right -133px; font-size:12px}
+.btnlh24 b{ background-position:0 -160px}
+.btngreylh24{ color:#333; background-position:right -186px}
+.btngreylh24 b{background-position:0 -212px}
+.gren26{ height:26px; line-height:26px; background-position: right -272px; font-size:12px}
+.gren26 b{ width:8px;background-position:0 -240px}
+#login,#next{width:105px}
+/* prompt*/
+.prompt{ background:url(../images/alertemail.jpg) no-repeat left 6px; padding-left:90px; margin:60px 0 100px 100px}
+#alertemail .sm{ background:url(../images/shape.jpg) no-repeat 0 10px; line-height:28px; padding:0 0 5px 20px}
+#alertemail .sm_no{ background-image:none; font-size:12px}
+
+#re_success {background:url(../images/rg_sucd.jpg) no-repeat left 0; padding-left:65px; margin-bottom:200px}
+.jump,.up{ background:url(../images/jump.gif) no-repeat 0 0; padding-left:20px}
+.up{ line-height:14px; margin:10px 0 0}
+/* tbox*/
+.tbox .roof,.tbox .floor{ background:url(../images/tbox.jpg) no-repeat 0 0}
+.tbox .roof{ height:8px; font-size:0; line-height:0}
+.tbox .floor{ background-position: right bottom; height:30px}
+.tbox .room{ border-left:1px solid #D8D8D8; border-right:1px solid #D8D8D8;zoom:1}
+/*pic */
+.l_box img.sw{ display:block; width:138px; height:103px;border:1px solid #aaa; padding:4px;}
+.l_box .avatat{ float:left; margin-right:5px}
+/* Interm_rg_box*/
+.l_box dd .w480 .text{ width:480px}
+/*中介系统页面样式 */
+/* 11-9newadd*/
+.leftimg{ float:left; display:inline;margin:30px 0; border-right:1px solid #ccc}
+.tips{ font-size:12px; color:#999}
+.rember input{ margin-right:5px}
+.float_left {float: left}
+.swfupload_button{
+	width : 100px;
+	position: relative;
+}
+.swfupload_button div{
+	background-color: #fff;
+	width: 96px;
+	height: 20px;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+	padding: 5px;
+}
+.swfupload_button_in{
+	position: absolute;
+	top: -1000px;
+}
+.uploading{
+	background:url(../images/jump.gif) no-repeat 8px 8px;
+	text-align: center;
+	position: absolute;
+	font-size: 14px;
+	position: absolute;
+	display: none;
+	z-index: 10;
+	left: 8px;
+}
+
+#Layer1 {
+	left: 575px !important;
+	left: 555px;
+	top: 8px;
+	position:absolute;
+	width:120px;
+	height:22px;
+	z-index:100;
+}
+
+#Layer1 ul{
+	width:120px;
+	height:22px;
+}
+
+#Layer1 ul li{
+	float:left;
+	margin:7px;
+}
+
+#Layer1 .selected{
+	background:url(../images/selico_gre.gif) no-repeat;
+}
+
+#Layer1 ul li a{
+	display:block;
+	width:13px;
+	height:13px;
+	background:url(../images/selico_gray.gif) no-repeat;
+}
+#Layer1 ul li a:hover{
+	background:url(../images/selico_gre.gif) no-repeat;
+}

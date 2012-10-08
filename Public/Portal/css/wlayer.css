@@ -1,0 +1,48 @@
+
+@charset "UTF-8";
+/* CSS Document */
+html{ /*background:#338555*/}
+body{ background:none}
+.arrowbox{ margin-bottom:10px;}
+.arrowbox2{ margin-bottom:10px; width:600px; position:absolute; z-index:9999999;}
+.arrowbox3{width:900px; position:absolute; z-index:9999999;}
+.l_box .lab{_width:100px; min-width:100px}
+#login_box .lab{ width:100px}
+.authLoginBtn{}
+.W_layer .layermian:after,.W_layer .wlayregin:after{
+	clear:both;
+	content:".";
+	display:block;
+	height:0;
+	visibility:hidden;
+}
+.W_layer{}
+.W_layer .layermian{ background:#fff;border:1px solid #aaa; padding:1px;word-wrap:break-word; position:relative}
+.W_layer .layertitle{ background:url(../images/wlayertitlebg.gif) repeat-x 0 0;  padding:0 0 0 10px; vertical-align:middle}
+.W_layer .layertitle h2{font-size:14px; height:34px; line-height:34px; font-weight:bold}
+.W_layer .layermian .layertitle .layertitle-closed{ position: absolute;right: 15px;top: 12px;  z-index: 9;}
+.W_layer .layermian .layertitle .layertitle-closed .close_gray{}
+.close_gray {
+    background-image: url(../images/delete.png);
+    background-position: left -1px;
+    background-repeat: no-repeat;
+    display: block;
+    height: 9px;
+    overflow: hidden;
+    text-indent: -999px;
+    width: 9px;
+}
+.close_gray:hover {
+    background-position: left -15px;
+}
+.W_layer .layercontent{ padding:40px 80px}
+.arrowbox2 .W_layer .layercontent{ padding:40px 40px}
+.W_layer .layercontent .l_box{ padding:0}
+#Supplementbox .lab{ width:80px}
+.W_layer .wlayregin .wlayad{float:left;width:302px}
+.W_layer .wlayregin{ min-width:664px; padding:20px 40px 40px; zoom:1}
+.arrowbox3 .W_layer .wlayregin{ padding:20px 0px 40px;}
+.W_layer .wlayregin .l_box{ float:left; padding-top:20px;}
+.bg{ width:7px; height:10px;background:#000;opacity: 0.3;_filter:Alpha(opacity=30); }
+
+

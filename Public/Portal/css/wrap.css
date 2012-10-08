@@ -1,0 +1,220 @@
+@charset "UTF-8";
+/* CSS Document */
+html{ background-color:#f1f5f8}
+body{ background:url(../images/bdbg.jpg) repeat-x 0 0 #f1f5f8; font-size:12px}
+#footer{ border:none}
+.mr15{ margin-right:15px}
+.color6{ color:#666}
+.orange{ color:#ff6600}
+.f14{ font-size:14px}
+.pd_l{ display:inline-block; padding:0 5px}
+#header{ background:url(../images/headerbg.png) no-repeat 0 0; height:90px; border-bottom:none}
+#header .logo{ padding:0}
+#header .logo a{ background:none;_filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled='true', sizingMethod='corp', src=''); margin:15px 0 0 16px}
+#header .ltmenu{ margin:10px 0 0; text-align:right}
+.ltmenu .bars{ color:#6FAACD}
+.ltmenu a{ color:#333}
+
+#header .city{ float:left; cursor:pointer;margin:50px 0 0 35px}
+.searchbox{ width:384px; height:30px; background:url(../images/iconss.gif) no-repeat 0 0; margin:10px 0 0}
+.searchbox .menu-hd{ float:left}
+.searchbox .menu-hd a{ color:#333; display:block; width:84px; height:30px; line-height:30px; padding:0 10px}
+.searchbox .Int{ background:none; border:none; float:left; width:205px; padding:2px 0 2px 10px; height:26px; line-height:26px; color:#999}
+.searchbox .wrapsearch{ float:left; width:65px; height:30px; background:none; border:none}
+.W_main{ width:970px; margin:0 auto}
+.W_main .mainroof,.W_main .mainfoot{ width:970px; height:12px; font-size:0;line-height:0; background:url(../images/mainbox.png) no-repeat left top;zoom:1}
+.W_main .mainroof{ }
+.W_main .mainfoot{  background-position:right bottom}
+.W_main .mainroom{ background:url(../images/mainboxroom.jpg) repeat-y 0 0}
+.wrapbox .mainroof,.wrapbox .mainfoot{ background-image: url(../images/wrapbox.png);}
+.wrapbox .mainroof{}
+.wrapbox .mainroom{ margin:0 5px; background:#fff}
+.Wmain_left{ padding:0 40px 40px 36px;width:664px; float:left}
+.Wmain_right{ display:inline; float:right;width:179px; padding:0 20px 0 20px; color:#666;}
+.golddetail{ border:none; padding:26px 0}
+.oninfo .goldtitle{ width:546px}
+.oninfo .goldtitle .goldname{ float:left; color:#ff6600; font-size:24px; line-height:1em;font-family:"微软雅黑",Tahoma;}
+.oninfo .goldtitle .goldnum{ float:right; display:inline-block; background:url(../images/iconss.gif) no-repeat -459px 0; height:19px; padding:10px 0 10px 15px; margin-top:-10px;zoom:1; position:relative}
+.oninfo .goldtitle .goldnum b{ display:inline-block; background:#fff;  }
+.oninfo .mlist{}
+.oninfo .mlist ul{ float:left; margin-right:10px}
+.goldtitle .iframe_pop{ float:left; margin-left:5px; padding-left:12px}
+.goldtitle .iframe_pop, .goldtitle .iframe_pop em{ background:url(../images/iframe_pop.png) repeat 0 0; display:inline-block; color:#333; height:22px; line-height:23px; overflow:hidden}
+.goldtitle .iframe_pop em{ background-position:right -22px; padding-right:7px}
+.oninfo dd ul li{ margin-bottom:5px}
+.selfinf{ width:546px; display:inline}
+.selfinf span{ display:inline-block; margin-top:-16px; margin-left:60px}
+.certifi{ display:inline-block; width:23px; height:16px; background:url(../images/iconss.gif) no-repeat 0 -34px; vertical-align:middle; margin:0 5px}
+.iconright{ display:inline-block; width:17px;height:18px; background:url(../images/iconss.gif) no-repeat -26px -34px; vertical-align:middle;  padding-right: 2px;}
+.iconnone{ display:inline-block; width:17px;height:18px; vertical-align:middle}
+.coupon100{ display:inline-block; width:48px; height:22px; vertical-align:middle; background:url(../images/iconss.gif) no-repeat -48px -34px }
+.oninfo dt .authen{ text-align:center; line-height:16px; padding:10px 0}
+.Wmain_left #staff_photo li{ margin-bottom:10px}
+.Workrecord{}
+.Workrecord th,.Workrecord td{ border:1px solid #a5c6b3; padding:5px 70px 5px 5px; text-align:left; line-height:16px}
+.Workrecord th{ background-color:#e8eeea; color:#000}
+.livelist li{ line-height:17px; margin-bottom:5px}
+.wbox{ width:178px; height:121px; background: url(../images/iconss.gif) no-repeat 0 -153px; margin-bottom:20px}
+.wbox .orderbtn{ width:140px; height:48px; display:inline-block; background:url(../images/iconss.gif) no-repeat  0 -100px; margin:20px 20px 0 18px}
+.wbox p{ font-family:tohama; text-align:center; padding:8px 0}
+.wbox p img{ vertical-align:middle}
+.right_part h4{ margin-bottom:10px}
+.othergoldlist{ margin-bottom:15px}
+.othergoldlist dt{ float:left; margin-right:7px}
+.othergoldlist .photo{ width:60px; height:80px; padding:2px; border:1px solid #ccc}
+.othergoldlist dd{margin-bottom:5px}
+.othergoldlist  .green_nb{ font-weight:bold; color:#297b48}
+.bars{ padding:0 8px;color:#ccc}
+
+.order_conf{ padding:20px 40px 100px}
+.order_conf h4{ background:url(../images/lot.gif) repeat-x center center; margin:0 0 30px}
+.order_conf h4 span{ display:inline-block; font-size:16px; font-weight:bold;line-height:20px; background:#fff; padding-right:10px}
+.order_inforshow{ zoom:1}
+.orders_list{ float:left; padding-left:30px; width:338px; overflow:hidden}
+.orders_list p{ padding:0 0 10px; line-height:18px}
+.orders_list .orange{ font-weight:bold}
+.orders_list .grey{ color:#666; display:inline-block; padding-left:15px}
+.orders_list .text{ border:1px solid #c1c1c1; border-top:1px solid #999; height:22px; line-height:22px; padding:1px 3px; width:130px}
+.order_conf .prompt{ float:left; margin:0 0 0 30px; padding:10px 0 100px 30px;}
+.order_conf .prompt p{ line-height:1.2; padding:0 0 3px}
+.Com_title{ height:36px; line-height:36px; padding:0 0 5px 16px; background:url(../images/litgot.gif) repeat-x right bottom; margin-top:-8px}
+.Cominfoshow{ padding:15px 48px 45px 40px}
+.Cominfoshow .comimg{ float:right; padding:4px; border:1px solid #ccc; background:#f7f7f7}
+.Cominfoshow .Cname{ color:#ff6600; font: 24px/2em "微软雅黑"; padding:0 0 15px}
+.Cominfoshow dd{ display:inline; float:left; width:640px; overflow:hidden; padding-bottom:10px}
+.Cominfoshow dd .vm{vertical-align:middle}
+.Cominfoshow dd .tel{ color:#ff6600; font-size:18px; line-height:1.2;display:inline-block; padding-right:5px; vertical-align:middle}
+.recommend{ padding:0 15px 80px 40px}
+.re_tit { border-bottom:1px solid #ccc; margin-bottom:10px; font-weight:bold; line-height:22px}
+.re_tit .green_un{ border-bottom-width:3px}
+.recommend .oninfo{ padding:10px 0;border-bottom:1px dashed #ccc}
+.recommend .oninfo dd{ width:546px}
+.recommend .oninfo .selfinf{}
+.recommend .goldtitle{ margin-bottom:10px}
+.recommend .goldtitle .goldname{ font-size:16px}
+.recommend .salary{ display:inline-block; margin:0 40px 0 112px}
+.recommend .salary b{ color:#ff6600; font-size:16px}
+.operating{ margin-right:15px}
+.operating li{ margin-bottom:5px}
+.learnmore{ display:inline-block; width:102px; height:30px;background:url(../images/iconss.gif) no-repeat -142px -100px; margin-bottom:15px}
+#.test7,.insurance,.grarrow{ display:inline-block; width:15px; height:15px; background: url(../images/iconss.gif) no-repeat -104px -34px; vertical-align:middle; margin:0 5px 0 15px}
+.grarrow{ display:inline-block; width:15px; height:15px; background: url(../images/iconss.gif) no-repeat -104px -34px; vertical-align:middle; margin:0 5px 0 15px}
+.test7{ display:inline-block; width:16px; height:16px; background: url(../images/try.gif) no-repeat 0px 0px; vertical-align:middle; margin:0 5px 0 15px}
+.insurance{ display:inline-block; width:16px; height:16px; background: url(../images/service.gif) no-repeat 0px 0px; vertical-align:middle; margin:0 5px 0 15px}
+.grarrow{ width:9px; height:9px; background-position:-137px -34px}
+#.insurance{ background-position:-121px -34px}
+.tit_end{ text-align:right; font-weight:bold; line-height:22px}
+.index_all{ width:960px; margin:0 auto;margin-top:-12px; background:none;}
+.index_results{width:960px;height:35px;position:relative; margin-top:-12px; background:url(../images/indexsearchbg.png) no-repeat 0 0 #ddf6e5; border-bottom:1px solid #d1e2d3;}
+.index_search{ float:left; width:710px;margin-top: auto; background:url(../images/indexsearchbg_new.png) no-repeat 0 0 #ddf6e5;border-bottom:1px solid #d1e2d3;}
+/*.index_search{ width:960px; height:auto; position:relative; margin-top:-12px; background:url(../images/indexsearchbg.png) no-repeat 0 0 #ddf6e5; border-bottom:1px solid #d1e2d3;_filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled='true', sizingMethod='corp', src='/images/indexsearchbg.pngindexsearchbg.png');}*/
+.wrapbox1 .mainroof{ background:none}
+.index_search h4, .index_results h4{ height:33px; line-height:33px; padding:0 0 10px 10px}
+.index_search h4 span{ display:inline-block}
+.index_search h4 .profskill{ color:#ff6600; font-weight:bold}
+.index_search h4 .infos{ margin-left:36px}
+.index_search dl{ padding-left:23px}
+.index_search dl dd{ float:left; line-height:22px; margin:16px 40px 0 0}
+.screening,.collect,.uparrow,.down{ display:inline-block; width:137px; height:30px;background: url(../images/iconss.gif) no-repeat -248px -100px; vertical-align:middle}
+.collect,.uparrow,.down{width:8px; height:7px; background-position:-147px -34px; margin:0 5px 0 0}
+.uparrow,.down{ width:7px; height:8px; margin:3px 3px 0; vertical-align:middle}
+.uparrow{ background-position:-168px -34px}
+.down{ background-position:-159px -34px}
+.indexpanel{ padding:13px 15px 40px 10px} 
+.indexpanel .indexpanel_cont{ float:left; display:inline; width:710px; margin-right:10px;position:relative;}
+.indexpanel .indexpanel_right{ float:right; width:215px}
+.hotrecom{ width:685px; height:216px; background:url(../images/hotrecom.gif) no-repeat 0 0;padding:0 0 0 15px; margin-bottom:10px}
+.hotrecom h1{ font-size:14px; font-weight:bold; padding:10px 0 10px 38px;}
+.collectinfo{}
+.collectinfo .details{ width:430px;float:left;}
+.collectinfo .photo p{ text-align:center; padding:5px 0}
+.collectinfo .photo .picpht{ background:#fff}
+.indextit h4 a,.indextit h4 .salary b{ text-decoration:underline}
+.indextit .goldname,.collectinfo .indextit h4 .salary b{ font-size:16px; color:#ff6600; font-style:inherit}
+.collectinfo .indextit h4 .contact{ margin-left:40px}
+.collectinfo .operating li{ padding:0; border:none}
+.collectinfo .archives{ color:#999;float:left; padding:8px 0 0}
+.collectinfo .archives a{font-weight:normal}
+.collectinfo  ul li.hover{ background:#fffee2}
+.rankbar{ width:700px; height:34px; padding:1px 0 3px; background:url(../images/rankbar.png) no-repeat 0 0; font-family:tahoma; position:relative }
+.rankbar ul{}
+.rankbar ul li{ float:left;height:34px; line-height:34px; padding:0 10px; border-right:1px solid #cee0d1}
+.rankbar ul li a{display:inline-block; height:34px;vertical-align:middle}
+.rankbar ul li.sort_selected select{_margin-top:8px}
+.rpartbox{}
+.rpartbox .rpart_t{ border-bottom:1px solid #266a46; height:25px; line-height:25px}
+.rpartbox .knowlist{ padding:15px 0 22px 10px}
+.rpartbox .knowlist li{ background:url(../images/littgreen.gif) no-repeat 0 8px;  padding:0 0 5px 8px}
+.sina,.tqq,.approve,.vip,.addicon,.addAttention,.qq{ display:inline-block;width:16px; height:16px;background: url(../images/iconss.gif) no-repeat 0 -74px; vertical-align:middle; margin:0 4px}
+.sina{ background-position:-22px -74px}
+.tqq{ background-position:-42px -74px}
+.approve{ width:14px; height:11px;background-position:-176px -34px}
+.vip{ width:15px; height:14px; background-position:-192px -34px}
+.addicon{ width:60px; height:21px; background-position:0 -280px}
+.addAttention{ width:73px; height:21px; background-position:-64px -280px}
+.pdh{ padding:15px 0 15px 10px}
+.ayitit{ padding:0 0 10px 20px; line-height:21px; vertical-align:middle}
+.qq{ width:18px; height:18px;background-position:-208px -34px}
+.ayitit a{ text-decoration:underline }
+
+/*secitem */
+.secitem:after,.Pregnancy_group:after,.Pregnancy_sec:after{
+    clear: both;
+    content: ".";
+    display: block;
+    font-size: 0;
+    height: 0;
+    overflow: hidden;
+}
+.secitem,.Pregnancy_group,.Pregnancy_sec{  clear:both;zoom:1}
+.index_search .secitem{ color:#666;line-height:22px; margin-bottom:5px;}
+.index_search .secitem dt{ float:left}
+.index_search .secitem dd{ float:left; margin:0}
+.index_search .secitem dd a{ color:#333; display:inline-block; float:left; white-space:nowrap; padding:0 3px;margin-right:8px}
+.index_search .secitem dd a.sr-current,.index_search .secitem dd a:hover{ background:#ff6600; color:#fff}
+.Pregnancy_group{ position:relative; z-index:555}
+.Pregnancy_group ul {
+    margin: 0;
+}
+.Pregnancy_group ul li,.Pregnancy_sec ul li {
+    float:left;
+    height: 24px;
+    margin: 0 2px 0 0
+}
+.Pregnancy_group ul li span,.Pregnancy_sec ul li span {
+    border-radius: 3px 3px 0 0;
+    cursor: pointer;
+    display: inline-block;
+    height: 24px;
+    line-height: 24px;
+    padding: 0 11px;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.Pregnancy_sec ul li span{ border:none; padding:0 5px}
+.Pregnancy_sec ul li{}
+.Pregnancy_sec ul li span.btnlh24{ padding:0 12px 0 0}
+.index_search .secitem dd .Pregnancy_group ul li a {
+    display: inline;
+    padding: 0;
+    margin:0;
+}
+.Pregnancy_group ul li em {
+    display: block;
+    line-height: 14px;
+    padding: 5px 0;
+    margin:0;
+    white-space: nowrap;
+    z-index: 0;
+}
+.Pregnancy_group ul li.current em {
+    display: inline-block;
+}
+.Pregnancy_group ul li.current span,.Pregnancy_sec{
+    border: 1px solid #e5b182; background:#fef4d5
+}
+.Pregnancy_sec{ _float:left}
+.Pregnancy_group ul li.current span{ border-bottom:none}
+.Pregnancy_sec{ z-index:-999;border-radius:0 3px 3px 3px; padding:5px 0; _margin-top:-5px}
+.Pregn_exp{ line-height:22px; margin:0 0 5px}
+.error_pro{ font-size:14px; background:url(../images/errorlit.gif) no-repeat 0 0; padding:10px 0 100px 100px; margin:100px 0 50px 250px}
