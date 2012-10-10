@@ -7,7 +7,7 @@
  * @version   $Id$
  +------------------------------------------------------------------------------
  */
-class StaffAction extends EntryAction {
+class StaffAction extends Action {
 	/**
 	 +----------------------------------------------------------
 	 * 根据查询条件显示员工列表
@@ -16,7 +16,20 @@ class StaffAction extends EntryAction {
 	 +----------------------------------------------------------
 	 */
 	public function index() {
-		$this->display();
+		//根据URL参数查询用户
+		import("@.ORG.Page");
+		//导入分页类
+		$keyword = $_GET['name'];
+		$M = D("StaffView");
+		
+		$count = count($M->count());
+		//分页
+		$p = new Page($count, 10);
+		$page = $p -> show();
+		$list = $M ->limit($p -> firstRow.','.$p -> listRows)->select();
+		$this -> assign('page', $page);
+		$this -> assign('list', $list);
+		$this -> display();
 	}
 	/**
 	 +----------------------------------------------------------
@@ -25,7 +38,7 @@ class StaffAction extends EntryAction {
 	 * @access public
 	 +----------------------------------------------------------
 	 */
-	public function staffDetail()
+	public function viewStaff()
 	{
 		$this->display();
 	}
