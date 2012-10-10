@@ -14,10 +14,6 @@
 <script type="text/javascript" src="__PUBLIC__/Portal/js/jquery.common.js"></script>
 <script type="text/javascript" src="__PUBLIC__/Portal/js/photoPlayer.js"></script>
 
-</head>
-<body>
-
-
 <!-- Copyright ɠ2005. Spidersoft Ltd -->
 <style>
 A.applink:hover {border: 2px dotted #DCE6F4;padding:2px;background-color:#ffff00;color:green;text-decoration:none}
@@ -40,39 +36,6 @@ $(document).ready(function(){
 		$(this).removeClass('hover');
 	});
 });
-</script>
-<div id="header">
-	<div class="logo_login clearfix">
-		<a href="../www.ayi800.html" class="logo"><img src="http://s.ayi800.com/images/logo.jpg" alt="阿姨800网" /></a>
-		<p class="login">
-			<a href="../auth/login.php.html" title="登陆">登录</a>
-			<span class="floatleft">|</span> 
-			<a href="../auth/register.php.html" title="注册">注册</a>
-			<a href="../gongsi.html" title="企业登陆 "><img src="http://s.ayi800.com/images/login_qy.gif" alt="企业登录" /></a>
-		</p>
-	</div>
-	<div id="nav">
-		<ul class="clearfix">
-			<li><a class="nav_1" href="../www.ayi800.html"></a></li>
-			<li><a class="nav_2" href="../index.php.html"></a></li>
-			<li><a class="nav_3" href="../index/2.html"></a></li>
-			<li class="nav_4">
-				<a href="#"></a>
-				<div class="twobox">
-					<div></div>
-					<a href="../list/yuesaohuati_3.html">月嫂话题</a>
-					<a href="../list/baobaochengzhang_4.html">宝宝成长</a>
-					<a href="../list/yunchanjiankang_1.html">孕产健康</a>
-				</div>
-			</li>
-		</ul>
-	</div>
-</div>
-<div class="site clearfix">
-	<p class="floatleft"><a href="../www.ayi800.html">首页</a> <em class="fam_more">&gt;&gt;</em> 找月嫂</p>
-	<p class="floatright"><input type="text" id="query_field" class="txt-normal" value="请输入月嫂名或企业名称" /><input type="button" value="" class="b-search" id="query_btn" /></p>
-</div>
-<script>
 $(function(){
 	var holderText = '请输入月嫂名或企业名称',
 	query_field = $("#query_field");
@@ -104,6 +67,16 @@ $(function(){
 
 });
 </script>
+</head>
+<body>
+
+
+<include file="Public:header" />
+<div class="site clearfix">
+	<p class="floatleft"><a href="../www.ayi800.html">首页</a> <em class="fam_more">&gt;&gt;</em> 找月嫂</p>
+	<p class="floatright"><input type="text" id="query_field" class="txt-normal" value="请输入月嫂名或企业名称" /><input type="button" value="" class="b-search" id="query_btn" /></p>
+</div>
+
 <div id="content" class="content clearfix auntdetail">
 	<div class="maincolumn">
 		<!--auntinfo begin-->
@@ -222,16 +195,76 @@ $(function(){
 			</li>
 		</ul>
 		<!--就业资质 over-->
+		<!--职业技能与生活习惯 begin-->
+		<div class="auntTitle"><span class="name">职业技能与生活习惯</span></div>
+		<ul class="skill clearfix">
+									<li>
+			<span>孕产妇护理</span></li>
+						<li>
+			<span>婴幼儿护理</span></li>
+						<li>
+			<span>普通话</span></li>
+						<li>
+			<span>方言</span></li>
+						<li>
+			<span>外语</span></li>
+						<li>
+			<span>可住家</span></li>
+						<li>
+			<span>婴儿餐</span></li>
+						<li>
+			<span>不饮酒</span></li>
+						<li>
+			<span>不抽烟</span></li>
+						<li>
+			<span>个人承担交通费</span></li>
+						<li>
+			<span>有孩子</span></li>
+						<li>
+			<span>会做孕产妇餐</span></li>
+						<li>
+			<span>照顾双胞胎</span></li>
+						<li>
+			<span>洗孕产妇衣物</span></li>
+						<li>
+			<span>洗婴儿衣物</span></li>
+								</ul>
+		<!--职业技能与生活习惯 over-->
 		<!--员工个人展示 begin-->
 		<div class="auntTitle"><span class="name">员工个人展示</span></div>
 		<ul class="photoList clearfix">
-			<volist>
-			</volist>
-			<li>							
-				<a href='http://upload.ayi800.com/2012/05/07/f77b0cc9.jpg' target="_blank">
-					<img class="photo" src="http://upload.ayi800.com/2012/05/07/f77b0cc9_100x75.jpg" width="100" height="75" alt="北京月嫂张靖个人展示01" />
-				</a>
-			</li>
+			<li>							<a href='http://upload.ayi800.com/2012/05/07/f77b0cc9.jpg' target="_blank">
+								<img class="photo" src="http://upload.ayi800.com/2012/05/07/f77b0cc9_100x75.jpg" width="100" height="75" alt="北京月嫂张靖个人展示01" />
+							</a>
+						</li>
+			<li>							<a href='http://upload.ayi800.com/2012/05/07/16a336e7.jpg' target="_blank">
+								<img class="photo" src="http://upload.ayi800.com/2012/05/07/16a336e7_100x75.jpg" width="100" height="75" alt="北京月嫂张靖个人展示02" />
+							</a>
+						</li>
+			<li>							<a href='http://upload.ayi800.com/2012/05/07/0ef46bef.jpg' target="_blank">
+								<img class="photo" src="http://upload.ayi800.com/2012/05/07/0ef46bef_100x75.jpg" width="100" height="75" alt="北京月嫂张靖个人展示03" />
+							</a>
+						</li>
+			<li>							<a href='http://upload.ayi800.com/2012/05/07/5a4de933.jpg' target="_blank">
+								<img class="photo" src="http://upload.ayi800.com/2012/05/07/5a4de933_100x75.jpg" width="100" height="75" alt="北京月嫂张靖个人展示04" />
+							</a>
+						</li>
+			<li>							<a href='http://upload.ayi800.com/2012/05/07/4bbcd38e.jpg' target="_blank">
+								<img class="photo" src="http://upload.ayi800.com/2012/05/07/4bbcd38e_100x75.jpg" width="100" height="75" alt="北京月嫂张靖个人展示05" />
+							</a>
+						</li>
+			<li>							<a href='http://upload.ayi800.com/2012/05/07/7dcc6909.jpg' target="_blank">
+								<img class="photo" src="http://upload.ayi800.com/2012/05/07/7dcc6909_100x75.jpg" width="100" height="75" alt="北京月嫂张靖个人展示06" />
+							</a>
+						</li>
+			<li>							<a href='http://upload.ayi800.com/2012/05/07/5c254cf6.jpg' target="_blank">
+								<img class="photo" src="http://upload.ayi800.com/2012/05/07/5c254cf6_100x75.jpg" width="100" height="75" alt="北京月嫂张靖个人展示07" />
+							</a>
+						</li>
+			<li>							<a href='http://upload.ayi800.com/2012/05/07/c76b8b09.jpg' target="_blank">
+								<img class="photo" src="http://upload.ayi800.com/2012/05/07/c76b8b09_100x75.jpg" width="100" height="75" alt="北京月嫂张靖个人展示08" />
+							</a>
+						</li>
 		</ul>
 		<!--员工个人展示 over-->
 	</div>
@@ -308,11 +341,7 @@ $(function(){
 		<div class="rightItem"></div>
 	</div>
 </div>
-<div id="footer">
-	<p>
-					</p>
-	<p>Copyright © 2011 阿姨800 版权所有 京ICP备11042527号</p>
-</div>
+<include file="Public:foot" />
 <script type="text/javascript">
 var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
 document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3Fc9e20ad201768b9332ad0fa0debb2475' type='text/javascript'%3E%3C/script%3E"));

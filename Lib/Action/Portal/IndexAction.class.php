@@ -1,6 +1,6 @@
 <?php
 
-class IndexAction extends EntryAction {
+class IndexAction extends Action {
 
     // 首页
     public function index() {
