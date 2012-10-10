@@ -11,7 +11,7 @@ return array(
 	'LANG_AUTO_DETECT'   =>  false,     // 自动侦测语言
 	'VAR_LANGUAGE'=>'locale',
 	'APP_GROUP_LIST'=> 'Admin,Portal',// 分组列表
-	'DEFAULT_GROUP' => 'Admin',// 默认分组
+	'DEFAULT_GROUP' => 'Portal',// 默认分组
 	'JUMP_TO_MODULE' => __ROOT__.'/Admin/Staff/index',// 登录后自动跳转的模块
 	'TMPL_ACTION_ERROR' => './Tpl/Public/error.html',// 错误跳转页面
 	'TMPL_ACTION_SUCCESS' => './Tpl/Public/success.html',// 成功跳转页面
