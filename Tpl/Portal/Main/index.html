@@ -1,19 +1,31 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>主页</title>
-</head>
-<body>
-<h1>我是主页</h1>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>主页</title>
+	</head>
+	<body>
+		<h1>我是主页</h1>
 
-<eq name="user.bind" value="N"><a href="__URL__/readtemplate?source=bind_uname">请您注册成功本站会员</a>| </eq>
-<eq name="user.open_id" value=""><a href="__URL__/qq_bind">绑定QQ号</a>| <else/><a href="__URL__/qq_unbind">解绑QQ号</a>| </eq>
- <a href="{:U('Login/gone')}">注销</a>
+		<eq name="user.bind" value="N">
+			<a href="__URL__/readtemplate?source=bind_uname">请您注册成功本站会员</a>|
+		</eq>
+		<eq name="user.open_id" value="">
+			<a href="__URL__/qq_bind">绑定QQ号</a>|
+			<else/>
+			<a href="__URL__/qq_unbind">解绑QQ号</a>|
+		</eq>
+		<a href="{:U('Login/gone')}">注销</a>
 
-<hr>
-<p>用户名：{$user.uname}</p>
-<p>昵称：{$user.nickname}</p>
-<p>头像：<img alt="" src="{$user.avatar}"> </p>
-</body>
+		<hr>
+		<p>
+			用户名：{$user.uname}
+		</p>
+		<p>
+			昵称：{$user.nickname}
+		</p>
+		<p>
+			头像：<img alt="" src="{$user.avatar}">
+		</p>
+	</body>
 </html>
