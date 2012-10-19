@@ -7,8 +7,21 @@ class StaffModel extends Model {
 	 * @access public
 	 +----------------------------------------------------------
 	 */
-	public function getStaffList() {
-		
+	public function getStaffList($firstRow,$listRows) {
+		$M = D("StaffView");
+		$result = $M->where("isHidden=1")->limit("$firstRow,$listRows")->order("updatetime")->select();
+		return $result;
+	}
+	/**
+	 +----------------------------------------------------------
+	 *获取员工总数
+	 +----------------------------------------------------------
+	 * @access public
+	 +----------------------------------------------------------
+	 */
+	public function getCount()
+	{
+		return M("zz_staff")->where("isHidden=1")->count();
 	}
 	public function getStaffInfo()
 	{

@@ -56,7 +56,6 @@ $(document).ready(function(){
 		<div class="findbox">
 			<ul class="bar clearfix">
 				<li class="current"><a href="#">找月嫂</a></li>
-				<li><a href="#">找育儿嫂</a></li>
 			</ul>
 			<form method="get" action="index.php" target=_blank>
 			<input type=hidden id="type_id" name="type" value="1">
@@ -68,21 +67,8 @@ $(document).ready(function(){
 					</dd>
 				</dl>
 				<dl class="clearfix">
-					<dt>薪酬范围：</dt>
-					<dd>
-						<select class="txt-normal" name="s_salary">
-							<option value=0>不限</option>
-							<option value=1>小于4800元/月</option>
-							<option value=2>4800 - 6800元/月</option>
-							<option value=3>6800 - 8800元/月</option>
-							<option value=4>8800 - 10800元/月</option>
-							<option value=5>大于10800元/月</option>
-						</select>
-					</dd>
-				</dl>
-				<dl class="clearfix">
 					<dt>籍　　贯：</dt>
-					<dd><input type="radio" name="s_ns" value=2 />南方　　<input type="radio" name="s_ns" value=1 />北方</dd>
+					<dd><html:select options="provinceList" first="请选择" id="provSel"/></dd>
 				</dl>
 				<dl class="clearfix">
 					<dt></dt>
@@ -114,7 +100,6 @@ $(document).ready(function(){
 			<span class="name">月嫂推荐</span>
 			<ul class="bar clearfix">
 				<li class="current"><a href="javascript:void(0);" class="rec_nur" type="0">推荐月嫂</a></li>
-				<li><a href="javascript:void(0);" class="rec_nur" type="1">最具性价比</a></li>
 				<li><a href="javascript:void(0);" class="rec_nur" type="2">最新月嫂</a></li>
 			</ul>
 			<a href="index.php.html" class="more">更多月嫂<em class="fam_more">&gt;&gt;</em></a>
@@ -123,21 +108,31 @@ $(document).ready(function(){
 			<div class="auntList carousels es-carousel-wrapper">
 				<div class="es-carousel" id="eslide0">
 					<ul>
-						<li>
-						<p class="pic"><a target="_blank" href="nurse/0010034709.html"><img src="http://upload.ayi800.com/2012/08/23/529b2f84.jpg" width="90" height="120" alt="代宝玲" /></a></p>
-						<div class="body">
-							<p class="name"><a target="_blank" href="nurse/0010034709.html">代宝玲</a></p>
-							<p><span class="phone_bg orange">4006-625-800转1146</span></p>
-							<div class="comment">
-								<p class="bg">最新评论：<a href="nurse/0010034709.html">为人开朗，做事认真负责，有爱心，做事主动 ...</a></p>
+						<volist name="recommendStaffList" id="staffVo">
+							<li>
+							<p class="pic"><a target="_blank" ><img src="" width="90" height="120" /></a></p>
+							<div class="body">
+								<p class="name"><a target="_blank" href="">{$staffVo["name"]}</a></p>
+								<p><span class="phone_bg orange"></span></p>
+								<div class="comment">
+									<p class="bg">年龄：{$staffVo["age"]}</p>
+								</div>
+								<div class="comment">
+									<p class="bg">籍贯：{$staffVo["jg_province"]}</p>
+								</div>
+								<div class="comment">
+									<p class="bg">级别：{$staffVo["ys_level"]}</p>
+								</div>
+								<div class="comment">
+									<p class="bg">最新评论：{$staffVo["remark"]}</p>
+								</div>
+								<p class="opera">
+									<a target="_blank" href="">详情</a>
+								</p>
 							</div>
-							<p class="opera">
-								<a href="#" class="icon_shi"></a><a href="#" class="icon_mian"></a>
-																<a href="#" class="icon_ping"></a>
-																<a target="_blank" href="nurse/0010034709.html">详情</a>
-							</p>
-						</div>
-					</li>
+							</li>
+						</volist>
+						
 					</ul>
 				</div>
 			</div>
@@ -212,8 +207,7 @@ $(document).ready(function(){
 		</div>
 	</div>
 	<!--月嫂推荐 over-->
-	<!--育儿嫂推荐 begin-->
-	<!--育儿推荐 over-->
+
 	<!--月嫂价格趋势-->
 	<div class="clearfix glmargin">
 		<div class="trend">
@@ -262,8 +256,8 @@ $(document).ready(function(){
 		<div class="topic2">
 			<h2 class="title clearfix"><span class="name">宝宝成长</span><a href="list/baobaochengzhang_4.html" class="floatright">更多<em class="fam_more">&gt;&gt;</em></a> </h2>
 			<div class="body">
-				<volist id="babyGrowList" name="babyGrowList">
-					<p>· <a target=_blank href="blog/baobaochengzhang_729.html">宝宝吃夜奶的行为不要惯</a></p>
+				<volist id="articleList" name="articleList">
+					<p>· <a target=_blank >{$articleList["title"]}</a></p>
 				</volist>
 			</div>
 		</div>
@@ -278,14 +272,14 @@ $(document).ready(function(){
 	<!--a cm begin-->
 	<div class="clearfix glmargin"><a href="#"><img src="http://s.ayi800.com/images/cm_3.jpg" alt="广告3" /></a></div>
 	<!--a cm over-->
-	<!--热门家政企业推荐-->
+	<!--钟点工-->
 	<div class="gltitle greentitle glmargin"><span class="size14 bold">热门家政企业推荐</span></div>
 	<ul class="clearfix firmList">
 		<li>
 			<a href="company/companyinfo.php~cid=170.html" target="_blank"><span class="name">北京爱婴佳美家政服务有限公司</span><br /><span>电话：4006-625-800转1161 </span></a>
 		</li>
 	</ul>
-	<!--热门家政企业推荐 over-->
+	<!--钟点工over-->
 </div>
 <include file="Public:foot" />
 <script>
