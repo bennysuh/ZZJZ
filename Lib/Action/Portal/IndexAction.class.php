@@ -4,19 +4,26 @@ class IndexAction extends Action {
     // 首页
     public function index() {
     	$this->getRecommendStaffList();
+		$this->getLastStaffList();
 		$this->getTop10Articles();
 		$this->getNotices();
 		$this->display();
     }
 	public function getRecommendStaffList()
 	{
-		$list = D("Staff")->getStaffList(1,10);
-		$year = date("Y");
-		dump($year);
-		foreach ($list as $key => $value) {
-			$value["age"] = $year - substr($value["birthday"], 0,4);
+		$staffList = D("Staff")->getRecommendStaffList(1,10);
+		foreach ($staffList as $key => $value) {
+			$staffList[$key]["age"] = parseBirthdayToAge($value["birthday"]);
 		}
 		$this -> assign('recommendStaffList', $staffList);
+	}
+	public function getLastStaffList()
+	{
+		$staffList = D("Staff")->getLastStaffList(1,10);
+		foreach ($staffList as $key => $value) {
+			$staffList[$key]["age"] = parseBirthdayToAge($value["birthday"]);
+		}
+		$this -> assign('lastStaffList', $staffList);
 	}
 	public function getNotices()
 	{

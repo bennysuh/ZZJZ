@@ -132,75 +132,36 @@ $(document).ready(function(){
 							</div>
 							</li>
 						</volist>
-						
 					</ul>
 				</div>
 			</div>
 			<div class="auntList carousels es-carousel-wrapper">
 				<div class="es-carousel" id="eslide1">
 					<ul>
-										<li>
-						<p class="pic"><a target="_blank" target="_blank" href="nurse/0010220240.html"><img src="http://upload.ayi800.com/2012/06/29/07499e87.jpg" width="90" height="120" alt="魏晶" /></a></p>
-						<div class="body">
-							<p class="name"><a href="nurse/0010220240.html">魏晶</a></p>
-							<p>从业：29年</p>
-							<p>年龄：51岁</p>
-							<p>籍贯：辽宁省</p>
-							<p><span class="phone_bg orange">4006-625-800转1141</span></p>
-							<p class="opera">
-								<a href="#" class="icon_shi"></a><a href="#" class="icon_mian"></a>
-																<a target="_blank" href="nurse/0010220240.html">详情</a>
-							</p>
-						</div>
-					</li>
-										<li>
-						<p class="pic"><a target="_blank" target="_blank" href="nurse/0010199038.html"><img src="http://upload.ayi800.com/2012/04/25/f0bd9f41.png" width="90" height="120" alt="孙瑞焕" /></a></p>
-						<div class="body">
-							<p class="name"><a href="nurse/0010199038.html">孙瑞焕</a></p>
-							<p>从业：8年</p>
-							<p>年龄：43岁</p>
-							<p>籍贯：河北省</p>
-							<p><span class="phone_bg orange">4006-625-800转1042</span></p>
-							<p class="opera">
-								
-																<a target="_blank" href="nurse/0010199038.html">详情</a>
-							</p>
-						</div>
-					</li>
-					</ul>
-				</div>
-			</div>
-			<div class="auntList carousels es-carousel-wrapper">
-				<div class="es-carousel" id="eslide2">
-					<ul>
-										<li>
-						<p class="pic"><a target="_blank" href="nurse/0010519930.html"><img src="http://upload.ayi800.com/2012/09/28/db24868d.jpg" width="90" height="120" alt="朱晓欠" /></a></p>
-						<div class="body">
-							<p class="name"><a target="_blank" href="nurse/0010519930.html">朱晓欠</a></p>
-							<p>从业：8年4月</p>
-							<p>年龄：43岁</p>
-							<p>籍贯：山西省</p>
-							<p><span class="phone_bg orange">4006-625-800转1042</span></p>
-							<p class="opera">
-								
-																<a target="_blank" href="nurse/0010519930.html">详情</a>
-							</p>
-						</div>
-					</li>
-										<li>
-						<p class="pic"><a target="_blank" href="nurse/0010283268.html"><img src="http://upload.ayi800.com/2012/09/27/0eaa499a.jpg" width="90" height="120" alt="陈艳玲" /></a></p>
-						<div class="body">
-							<p class="name"><a target="_blank" href="nurse/0010283268.html">陈艳玲</a></p>
-							<p>从业：8年</p>
-							<p>年龄：47岁</p>
-							<p>籍贯：河南省</p>
-							<p><span class="phone_bg orange">4006-625-800转1052</span></p>
-							<p class="opera">
-								
-																<a target="_blank" href="nurse/0010283268.html">详情</a>
-							</p>
-						</div>
-					</li>
+						<volist name="lastStaffList" id="lastStaffVo">
+							<li>
+							<p class="pic"><a target="_blank" ><img src="" width="90" height="120" /></a></p>
+							<div class="body">
+								<p class="name"><a target="_blank" href="">{$lastStaffVo["name"]}</a></p>
+								<p><span class="phone_bg orange"></span></p>
+								<div class="comment">
+									<p class="bg">年龄：{$lastStaffVo["age"]}</p>
+								</div>
+								<div class="comment">
+									<p class="bg">籍贯：{$lastStaffVo["jg_province"]}</p>
+								</div>
+								<div class="comment">
+									<p class="bg">级别：{$lastStaffVo["ys_level"]}</p>
+								</div>
+								<div class="comment">
+									<p class="bg">最新评论：{$lastStaffVo["remark"]}</p>
+								</div>
+								<p class="opera">
+									<a target="_blank" href="">详情</a>
+								</p>
+							</div>
+							</li>
+						</volist>
 					</ul>
 				</div>
 			</div>
@@ -246,7 +207,11 @@ $(document).ready(function(){
 			<dl class="clearfix">
 				<dt><img src="http://s.ayi800.com/images/baby.jpg" alt="专题图片" /></dt>
 				<dd class="name"><a href="javascript:void(0)">母婴知识最新文章</a></dd>
-				<dd>· <a target=_blank href="blog/yunchanjiankang005.html">坐月子的基本注意事项</a></dd>
+				
+					<volist>
+						· <a target=_blank href="blog/yunchanjiankang005.html">坐月子的基本注意事项</a>
+					</volist>
+				</dd>
 			</dl>
 			<div class="mores">
 				<a href="#">更多</a>

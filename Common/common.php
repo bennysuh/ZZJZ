@@ -27,4 +27,8 @@ function get_url_contents($url) {
 	return $result;
 }
 
+function parseBirthdayToAge($birthday)
+{
+	return date("Y") - substr($birthday, 0,4);
+}
 ?>
