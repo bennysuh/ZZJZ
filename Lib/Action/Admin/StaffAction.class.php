@@ -233,7 +233,7 @@ class StaffAction extends EntryAction {
 			foreach ($arr as $key => $value) {
 				$value['tablename'] = "zz_staff";
 				$value['type'] = "pic";
-				$value['sortIndex'] = $value['index'];
+				$value['sortIndex'] = $value['sortIndex'];
 				$result = $M->addFile($value);
 				$value['id'] = $result;
 				array_push($data,$value);
