@@ -107,13 +107,13 @@
 			function relHandler(r){
 				loading.hide();
 				alert(r.info);
-				window.location.href = root + "/Staff";
+				window.location.href = root + "/Admin/Staff";
 			}
 				
 			function ajaxHandler(response){
 				alert(response.info);
 				if(response.status == 1)
-					window.location.href =  root + "/Staff";
+					window.location.href =  root + "/Admin/Staff";
 			}
 			//删除员工
 			$("#removeStaffBtn").click(function(){
@@ -330,6 +330,7 @@
         				})
         			}
         		});
+        		console.log(fileArr);
 	        	$.post(root + "/Admin/Staff/addUpload",{json:$.toJSON(fileArr)},addUploadHandler,"json");
         	}else{
         		console.log("no file upload");

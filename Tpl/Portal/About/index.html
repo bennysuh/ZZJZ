@@ -2,57 +2,72 @@
 <tagLib name="html" />
 <!DOCTYPE html>
 <html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title></title>
-<meta name="keywords" content="" />
-<meta name="description" content="" />
-<link href="__PUBLIC__/Portal/css/ayi.css" rel="stylesheet" type="text/css" />
-<link href="__PUBLIC__/Portal/css/slideBox.css" rel="stylesheet" type="text/css" />
-<link href="__PUBLIC__/Portal/css/global.css" rel="stylesheet" type="text/css" />
-<link href="__PUBLIC__/Portal/css/style.css" rel="stylesheet" type="text/css" />
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title></title>
+		<meta name="keywords" content="" />
+		<meta name="description" content="" />
+		<link href="__PUBLIC__/Portal/css/ayi.css" rel="stylesheet" type="text/css" />
+		<link href="__PUBLIC__/Portal/css/global.css" rel="stylesheet" type="text/css" />
+		<link href="__PUBLIC__/Portal/css/style.css" rel="stylesheet" type="text/css" />
+		<link href="__PUBLIC__/Portal/css/wrap.css" rel="stylesheet" type="text/css" />
+		<script type="text/javascript" src="__PUBLIC__/Portal/js/jquery-1.7.2.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/Portal/js/jquery.common.js"></script>
+		<!-- Copyright ɠ2005. Spidersoft Ltd -->
+		<style>
+			A.applink:hover {
+				border: 2px dotted #DCE6F4;
+				padding: 2px;
+				background-color: #ffff00;
+				color: green;
+				text-decoration: none
+			}
+			A.applink {
+				border: 2px dotted #DCE6F4;
+				padding: 2px;
+				color: #2F5BFF;
+				background: transparent;
+				text-decoration: none
+			}
+			A.info {
+				color: #2F5BFF;
+				background: transparent;
+				text-decoration: none
+			}
+			A.info:hover {
+				color: green;
+				background: transparent;
+				text-decoration: underline
+			}
+		</style>
 
-<script type="text/javascript" src="__PUBLIC__/Portal/js/jquery-1.7.2.js"></script>
-<script type="text/javascript" src="__PUBLIC__/Portal/js/jquery.common.js"></script>
-<script type="text/javascript" src="__PUBLIC__/Portal/js/jquery-ui-1.8.16.custom.min.js"></script>
-<script type="text/javascript" src="__PUBLIC__/Portal/js/search.js"></script>
-<script type="text/javascript" src="__PUBLIC__/Portal/js/highcharts.js"></script>
-<script type="text/javascript" src="__PUBLIC__/Portal/js/exporting.js"></script>
-<script type="text/javascript" src="__PUBLIC__/Portal/js/customerSer.js"></script>
-<script type="text/javascript" src="__PUBLIC__/Portal/js/guide.js"></script>
-<script type="text/javascript" src="__PUBLIC__/Portal/js/autoScroll.js"></script>
-<script type="text/javascript" src="__PUBLIC__/Portal/js/global.js"></script>
-<script type="text/javascript" src="__PUBLIC__/Portal/js/jquery.blockUI.js"></script>
-<script type="text/javascript" src="__PUBLIC__/Portal/js/jquery.easing.1.3.js"></script>
-<script type="text/javascript" src="__PUBLIC__/Portal/js/jquery.elastislide.js"></script>
-<script type="text/javascript" src="__PUBLIC__/Portal/js/jquery.slideBox.js"></script>
-<!-- Copyright ɠ2005. Spidersoft Ltd -->
-<style>
-A.applink:hover {border: 2px dotted #DCE6F4;padding:2px;background-color:#ffff00;color:green;text-decoration:none}
-A.applink       {border: 2px dotted #DCE6F4;padding:2px;color:#2F5BFF;background:transparent;text-decoration:none}
-A.info          {color:#2F5BFF;background:transparent;text-decoration:none}
-A.info:hover    {color:green;background:transparent;text-decoration:underline}
-</style>
-
-<script type="text/javascript">
-$(document).ready(function(){
-	$('#nav ul li').hover(function(){
-		$(this).addClass('hover');
-	},function(){
-		$(this).removeClass('hover');
-	});
-});
-</script>
-<script type="text/javascript" src="__PUBLIC__/Portal/js/jquery.slideBox.js"></script>
-<link rel="stylesheet" type="text/css" href="__PUBLIC__/Portal/css/slideBox.css"/>
-</head>
-
-<body>
-<include file="Public:header" />
-<div id="content">
-	<div class="clearfix">
-	</div>
-</div>
-<include file="Public:foot" />
-</body>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$('#nav ul li').hover(function() {
+					$(this).addClass('hover');
+				}, function() {
+					$(this).removeClass('hover');
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<include file="Public:header" />
+		<div id="content">
+			<div class="clearfix">
+				<div class="mainroom">
+					<dl class="Cominfoshow clearfix">
+						<dd class="Cname">
+							{$title}
+						</dd>
+						<dd class="Ccontent">
+							{$content}
+						</dd>
+						
+					</dl>
+				</div>
+			</div>
+		</div>
+		<include file="Public:foot" />
+	</body>
 </html>

@@ -207,9 +207,8 @@ $(document).ready(function(){
 			<dl class="clearfix">
 				<dt><img src="http://s.ayi800.com/images/baby.jpg" alt="专题图片" /></dt>
 				<dd class="name"><a href="javascript:void(0)">母婴知识最新文章</a></dd>
-				
-					<volist>
-						· <a target=_blank href="blog/yunchanjiankang005.html">坐月子的基本注意事项</a>
+					<volist id="articleList" name="articleList">
+						<p>· <a target=_blank >{$articleList["title"]}</a></p>
 					</volist>
 				</dd>
 			</dl>
@@ -229,7 +228,9 @@ $(document).ready(function(){
 		<div class="topic2" style="border-right:none;">
 			<h2 class="title clearfix"><span class="name">孕产健康</span><a href="list/yunchanjiankang_1.html" class="floatright">更多<em class="fam_more">&gt;&gt;</em></a> </h2>
 			<div class="body">			
-				<p>· <a target=_blank href="blog/yunchanjiankang_726.html">过期妊娠危害大，怎样预防</a></p>
+				<volist id="articleList" name="articleList">
+					<p>· <a target=_blank >{$articleList["title"]}</a></p>
+				</volist>
 			</div>
 		</div>
 	</div>

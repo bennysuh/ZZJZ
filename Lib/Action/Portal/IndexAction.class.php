@@ -6,6 +6,8 @@ class IndexAction extends Action {
     	$this->getRecommendStaffList();
 		$this->getLastStaffList();
 		$this->getTop10Articles();
+		$this->getArticlesByType(1);
+		$this->getArticlesByType(2);
 		$this->getNotices();
 		$this->display();
     }
