@@ -31,7 +31,6 @@ class AssessAction extends EntryAction {
 			$result = $M->where($data)->limit($p -> firstRow.','.$p -> listRows)->order("updatetime desc")->select();
 			$this -> assign('page', $page);
 			$this->assign("list",$result);
-			Log::write(M()->getLastSql());
 			$this->display();
 		}else{
 			$this->error("无STAFFID参数");
@@ -51,6 +50,7 @@ class AssessAction extends EntryAction {
 		$data = $M->create();
 		$key = $M ->data($data)-> add();//获取新增返回的id值用于添加到联系方式表中
 		if ($key) {
+			SysLogs::log("新增评价,id=" . $key);
 			$this -> success($key);
 		} else {
 			Log::write($M->getError());
@@ -124,6 +124,7 @@ class AssessAction extends EntryAction {
 		$data = $M->create();
 		if($data){
 			$M ->data($data)->save();
+			SysLogs::log("更新评价,id=" . $data["id"]);
 			$this->success("更新成功");
 		}else{
 			$this -> error('保存失敗');
@@ -142,7 +143,7 @@ class AssessAction extends EntryAction {
 		$id = $_POST["assessId"];
 		if ($id) {
 			$result = M('zz_assess') -> where("id=" . $id) -> delete();
-			
+			SysLogs::log("删除评价,id=" . $id);
 			if(is_int($result))
 				$this -> success("删除成功");
 			else 

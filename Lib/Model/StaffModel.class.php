@@ -31,8 +31,8 @@ class StaffModel extends Model {
 	
 	public function getStaffInfo($staffId)
 	{
-			$staffInfo = D('StaffView') -> where("staffid = " . $staffId) -> find();
-			return $staffInfo;
+		$staffInfo = D('StaffView') -> where("staffid = " . $staffId) -> find();
+		return $staffInfo;
 	}
 }
 ?>

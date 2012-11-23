@@ -212,10 +212,11 @@ $(document).ready(function(){
         <table id="guideList">
           <tr class="tableHeader">
             <!-- F代表Form -->
-            <th class="userNameF">年度</th>
-            <th class="nameF">月份</th>
-            <th class="nameF">指导价格</th>
-            <th class="nameF">更新日期</th>
+            <th class="emailField">年度</th>
+            <th class="emailField">月份</th>
+            <th class="emailField">指导价格</th>
+            <th class="emailField">创建人</th>
+			<th class="emailField">最后更新</th>
 			<th class="tableActionTD">操作</th>
           </tr>
           <volist name="list" id="vo">
@@ -223,7 +224,8 @@ $(document).ready(function(){
 			<td class="year">{$vo['year']}</td>
             <td class="month">{$vo['month']}</td>
 			<td class="price">{$vo['price']}</td>
-            <td><php>echo date('Y-m-d',strtotime($vo['updatetime']))</php></td>
+            <td>{$vo['createUser']}<br/>{$vo['createTime']}</td>
+			<td>{$vo['updateUser']}<br/>{$vo['updateTime']}</td>
 			<td>
 				<input type="button" value="編輯" class="tableActionButton"/><input type="button" value="刪除" class="tableActionButton"/>
 			</td>
