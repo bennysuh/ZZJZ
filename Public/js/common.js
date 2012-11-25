@@ -5,8 +5,10 @@ $(document).ready(function(){
 		window.location.href = url;
 	});
 	//日期输入框只读。dom中加readonly属性无效
-	$(".datebox :text").attr("readonly","readonly");
-			
+	
+	 setTimeout(function(){
+		$(".datebox :text").attr("readonly","readonly");
+	},2000);
 })
 
 // 

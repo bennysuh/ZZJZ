@@ -106,8 +106,8 @@ class ContractAction extends EntryAction {
 		//是否已經存在於本地數據庫
 		$M = M('zz_contract');
 		if ($M->create()) {
-			$M->add();
-			Log::write(M()->getLastSql());
+			$id = $M->add();
+			SysLogs::log("新增合同,id=" . $id);
 			$this -> success('新增成功');
 		} else {
 			Log::write(M()->getLastSql());
@@ -126,6 +126,7 @@ class ContractAction extends EntryAction {
 		if($M->create()){
 			$result = $M-> save();
 			if (is_int($result)) {
+				SysLogs::log("更新合同,id=" . $M["id"]);
 				$this -> success('保存成功');
 			} else {
 				Log::write(M()->getLastSql());
@@ -149,9 +150,10 @@ class ContractAction extends EntryAction {
 		if ($id) {
 			$data['isShow'] = 0;
 			$result = M('zz_contract') ->data($data)-> where("id=" . $id) -> save();
-			if(is_int($result))
+			if(is_int($result)){
+				SysLogs::log("删除合同,id=" . $id);
 				$this -> success("删除成功");
-			else 
+			}else 
 				$this -> error('删除失敗');
 		} else {
 			$this -> error('无参数');

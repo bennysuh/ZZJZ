@@ -4,7 +4,7 @@ class UploadModel extends Model {
 	{
 		if($data){
 			$result = M("zz_upload")->data($data)->add();
-			Log::write(M()->getLastSql());
+			SysLogs::log("上传文件,id=" . $result );
 			if($result){
 				return $result;
 			}else{
@@ -19,7 +19,7 @@ class UploadModel extends Model {
 	{
 		if($data){
 			$result = M("zz_upload")->where($cond)->data($data)->save();
-			Log::write(M()->getLastSql());
+			SysLogs::log("更新上传文件,id=" . $data["id"] );
 			if(is_int($result)){
 				return true;
 			}else{
@@ -50,7 +50,9 @@ class UploadModel extends Model {
 	 +----------------------------------------------------------
 	 */
 	public function removeFile($data) {
-		return M("zz_upload")->where($data)->delete();
+		$result = M("zz_upload")->where($data)->delete();
+		SysLogs::log("删除文件,id=" . $data["id"]);
+		return $result;
 	}
 }
 ?>

@@ -29,11 +29,12 @@ class GuidePriceAction extends EntryAction
 	public function index()
     {
     	import("@.ORG.Page");
-    	$M =  M('zz_guideprice');
+    	$M =  D('GuidePriceListView');
     	$count = $M->count();
     	$p = new Page($count,10);
 		$page = $p -> show();
 		$list = $M->limit($p->firstRow.','.$p->listRows)->order('year desc,month desc')->select();
+		Log::write(M()->getLastSql());
 		$this->assign("page",$page);
 		$this->assign("list",$list);
 		$this->display();

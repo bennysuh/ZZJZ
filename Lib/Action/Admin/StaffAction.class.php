@@ -20,17 +20,23 @@ class StaffAction extends EntryAction {
 		import("@.ORG.Page");
 		//导入分页类
 		$keyword = $_GET['name'];
-		$M = new Model();
-		$sql = "SELECT parent.staffid,parent.ygbh,parent.updatetime, parent.name,parent.isHidden,sub.fieldA as contact,sub.type,sub.id
-			FROM  `zz_staff` AS parent, zz_contact AS sub
-			WHERE parent.staffId = sub.no and parent.isHidden = 1 and parent.name like '%$keyword%' 
-			GROUP BY parent.name 
-			ORDER BY parent.updatetime DESC ,sub.id desc";
-		$count = count($M -> query($sql));
+		//$M = new Model();
+		// $sql = "SELECT parent.staffid,parent.ygbh,parent.updatetime, parent.name,parent.isHidden,sub.fieldA as contact,sub.type,sub.id
+			// FROM  `zz_staff` AS parent, zz_contact AS sub
+			// WHERE parent.staffId = sub.no and parent.isHidden = 1 and parent.name like '%$keyword%' 
+			// GROUP BY parent.name 
+			// ORDER BY parent.updatetime DESC ,sub.id desc";
+		$M = D("StaffListView");
+		if($keyword)
+			$data["name"] = $keyword;
+		
+		$count = $M->where($data)->count();
 		//分页
 		$p = new Page($count, 10);
 		$page = $p -> show();
-		$list = $M -> query($sql . " LIMIT " . $p -> firstRow . " , " . $p -> listRows);
+		$list = $M->where($data)->limit($p -> firstRow . " , " . $p -> listRows)->order('updateTime desc')->select();
+		Log::write(M()->getLastSql());
+		//$M -> query($sql . " LIMIT " . );
 		$this -> assign('page', $page);
 		$this -> assign('list', $list);
 		$this -> display();
@@ -60,6 +66,11 @@ class StaffAction extends EntryAction {
 			//保存图片到zz_upload
 			if($data["images"]){
 				$imgArr = explode(",", $data['images']);
+				SysLogs::log("新增员工" . $_POST["name"]);
+				$logData["tablename"] = "zz_staff";
+				$logData["no"] = $key;
+				$logData["createUser"] = $_SESSION['loginName'];
+				ZZLogModel::addLog($logData);
 			}
 			$this -> success($key);
 		} else {
@@ -89,8 +100,11 @@ class StaffAction extends EntryAction {
 				$v = arrayToObject($value);
 				$contact -> type = $v -> type;
 				$contact -> fieldA = $v -> content;
-				if (!($contact -> add())) {
+				$key = $contact -> add(); 
+				if (!$key) {
 					$this -> error('联系方式新增失敗');
+				}else{
+					SysLogs::log("新增联系方式" . $key);
 				}
 			}
 			$this -> success("新增成功");
@@ -212,6 +226,11 @@ class StaffAction extends EntryAction {
 			$data['languages'] = join(",", $_POST['lang']);
 			$pathArr = explode($data['images'], ",");
 			$result = $staff -> where("staffid='" . $_POST['staffId'] . "'") -> save($data);
+			SysLogs::log("更新员工" . $POST["name"] );
+			$logData["tablename"] = "zz_staff";
+			$logData["no"] = $_POST['staffId'];
+			$logData["updateUser"] = $_SESSION['loginName'];
+			ZZLogModel::updateLog($logData);
 		}
 		//保存成功返回影响的记录数不成功返回false。有可能返回0
 		if (is_int($result)) {
@@ -340,6 +359,7 @@ class StaffAction extends EntryAction {
 		$data["isHidden"] = $_POST['isHidden'];
 		$result = $staff -> where("staffId='" . $_POST['staffId'] . "'") -> save($data);
 		if (is_int($result)) {
+			SysLogs::log("更改员工显示状态,id=" . $_POST["staffId"]);
 			$this -> success('保存成功');
 		} else {
 			$this -> error('保存失敗');
@@ -356,6 +376,7 @@ class StaffAction extends EntryAction {
 		} else {
 			$contact = M("zz_contact");
 			$contact -> where('no= ' . $json -> no) -> delete();
+			SysLogs::log("删除联系方式,no=" . $json->no);
 			//删除已有记录
 			//新增编辑的记录
 			foreach ($arr as $value) {
@@ -368,6 +389,7 @@ class StaffAction extends EntryAction {
 					$this -> error('联系方式保存失敗');
 				}
 			}
+			SysLogs::log("新增联系方式,no=" . $json->no);
 			$this -> success("保存成功");
 		}
 	}
@@ -384,6 +406,7 @@ class StaffAction extends EntryAction {
 		if ($staffId) {
 			$data['pid'] = M('zz_staff') ->field('ygbh')-> where("staffid=" . $staffId) -> find();
 			M('zz_staff') -> where("staffid=" . $staffId) -> delete();
+			SysLogs::log("删除月嫂,staffid=" . $staffId);
 			$result = $this -> delContact($staffId);
 			if (is_int($result)) {
 				$picData['tablename'] = 'zz_staff';
@@ -397,6 +420,7 @@ class StaffAction extends EntryAction {
 						if(unlink($s_thumb) && unlink($m_thumb)){
 							$result = D("Upload")->removeFile($picData);
 							if($result){
+								SysLogs::log("删除月嫂图片,staffId=" . $staffId . ",图片名=" . $s_thumb);
 								$this -> success('刪除成功');
 							}else{
 								$this -> error("upload删除失败");
@@ -425,6 +449,7 @@ class StaffAction extends EntryAction {
 	 */
 	public function delContact($no) {
 		$result = M('zz_contact') -> where("no=" . $no . " and tableName = 'zz_staff'") -> delete();
+		SysLogs::log("删除联系方式,no=" . no);
 		return $result;
 	}
 
@@ -525,6 +550,7 @@ class StaffAction extends EntryAction {
 			}
 			$uploadSuccess = true;
 			$ajaxMsg = '上传成功';
+			SysLogs::log("上传图片,filename=s_" . $file['savename']);
 		}
 		// 判断是否有Ajax方式上传附件
 		// 并且设置了结果显示Html元素

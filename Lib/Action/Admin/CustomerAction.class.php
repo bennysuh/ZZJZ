@@ -40,9 +40,9 @@ class CustomerAction extends EntryAction {
 		}
 		$key = $M ->data($data)-> add();//获取新增返回的id值用于添加到联系方式表中
 		if ($key) {
+			SysLogs::log("新增客户,id=" . $key);
 			$this -> success($key);
 		} else {
-			Log::write($M->getError());
 			$this -> error('增加失敗');
 		}
 	}
@@ -146,6 +146,8 @@ class CustomerAction extends EntryAction {
 			//保存成功返回影响的记录数不成功返回false。若无更改则返回0
 			if (is_int($result)) {
 				$this -> success('保存成功');
+				SysLogs::log("保存客户信息,id=" . $M["id"]);
+				
 			} else {
 				$this -> error('保存失敗');
 			}
@@ -187,7 +189,7 @@ class CustomerAction extends EntryAction {
 		//根据URL参数查询用户
 		import("@.ORG.Page");
 		//导入分页类
-		$M = M("zz_yscustomer");
+		$M = D("CustomerListView");
 		//获取查询参数
 		if($_GET['name']){
 			$name = $_GET['name'];

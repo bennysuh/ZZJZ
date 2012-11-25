@@ -53,6 +53,8 @@ class ContactModel extends Model {
 		}else{
 			$contact = M("zz_contact");
 			$contact->where('no= ' . $id)->delete();//删除已有记录
+			
+			SysLogs::log("删除客户联系方式,no=" . $id);
 			//新增编辑的记录
 			foreach ($arr as $value) {
 				$v = arrayToObject($value);
@@ -64,6 +66,7 @@ class ContactModel extends Model {
 					return false;
 				}
 			}
+			SysLogs::log("新增客户联系方式,no=" . $id);
 			return  true;
 		}
 	}
@@ -76,7 +79,9 @@ class ContactModel extends Model {
 	 +----------------------------------------------------------
 	 */
 	public function delContact($no,$tablename){
-		return M('zz_contact') -> where("no=" . $no . " and tableName = '$tablename'") -> delete();
+		$result = M('zz_contact') -> where("no=" . $no . " and tableName = '$tablename'") -> delete();
+		SysLogs::log("删除客户联系方式,no=" . $no);
+		return $result;
 	}
 }
 ?>

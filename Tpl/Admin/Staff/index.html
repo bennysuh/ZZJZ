@@ -109,21 +109,23 @@ $(document).ready(function(){
             <table id="staffList">
               <tr class="tableHeader">
                 <!-- F代表Form -->
-                <th class="nameF">员工编号</th>
-                <th class="nameF">姓名</th>
-                <th class="emailField">联系方式</th>
-                <th class="emailField">更新日期</th>
-				<th class="tableActionTD">操作</th>
+                <th class="emailField">员工编号</th>
+                <th class="emailField">姓名</th>
+                <th class="emailField">籍贯</th>
+                <th class="nameF">创建人</th>
+                <th class="nameF">最后更新</th>
+				<th class="tableActionTD" style="width:500px;">操作</th>
               </tr>
               <volist name="list" id="vo">
 			  <tr staffId={$vo['staffid']}>
 			  	<td>{$vo['ygbh']}</td>
                 <td>{$vo['name']}</td>
-				<td>{$vo['contact']}</td>
-				<td>{$vo['updatetime']}</td>
-				<td style="width:350px;">
+				<td>{$vo['city']}</td>
+				<td>{$vo['createUser']}<br/>{$vo['createTime']}</td>
+				<td>{$vo['updateUser']}<br/>{$vo['updateTime']}</td>
+				<td >
 					<input type="button" value="編輯" class="tableActionButton"/>
-					<input type="button" value="刪除" class="tableActionButton"/>
+					<!--<input type="button" value="刪除" class="tableActionButton"/>-->
 					<input type="button" value="评价记录" class="tableActionButton"/>
 					<input type="button" value="<?php if($vo['isHidden']) echo '隐藏';else echo '显示'; ?>" class="tableActionButton"/> 
 				</td>

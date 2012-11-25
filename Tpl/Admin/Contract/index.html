@@ -129,10 +129,12 @@ $(document).ready(function(){
 						<table id="listTb">
 							<tr class="tableHeader">
 								<!-- F代表Form -->
-								<th class="nameF" style="width: 180px">编号</th>
-								<th class="nameF" style="width: 120px">客户名</th>
-								<th class="nameF" style="width: 120px">员工名</th>
-								<th class="nameF" style="width: 120px">签订日期</th>
+								<th class="emailField" >编号</th>
+								<th class="emailField" >客户名</th>
+								<th class="emailField" >员工名</th>
+								<th class="emailField" >签订日期</th>
+								<th class="emailField">创建人</th>
+               					<th class="emailField">最后更新</th>
 								<th class="tableActionTD">操作</th>
 							</tr>
 							<volist name="list" id="vo">
@@ -141,6 +143,8 @@ $(document).ready(function(){
 									<td>{$vo['customerName']}</td>
 									<td>{$vo['staffName']}</td>
 									<td>{$vo['orderDate']}</td>
+									<td>{$vo['createUser']}<br/>{$vo['createTime']}</td>
+									<td>{$vo['updateUser']}<br/>{$vo['updateTime']}</td>
 									<td>
 									<input type="button" value="編輯" class="tableActionButton"/>
 									<input type="button" value="刪除" class="tableActionButton"/>
