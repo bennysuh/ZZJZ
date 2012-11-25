@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-1.7.2.min.js"></script>
+<!--解决IE6 select遮罩 hack插件 配合loading插件使用-->
+<script type="text/javascript" src="__PUBLIC__/js/jquery.bgiframe.min.js"></script>
+<!--loading mask插件-->
+<script type="text/javascript" src="__PUBLIC__/js/loading-min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.2.6/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/validateType.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.json-2.3.min.js"></script>
+<link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/style/css/loading.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/js/jquery-easyui-1.2.6/themes/default/easyui.css" rel="stylesheet" type="text/css">
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+var actionName = '__ACTION__';
+$(document).ready(function(){
+     //导航选中
+	$(".navList li[name=setting]").addClass('selectButton');
+
+	//编辑或删除的按纽被按下
+	$('#freeTimeList').delegate(".tableActionButton","click",function(){
+		var currentRow = $(this).parent().parent();
+		var staffId = currentRow.attr('staffId');
+		var isHidden;//显示隐藏按钮状态
+		if ($(this).attr('value') == '編輯') {
+			window.location.href = '/Admin/Staff/editStaff/staffId/'+staffId;
+			return;
+		}
+	});
+	
+	$("#saveBtn").click(function(){
+		loading.show();
+		if(!$("#freetimeForm").form("validate"))
+		{
+			alert('請填寫必須的信息');
+			loading.hide();
+		}else{
+			
+		}
+	});
+	
+})
+//-->
+</SCRIPT>
+
+</head>
+<body>
+  <include file="Public:header" />
+
+<!-- 主要內容 -->
+<div id="content">
+	
+  <!-- 左菜单 -->
+  <include file="Public:leftForContent" />
+    
+  <!-- 右框架 -->
+  <div id="rightWrap">
+    <!-- 所在位置地址 -->
+    <div class="addressBar">空檔期管理 > </div>
+    <!-- 用戶管理框架 -->
+  	<div class="UMWrap">
+  	<!-- 增加用戶框架 -->
+        <div class="addUserWrap">
+          <form id="freetimeForm">
+            <table>
+              <tr>
+              	<td class="inputName"><label>月嫂:</label></td>
+              	<td class="inputText"><input name="staffName" type="text" class="easyui-validatebox" required="true" /></td>
+               </tr>
+              <tr>
+              	<td class="inputName"><label>開始日期:</label>
+              	</td><td class="inputText"><input name="startDate"  class="easyui-datebox" required="true"  type="text" /></td>
+              </tr>
+              <tr>
+              	<td class="inputName"><label>結束日期:</label></td>
+              	<td class="inputText"><input name="endDate" type="text" class="easyui-datebox" required="true" /></td>
+              </tr>
+            </table>
+            <!-- 按鈕按下去為select否則為noselect -->
+            <input type="button" value="新增" class="actionButton" id="saveBtn"/><BR><BR>
+          </form>
+        </div>
+      </div>
+  	    <!-- 列表框架 -->
+        <div class="listWrap">
+          <h2>记录列表</h2> 
+            <table id="freeTimeList">
+              <tr class="tableHeader">
+                <!-- F代表Form -->
+                <th class="nameF">月嫂編號</th>
+                <th class="nameF">月嫂姓名</th>
+                <th class="nameF">空檔開始日期</th>
+                <th class="nameF">空檔结束日期</th>
+                <th class="nameF">狀態</th>
+				<th class="tableActionTD">操作</th>
+              </tr>
+              <volist name="list" id="vo">
+			  <tr orderid={$vo['id']}>
+                <td>{$vo['bh']}</td>
+				<td>{$vo['staffName']}</td>
+				<td>{$vo['startDate']}</td>
+				<td>{$vo['endDate']}</td>
+				<td>{$vo['status']}</td>
+				<td>
+					<input type="button" value="編輯" class="tableActionButton"/>
+				</td>
+              </tr>
+              </volist>
+            </table>
+			{:$page}
+        </div>
+  </div>
+  
+</div>
+</body>
+</html>
