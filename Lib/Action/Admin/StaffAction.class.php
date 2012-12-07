@@ -226,6 +226,23 @@ class StaffAction extends EntryAction {
 			$data['languages'] = join(",", $_POST['lang']);
 			$pathArr = explode($data['images'], ",");
 			$result = $staff -> where("staffid='" . $_POST['staffId'] . "'") -> save($data);
+			
+			//保存上传图片信息
+			if($_POST['imgdata']){
+				$imgData = $_POST['imgdata'];
+				$imgData = str_replace("\\","",$imgData);
+				$imgData=json_decode($imgData);
+				$imgDataArr = objectToArray($imgData);
+				foreach ($imgDataArr as $v) {
+					$data['id'] = $v['id'];
+					unset($v['id']);
+					$result = M("zz_upload")->where($data)->save($v);
+					if(!$result){
+						Log::write("save upload image error " . M()->getError());
+					}
+				}
+			}
+			
 			SysLogs::log("更新员工" . $POST["name"] );
 			$logData["tablename"] = "zz_staff";
 			$logData["no"] = $_POST['staffId'];

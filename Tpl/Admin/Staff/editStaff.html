@@ -73,7 +73,18 @@
 					return;
 				}
 				var data = $(form).serialize();
-				
+				var imgData = [],imgJson;
+				$("#thumbList").find("tr").each(function(index){
+					if(index!=0){
+						imgJson = {};
+						imgJson.id = $(this).attr("uploadid");
+						imgJson.tip = $(this).find(".tip").val();
+						imgJson.isShow = $(this).find(".action").val();
+						imgJson.index = $(this).attr("index");
+						imgData.push(imgJson);
+					}
+				})
+				data += "&imgdata=" + $.toJSON(imgData);
 				if(status == "add"){
 					$.post('{:U("Staff/addStaff")}',data,saveHandler,"json");
 				}else if(status == "edit"){
@@ -109,6 +120,7 @@
 				alert(r.info);
 				window.location.href = root + "/Admin/Staff";
 			}
+			
 				
 			function ajaxHandler(response){
 				alert(response.info);

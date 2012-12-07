@@ -41,6 +41,10 @@ class CustomerAction extends EntryAction {
 		$key = $M ->data($data)-> add();//获取新增返回的id值用于添加到联系方式表中
 		if ($key) {
 			SysLogs::log("新增客户,id=" . $key);
+			$logData["tablename"] = "zz_yscustomer";
+			$logData["no"] = $key;
+			$logData["createUser"] = $_SESSION['loginName'];
+			ZZLogModel::addLog($logData);
 			$this -> success($key);
 		} else {
 			$this -> error('增加失敗');
@@ -145,8 +149,13 @@ class CustomerAction extends EntryAction {
 			$result = $M ->data($data)-> save();
 			//保存成功返回影响的记录数不成功返回false。若无更改则返回0
 			if (is_int($result)) {
-				$this -> success('保存成功');
 				SysLogs::log("保存客户信息,id=" . $M["id"]);
+				$logData["tablename"] = "zz_yscustomer";
+				$logData["no"] = $M["id"];
+				$logData["updateUser"] = $_SESSION['loginName'];
+				ZZLogModel::updateLog($logData);
+				$this -> success('保存成功');
+				
 				
 			} else {
 				$this -> error('保存失敗');
