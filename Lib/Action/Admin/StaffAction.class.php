@@ -62,6 +62,21 @@ class StaffAction extends EntryAction {
 		}
 
 		$key = $staff -> data($data) -> add();
+		//保存上传图片信息
+		if($_POST['imgdata']){
+			$imgData = $_POST['imgdata'];
+			$imgData = str_replace("\\","",$imgData);
+			$imgData=json_decode($imgData);
+			$imgDataArr = objectToArray($imgData);
+			foreach ($imgDataArr as $v) {
+				$img['id'] = $v['id'];
+				unset($v['id']);
+				$rel= M("zz_upload")->where($img)->save($v);
+				if(!$rel){
+					Log::write("save upload image error " . M()->getLastSql());
+				}
+			}
+		}
 		if ($key) {
 			//保存图片到zz_upload
 			if($data["images"]){
@@ -234,11 +249,11 @@ class StaffAction extends EntryAction {
 				$imgData=json_decode($imgData);
 				$imgDataArr = objectToArray($imgData);
 				foreach ($imgDataArr as $v) {
-					$data['id'] = $v['id'];
+					$img['id'] = $v['id'];
 					unset($v['id']);
-					$result = M("zz_upload")->where($data)->save($v);
-					if(!$result){
-						Log::write("save upload image error " . M()->getError());
+					$rel= M("zz_upload")->where($img)->save($v);
+					if(!$rel){
+						Log::write("save upload image error " . M()->getLastSql());
 					}
 				}
 			}
