@@ -149,9 +149,9 @@ class CustomerAction extends EntryAction {
 			$result = $M ->data($data)-> save();
 			//保存成功返回影响的记录数不成功返回false。若无更改则返回0
 			if (is_int($result)) {
-				SysLogs::log("保存客户信息,id=" . $M["id"]);
+				SysLogs::log("保存客户信息,id=" . $data["id"]);
 				$logData["tablename"] = "zz_yscustomer";
-				$logData["no"] = $M["id"];
+				$logData["no"] = $data["id"];
 				$logData["updateUser"] = $_SESSION['loginName'];
 				ZZLogModel::updateLog($logData);
 				$this -> success('保存成功');

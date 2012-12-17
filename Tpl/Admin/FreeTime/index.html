@@ -23,29 +23,92 @@ var actionName = '__ACTION__';
 $(document).ready(function(){
      //导航选中
 	$(".navList li[name=setting]").addClass('selectButton');
-
+	var loading = new ol.loading({id:"freetimeForm"});
+	//初始化下拉列表月嫂数据
+	function loadData(){
+		var staffList = '{$staffList}';
+		var staffArr = JSON.parse(staffList);
+		$('#staffSel').combobox({
+			data:staffArr,//转换成数组
+			valueField:'staffid',
+			textField:'name'
+		});
+	}
+	loadData();
+	
+	
+	$("#startDate,#endDate,#freeDate,#editStart,#editEnd").datebox({
+		formatter:formater
+	});
 	//编辑或删除的按纽被按下
 	$('#freeTimeList').delegate(".tableActionButton","click",function(){
 		var currentRow = $(this).parent().parent();
-		var staffId = currentRow.attr('staffId');
-		var isHidden;//显示隐藏按钮状态
+		var trId = currentRow.attr('trId');
 		if ($(this).attr('value') == '編輯') {
-			window.location.href = '/Admin/Staff/editStaff/staffId/'+staffId;
+			$("#editFreeTime").show();
+			$("#editID").val(trId);
+			$("#editName").text(currentRow.find(".staffName").text());
+			$("#editStart").datebox("setValue",currentRow.find(".startDate").text());
+			$("#editEnd").datebox("setValue",currentRow.find(".endDate").text());
+			return;
+		}
+		if ($(this).attr('value') == '删除') {
+			 if (!confirm('你確定要刪除此空档期？')) return; 
+		    loading.show();
+		    $.post('{:U("__ROOT__/Admin/FreeTime/delFreeTime")}', "id="+trId, reflashHandler, 'json');
 			return;
 		}
 	});
 	
-	$("#saveBtn").click(function(){
+	
+	
+	//新增空档期
+	$("#addBtn").click(function(){
 		loading.show();
 		if(!$("#freetimeForm").form("validate"))
 		{
 			alert('請填寫必須的信息');
 			loading.hide();
 		}else{
-			
+			var staffid = $("#staffSel").combobox("getValue");
+			if(!staffid){
+				loading.hide();
+				alert('請选择正确的月嫂');
+				return;
+			}
+			var postData = $("#freetimeForm").serialize();
+			$.post("addFreetime",postData,reflashHandler,"json");
 		}
 	});
 	
+	//新增回调
+	function reflashHandler(response)
+	{
+		loading.hide();
+		alert(response.info);
+		if(response.status){
+			window.location.href = window.location.href;//強逼刷新
+		}
+	}
+	
+	
+	//查询
+	$("#searchBtn").click(function(){
+		var postData = $("#searchForm").serialize();
+		window.location.href = "?"+postData;
+	})
+	//保存编辑
+	$("#saveBtn").click(function(){
+		var postData = $("#editFreeTimeForm").serialize();
+		$.post("saveFreeTime",postData,reflashHandler,"json");
+	})
+	
+	//取消编辑
+	$("#cancelBtn").click(function(){
+		$("#editFreeTimeForm")[0].reset;
+		$("#editName").text("");
+		$("#editFreeTime").hide();
+	})
 })
 //-->
 </SCRIPT>
@@ -72,21 +135,44 @@ $(document).ready(function(){
             <table>
               <tr>
               	<td class="inputName"><label>月嫂:</label></td>
-              	<td class="inputText"><input name="staffName" type="text" class="easyui-validatebox" required="true" /></td>
+              	<td class="inputText">
+              		<select id="staffSel" class="easyui-combobox" required="true" name="staffId" style="width:200px;">
+              			<option>请选择月嫂</option>
+              		</select>
+              	</td>
                </tr>
               <tr>
               	<td class="inputName"><label>開始日期:</label>
-              	</td><td class="inputText"><input name="startDate"  class="easyui-datebox" required="true"  type="text" /></td>
+              	</td><td class="inputText">
+              		<input name="startDate" id="startDate" required="true" class="easyui-datebox"  type="text" /></td>
               </tr>
               <tr>
               	<td class="inputName"><label>結束日期:</label></td>
-              	<td class="inputText"><input name="endDate" type="text" class="easyui-datebox" required="true" /></td>
+              	<td class="inputText">
+              		<input name="endDate" id="endDate" type="text" required="true" class="easyui-datebox" /></td>
               </tr>
             </table>
             <!-- 按鈕按下去為select否則為noselect -->
-            <input type="button" value="新增" class="actionButton" id="saveBtn"/><BR><BR>
+            <input type="button" value="新增" class="actionButton" id="addBtn"/><BR><BR>
           </form>
         </div>
+		<form id="searchForm"  >
+            <table class="noBackground" style="border: none;">
+              <tr>
+              	<td class="inputName"><label>月嫂</label></td>
+                <td class="inputText"><input name="name" type="text" /></td>  	
+              </tr>
+              <tr>
+              	<td class="inputName"><label>空档日期</label></td>
+                <td class="inputText">
+                	<input name="freeDate" id="freeDate" required="true" class="easyui-datebox"  type="text" />
+                	
+                </td>  	
+              </tr>
+            </table>
+            <!-- 按鈕按下去為select否則為noselect -->
+            <input type="button" id="searchBtn" value="Search" class="TinputAdd noselected" />
+          </form>
       </div>
   	    <!-- 列表框架 -->
         <div class="listWrap">
@@ -99,23 +185,58 @@ $(document).ready(function(){
                 <th class="nameF">空檔開始日期</th>
                 <th class="nameF">空檔结束日期</th>
                 <th class="nameF">狀態</th>
+                <th class="nameF">创建人</th>
+                <th class="nameF">最后更新</th>
 				<th class="tableActionTD">操作</th>
               </tr>
               <volist name="list" id="vo">
-			  <tr orderid={$vo['id']}>
-                <td>{$vo['bh']}</td>
-				<td>{$vo['staffName']}</td>
-				<td>{$vo['startDate']}</td>
-				<td>{$vo['endDate']}</td>
-				<td>{$vo['status']}</td>
+			  <tr trId={$vo['id']}>
+                <td>{$vo['ygbh']}</td>
+				<td class="staffName">{$vo['name']}</td>
+				<td class="startDate">{$vo['startDate']}</td>
+				<td class="endDate">{$vo['endDate']}</td>
+				<td class="status">{$vo['status']}</td>
+				<td>{$vo['createUser']}<br/>{$vo['createTime']}</td>
+				<td>{$vo['updateUser']}<br/>{$vo['updateTime']}</td>
 				<td>
 					<input type="button" value="編輯" class="tableActionButton"/>
+					<input type="button" value="删除" class="tableActionButton"/>
 				</td>
               </tr>
               </volist>
             </table>
 			{:$page}
         </div>
+        <!-- 這裡的UMWrap是修改時出現的,所以加上了modify控制display -->
+  	 <div id="editFreeTime" class="UMWrap modify">
+        <!-- 框架標題 -->
+        <div class="wrapTitle">
+          <h2>修改空档期</h2>
+        </div>
+        <!-- 增加用戶框架 -->
+        <div class="addUserWrap">
+          <form id="editFreeTimeForm" userID=''>
+          	<input style="display: none;" name="id" id="editID"/>
+            <table cellpadding="0" cellspacing="0" width="100%">
+              <tr>
+              	<td class="inputName"><label>月嫂</label></td>
+              	<td class="inputText">
+              		<label id="editName"></label>
+              	</td>
+              </tr>
+              <tr>
+              	<td class="inputName"><label>空档起止日期:</label></td>
+              	<td class="inputText">
+              		<input name="startDate" id="editStart" required="true" class="easyui-datebox"  type="text" />
+              		至 <input name="endDate" id="editEnd" required="true" class="easyui-datebox"  type="text" />
+              	</td>	
+              </tr>
+            </table>
+            <!-- 按鈕按下去為select否則為noselect -->
+            <input type="button" value="保存" id="saveBtn" class="actionButton"/><input type="button" id="cancelBtn" value="取消" class="cancelButton actionButton"/>
+          </form>
+        </div>
+    </div>    
   </div>
   
 </div>

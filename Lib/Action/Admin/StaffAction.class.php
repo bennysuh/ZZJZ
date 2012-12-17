@@ -261,6 +261,7 @@ class StaffAction extends EntryAction {
 			SysLogs::log("更新员工" . $POST["name"] );
 			$logData["tablename"] = "zz_staff";
 			$logData["no"] = $_POST['staffId'];
+			$logData["operate"] = "update";
 			$logData["updateUser"] = $_SESSION['loginName'];
 			ZZLogModel::updateLog($logData);
 		}

@@ -1,0 +1,146 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<!DOCTYPE>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>新增/編輯通知</title>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.bgiframe.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/loading-min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.json-2.3.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/easyui/jquery.easyui.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/validateType.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.scrollTo-min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-overlay.js"></script>
+		<link href="__PUBLIC__/style/css/common.css" rel="stylesheet" type="text/css">
+		<link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
+		<link href="__PUBLIC__/style/css/loading.css" rel="stylesheet" type="text/css" />
+		<link href="__PUBLIC__/js/jquery-easyui-1.2.6/themes/default/easyui.css" rel="stylesheet" type="text/css">
+		<SCRIPT LANGUAGE="JavaScript">
+			<!--
+			var actionName = '__ACTION__';
+			
+			$(document).ready(function() {
+				var loading = new ol.loading({id:"infoForm"});
+				
+				var status;
+				//status区分add或edit
+				//编辑时显示删除按钮
+				if (window.location.href.indexOf("id") != -1) {
+					$("#removeBtn").show();
+					status = "edit";
+				} else {
+					status = "add";
+				}
+				//保存
+				$("#saveBtn").click(function() {
+					//if(!$(form.name).validatebox('isValid') || !$(form.phone).validatebox('isValid')) {
+					if (!$('#infoForm').form("validate")) {
+						alert('請填寫必須的信息');
+						return;
+					}
+					var data = $('#infoForm').serialize();
+					loading.show();
+					if (status == "add") {
+						$.post('{:U("Notice/addNotice")}', data, saveHandler, "json");
+					} else if (status == "edit") {
+						$.post('{:U("Notice/saveNotice")}', data, saveHandler, "json");
+					}
+				});
+				//新增/更新
+				function saveHandler(response) {
+					if (response.status) {
+						
+					} else {
+						loading.hide();
+						alert(response.info);
+					}
+				}
+
+				//联系方式回调
+				function relHandler(r) {
+					loading.hide();
+					if(r.status){
+						window.location.href = '{:U("/Admin/Notice")}';
+					}else{
+						alert(r.info);
+					}
+				}
+
+				function ajaxHandler(response) {
+					loading.hide();
+					alert(response.info);
+					if (response.status == 1)
+						window.location.href = '{:U("/Admin/Notice")}';
+				}
+
+				//删除
+				$("#removeBtn").click(function() {
+					$.post('{:U("Notice/removeNotice")}', "id=" + $("#id").val(), ajaxHandler, "json");
+				});
+
+			});
+			//-->
+		</SCRIPT>
+	</head>
+	<body>
+
+		<div id="uploadifyQueue"></div>
+		<include file="Public:header" />
+		<!-- 主要內容 -->
+		<div id="content">
+			<include file="Public:leftForContent" />
+			<!-- 右框架 -->
+			<div id="rightWrap">
+				<!-- 所在位置地址 -->
+				<div class="addressBar">
+					通知管理 > 新增/編輯通知
+				</div>
+				<!--<div class="groupTitle">
+				<h2 class="pageTitle">新增/編輯通知</h2>
+				</div>-->
+				<div class="locationInfo">
+					<form id="infoForm">
+						<input name="id" id="id" type="text" style="display:none;" value="{$id}" />
+						<table class="noBackground">
+							<tr>
+								<td class="noBackground inputName">标题:</td>
+								<td class="noBackground inputText">
+								<input name="title" id="NoticeTitle" type="text" class="easyui-validatebox" required="true" value="{$title}" />
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">内容:</td>
+								<td class="noBackground inputName">								
+									<textarea cols="45" rows="5" class="easyui-validatebox" 
+									name="address">{$content}</textarea>
+								</td>	
+							</tr>
+							<tr>
+								<td class="noBackground inputName">是否发布:</td>
+								<td class="noBackground inputName">
+									<html:select name="isPublish" id="isPublishSel" options="isPublish"/>
+								</td>
+							</tr>
+						</table>
+					</form>
+				</div>
+				<div class="formLine" style="padding:0px;">
+					<div id="toolbar2" class="formLine">
+						<?php if (Auth::AccessDecision('Admin','Customer','editNotice')) { ?>
+						<button class="actionButton" id="saveBtn">
+							保存
+						</button>
+						<?php } ?>
+						<button class="actionButton" onclick="window.location.href='__ROOT__/Admin/Customer'">
+							返回
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
