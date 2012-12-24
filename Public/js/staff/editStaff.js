@@ -27,7 +27,6 @@ $(document).ready(function(){
 			return;
 		}
 		var data = $(form).serialize();
-		console.log(data);
 		if(status == "add"){
 			$.post('{:U("Staff/addStaff")}',data,ajaxHandler,"json");
 		}else if(status == "edit"){

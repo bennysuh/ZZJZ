@@ -49,6 +49,7 @@ class ContractAction extends EntryAction {
 		}
 		$data['isShow'] = 1;
 		$count = $M->where($data)->count();
+		Log::write(M()->getLastSql());
 		$p = new Page($count, 10);
 		$page = $p -> show();
 		$list = $M->where($data)->limit($p -> firstRow.','.$p -> listRows)->order("id desc")->select();
@@ -67,6 +68,10 @@ class ContractAction extends EntryAction {
 	public function editContract()
 	{
 		$id = $_GET["id"];
+		$staffList = D("Staff")->getStafflist();
+		$this->assign("staffList",json_encode($staffList));
+		$customerList = D("Customer")->getCustomerlist();
+		$this->assign("customerList",json_encode($customerList));
 		//编辑页面
 		if ($id) {
 			$M = D('ContractView');
@@ -87,6 +92,7 @@ class ContractAction extends EntryAction {
 			$this->assign("orderDate",$info['orderDate']);
 			$this->assign("price",$info['price']);
 			$this->assign("doPay",$info['doPay']);
+			
 			$this -> display();
 		}else{
 			$no = $this->createContractNo();
@@ -108,6 +114,10 @@ class ContractAction extends EntryAction {
 		if ($M->create()) {
 			$id = $M->add();
 			SysLogs::log("新增合同,id=" . $id);
+			$logData["tablename"] = "zz_contract";
+			$logData["no"] = $id;
+			$logData["createUser"] = $_SESSION['loginName'];
+			ZZLogModel::addLog($logData);
 			$this -> success('新增成功');
 		} else {
 			Log::write(M()->getLastSql());
@@ -126,7 +136,11 @@ class ContractAction extends EntryAction {
 		if($M->create()){
 			$result = $M-> save();
 			if (is_int($result)) {
-				SysLogs::log("更新合同,id=" . $M["id"]);
+				SysLogs::log("更新合同,id=" . $_POST["id"]);
+				$logData["tablename"] = "zz_contract";
+				$logData["no"] = $_POST["id"];
+				$logData["updateUser"] = $_SESSION['loginName'];
+				ZZLogModel::updateLog($logData);
 				$this -> success('保存成功');
 			} else {
 				Log::write(M()->getLastSql());

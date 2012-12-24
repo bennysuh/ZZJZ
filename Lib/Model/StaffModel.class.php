@@ -17,6 +17,7 @@ class StaffModel extends Model {
 		$result = $M->where("isHidden=1")->limit("$firstRow,$listRows")->order("updatetime")->select();
 		return $result;
 	}
+	
 	/**
 	 +----------------------------------------------------------
 	 *获取员工总数
@@ -33,6 +34,19 @@ class StaffModel extends Model {
 	{
 		$staffInfo = D('StaffView') -> where("staffid = " . $staffId) -> find();
 		return $staffInfo;
+	}
+	
+	/**
+	 +----------------------------------------------------------
+	 *获取员工列表
+	 +----------------------------------------------------------
+	 * @access public
+	 +----------------------------------------------------------
+	 */
+	public function getStafflist()
+	{
+		$result = M("zz_staff")->field("staffid,name")->order("name asc")->select();
+		return $result;
 	}
 }
 ?>

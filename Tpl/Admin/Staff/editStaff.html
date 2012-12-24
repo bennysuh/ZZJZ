@@ -166,7 +166,6 @@
 		            	$.post(root + '/Admin/Staff/updateIndex',{json:$.toJSON(data)},function(response){
 		            		loading.hide();
 		            		if(response.status){
-		            			console.log("up成功");
 		            			var prevIndex = tr.prev().attr("index");
 		            			var currIndex = tr.attr("index");
 		            			tr.attr("index",prevIndex);
@@ -322,7 +321,7 @@
 			if(oldImgName)
 				$("#uploadImages").val(oldImgName+","+name);
 			else
-				$("#uploadImages").val(name);
+				$("#uploadImages").val(name);
 			var tmp = name.split(",");
 			//保存到数据库
 			addUpload(tmp);
@@ -342,10 +341,9 @@
         				})
         			}
         		});
-        		console.log(fileArr);
 	        	$.post(root + "/Admin/Staff/addUpload",{json:$.toJSON(fileArr)},addUploadHandler,"json");
         	}else{
-        		console.log("no file upload");
+        		alert("no file upload");
         	}
         }
         function addUploadHandler(response){
@@ -432,7 +430,7 @@
         	data.path = path;
         	data.pid = $("#ygbh").val();
         	$.post(root+"/Admin/Staff/removeUpload",{json:$.toJSON(data)},function(response){
-        		console.log(response.info);
+        		//alert(response.info);
         	},"json");
         }
         //删除上传行数

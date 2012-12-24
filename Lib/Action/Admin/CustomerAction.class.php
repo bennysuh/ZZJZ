@@ -240,8 +240,10 @@ class CustomerAction extends EntryAction {
 		//编辑页面
 		if ($id) {
 			$M = M('zz_yscustomer');
-			$info = $M -> where("id = " . $id) -> find();
-			echo json_encode($info);
+			$info = $M-> where("id = " . $id)->order("name desc") -> find();
+			$this->success(json_encode($info));
+		}else{
+			$this->error("查询失败");
 		}
 	}
 }

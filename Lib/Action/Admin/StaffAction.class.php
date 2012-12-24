@@ -35,8 +35,6 @@ class StaffAction extends EntryAction {
 		$p = new Page($count, 10);
 		$page = $p -> show();
 		$list = $M->where($data)->limit($p -> firstRow . " , " . $p -> listRows)->order('updateTime desc')->select();
-		Log::write(M()->getLastSql());
-		//$M -> query($sql . " LIMIT " . );
 		$this -> assign('page', $page);
 		$this -> assign('list', $list);
 		$this -> display();
@@ -158,7 +156,7 @@ class StaffAction extends EntryAction {
 			// if ($staffInfo["images"]) {
 				// $vo = explode(",", $staffInfo["images"]);
 				// $this -> assign("list", $vo);
-			// }
+			// }
 			//查询级别的enum。并转换为数组
 			$M = M('zz_stafflevel');
 			$levelAttr = $M -> getField("id,level");
@@ -671,7 +669,9 @@ class StaffAction extends EntryAction {
 		if ($id) {
 			$M = M('zz_staff');
 			$info = $M -> where("staffid = " . $id) -> find();
-			echo json_encode($info);
+			$this->success(json_encode($info));
+		}else{
+			$this->error("查询失败");
 		}
 	}
 	
