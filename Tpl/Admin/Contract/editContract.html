@@ -49,7 +49,32 @@
 				            $.post(root + "/Admin/Staff/getStaffById",postData,changeStaffHandler);
 				        } 
 					});
-					
+					$('#alternateSel1').combobox({
+						data:staffArr,//转换成数组
+						valueField:'staffid',
+						textField:'name',
+						onChange:function(){  
+				            loading.show();
+				            var val = $("#alternateSel1").combobox("getValue");
+				            if(val){
+				            	 var postData = {id:val};
+				            	$.post(root + "/Admin/Staff/getStaffById",postData,changeAlternate1Handler);
+				            }
+				        } 
+					});
+					$('#alternateSel2').combobox({
+						data:staffArr,//转换成数组
+						valueField:'staffid',
+						textField:'name',
+						onChange:function(){  
+				            loading.show();
+				            var val = $("#alternateSel2").combobox("getValue");
+				            if(val){
+				            	 var postData = {id:val};
+				            	$.post(root + "/Admin/Staff/getStaffById",postData,changeAlternate2Handler);
+				            }
+				        } 
+					});
 					var customerList = '{$customerList}';
 					var customerArr = JSON.parse(customerList);
 					$('#customerSel').combobox({
@@ -66,6 +91,8 @@
 					if(status=="edit"){
 						$('#staffSel').combobox("setValue","{$staffId}");
 						$('#customerSel').combobox("setValue","{$customerId}");
+						$('#alternateSel1').combobox("setValue","{$alternate1}");
+						$('#alternateSel2').combobox("setValue","{$alternate2}");
 					}
 				}
 				loadData();
@@ -139,6 +166,32 @@
 						alert(response.info);
 					}
 				}
+				//选择备选月嫂1回调 
+				function changeAlternate1Handler(response)
+				{
+					loading.hide();
+					var response = JSON.parse(response);
+					if(response.status){
+						var data = JSON.parse(response.info);
+						$("#alternate1").val(data.staffid);
+						$("#alternate1Level").text(data.ysLevel);
+					}else{
+						alert(response.info);
+					}
+				}
+				//选择备选月嫂2回调 
+				function changeAlternate2Handler(response)
+				{
+					loading.hide();
+					var response = JSON.parse(response);
+					if(response.status){
+						var data = JSON.parse(response.info);
+						$("#alternate2").val(data.staffid);
+						$("#alternate2Level").text(data.ysLevel);
+					}else{
+						alert(response.info);
+					}
+				}
 			});
 		</SCRIPT>
 	</head>
@@ -161,6 +214,8 @@
 						<input name="id" id="id" type="text" style="display:none;" value="{$id}" />
 						<input name="customerId"  id="customerId" type="text" style="display:none;" value="{$customerId}" />
 						<input name="staffId" id="staffId" type="text" style="display:none;" value="{$staffId}" />
+						<input name="alternate1" id="alternateID1" type="text" style="display:none;" value="{$alternate1}" />
+						<input name="alternate2" id="alternateID2" type="text" style="display:none;" value="{$alternate2}" />
 						<table class="noBackground">
 							<tr>
 								<td class="noBackground inputName">编号:</td>
@@ -202,7 +257,7 @@
 								</td>
 							</tr>
 							<tr>
-								<td class="noBackground inputName">查询员工:</td>
+								<td class="noBackground inputName">查询月嫂:</td>
 								<td class="noBackground inputText" >
 									<select id="staffSel" class="easyui-combobox" required="true" name="staffId" style="width:200px;">
 				              			<option>请选择月嫂</option>
@@ -213,11 +268,53 @@
 								<td class="noBackground inputName" colspan="2">
 								<table  class="noBackground">
 									<tr>
-										<td class="noBackground inputName" colspan="2">员工信息</td>
+										<td class="noBackground inputName" colspan="2">月嫂信息</td>
 									</tr>
 									<tr>
 										<td class="noBackground inputName">级别:</td>
 										<td class="noBackground inputName"><label id="ysLevel">{$ysLevel}</label></td>
+									</tr>
+								</table>
+								</td>
+							</tr>
+							<tr class="alternate1">
+								<td class="noBackground inputName">备选月嫂1:</td>
+								<td class="noBackground inputText" >
+									<select id="alternateSel1" class="easyui-combobox" required="true" name="alternate1" style="width:200px;">
+				              			<option>请选择月嫂</option>
+				              		</select>
+								</td>
+							</tr>
+							<tr class="alternate1">
+								<td class="noBackground inputName" colspan="2">
+								<table  class="noBackground">
+									<tr>
+										<td class="noBackground inputName" colspan="2">月嫂信息</td>
+									</tr>
+									<tr>
+										<td class="noBackground inputName">级别:</td>
+										<td class="noBackground inputName"><label id="alternate1Level">{$ysLevel}</label></td>
+									</tr>
+								</table>
+								</td>
+							</tr>
+							<tr class="alternate2">
+								<td class="noBackground inputName">备选月嫂2:</td>
+								<td class="noBackground inputText" >
+									<select id="alternateSel2" class="easyui-combobox" required="true" name="alternate2" style="width:200px;">
+				              			<option>请选择月嫂</option>
+				              		</select>
+								</td>
+							</tr>
+							<tr class="alternate2">
+								<td class="noBackground inputName" colspan="2">
+								<table  class="noBackground">
+									<tr>
+										<td class="noBackground inputName" colspan="2">月嫂信息</td>
+									</tr>
+									<tr>
+										<td class="noBackground inputName">级别:</td>
+										<td class="noBackground inputName"><label id="alternate2Level">{$ysLevel}</label></td>
 									</tr>
 								</table>
 								</td>

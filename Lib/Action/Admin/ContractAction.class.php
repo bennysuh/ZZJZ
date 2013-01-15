@@ -84,6 +84,8 @@ class ContractAction extends EntryAction {
 			$this->assign("hospital",$info['hospital']);
 			$this->assign("staffId",$info['staffId']);
 			$this->assign("ysLevel",$info['ysLevel']);
+			$this->assign("alternate1",$info['alternate1']);
+			$this->assign("alternate2",$info['alternate2']);
 			$this->assign("birthday",$info['birthday']);
 			$this->assign("expectedDay",$info['expectedDay']);
 			$this->assign("address",$info['address']);
