@@ -31,6 +31,7 @@ class StaffAction extends EntryAction {
 			$data["name"] = $keyword;
 		
 		$count = $M->where($data)->count();
+		
 		//分页
 		$p = new Page($count, 10);
 		$page = $p -> show();
@@ -79,12 +80,12 @@ class StaffAction extends EntryAction {
 			//保存图片到zz_upload
 			if($data["images"]){
 				$imgArr = explode(",", $data['images']);
-				SysLogs::log("新增员工" . $_POST["name"]);
-				$logData["tablename"] = "zz_staff";
-				$logData["no"] = $key;
-				$logData["createUser"] = $_SESSION['loginName'];
-				ZZLogModel::addLog($logData);
 			}
+			SysLogs::log("新增员工" . $_POST["name"]);
+			$logData["tablename"] = "zz_staff";
+			$logData["no"] = $key;
+			$logData["createUser"] = $_SESSION['loginName'];
+			ZZLogModel::addLog($logData);
 			$this -> success($key);
 		} else {
 			$this -> error('增加失敗');

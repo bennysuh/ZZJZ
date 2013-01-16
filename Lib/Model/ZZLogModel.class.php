@@ -13,6 +13,7 @@ class ZZLogModel extends Model {
 			$data["createTime"] = date('Y-m-d H:i:s');
 			$data["updateUser"] = $_SESSION['loginName'];
 			$data["createUser"] = $_SESSION['loginName'];
+			$data["updateTime"] = $data["createTime"];
 			$key = $M ->data($data)->add();
 			if($key)
 				return true;
