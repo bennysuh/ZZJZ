@@ -2,18 +2,18 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>權限管理_訪問級別</title>
-<script type="text/javascript" src="__PUBLIC__/js/jquery-1.7.2.min.js"></script>
+<title>权限管理-访问级别</title>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-1.8.0.min.js"></script>
 <script type="text/javascript" src="__PUBLIC__/js/jquery.bgiframe.min.js"></script>
 <script type="text/javascript" src="__PUBLIC__/js/loading-min.js"></script>
 <script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
 <script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
 <script type="text/javascript" src="__PUBLIC__/js/jquery.json-2.3.min.js"></script>
-<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.2.6/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.3.1/jquery.easyui.min.js"></script>
 
 <link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
 <link href="__PUBLIC__/style/css/loading.css" rel="stylesheet" type="text/css" />
-<link href="__PUBLIC__/js/jquery-easyui-1.2.6/themes/default/easyui.css" rel="stylesheet" type="text/css">
+<link href="__PUBLIC__/js/jquery-easyui-1.3.1/themes/default/easyui.css" rel="stylesheet" type="text/css">
 <SCRIPT LANGUAGE="JavaScript">
 <!--
 var actionName = '__ACTION__';
@@ -37,7 +37,6 @@ $(document).ready(function(){
 	//用戶點擊新增群組成員
 	$('#addMember').click(function(){
 	    var newMember = $('#template').children().first().clone();
-	    //新增行的autoID默认是0
 		var newRow = $("<tr autoID='0'><td colspan=3></td></tr>");
 		newRow.appendTo($('#memberTable'));
 		newMember.appendTo(newRow.children().first());//插入第一個TD裡面
@@ -206,7 +205,7 @@ $(document).ready(function(){
 
 
 });
-//显示模块权限用户组列表
+
 function readyForEditRights(sysID) {
     //清除原來的數據行
 	$('#memberTable tr').each(function(){
@@ -220,7 +219,7 @@ function readyForEditRights(sysID) {
 
 	$.post('{:U("SysAuth/getAccessRightList")}', {sysID:sysID}, getAccessRightListHandler, 'json');
 	function getAccessRightListHandler(response) {
-	    var data = response.data;
+	    var data = response.info;
 		if (data == null) return;
 		groupMembers = data;
 		for (var i = 0; i < data.length; i++) {
@@ -240,9 +239,7 @@ function readyForEditRights(sysID) {
 			$('<td><input type="checkbox" name="delete"  /></td>').appendTo(newRow);
 			$('<td><input type="checkbox" name="export"  /></td>').appendTo(newRow);
 			$('<td><input type="checkbox" name="print"  /></td>').appendTo(newRow);
-			//判断权限。
-			//如果level=7，则二进制是0111.它有1，2，4的权限
-			//如果level=21，则二进制是10101.它有1，4，16的权限
+
 			if (1 & row['level']) {
 			    newRow.find('input[type=checkbox][name=list]').attr("checked", "checked");
 			}
@@ -271,7 +268,7 @@ function readyForEditRights(sysID) {
 
 //生成本地群組的選項
 function getGroupListHandler(response) {
-	var data = response.data;
+	var data = response.info;
 	var localGroupList = $('.memberType').nextAll('#localGroupList');
 	for (var i = 0; i < data.length; i++) {
 		if ($('#memberTable').attr('groupID') == data[i].id) continue;//不能加當前群組為子群組
@@ -303,45 +300,43 @@ function getGroupListHandler(response) {
   <!-- 右框架 -->
   <div id="rightWrap">
     <!-- 所在位置地址 -->
-    <div class="addressBar">權限管理 > 系統功能</div>
+    <div class="addressBar">权限管理 > 系统功能</div>
 
     <div class="accessLevelsWrap">
-    <h2>系統功能</h2>
+    <h2>系统功能</h2>
 	  <table id="moduleTable">
 		<tr class="tableHeader">
-		  <th class="groupNameF">名稱</th>
+		  <th class="groupNameF">名称</th>
 		  <th class="descriptionF">描述</th>
 		  <?php if ($_SESSION[C('ADMIN_AUTH_KEY')]) { ?>
 		  <th class="tableActionTD">操作</th>
 		  <?php } ?>
 		</tr>
 		<?php foreach ($list as $vo) { ?>
-		<!--admin显示所有功能权限-->
 		<?php if ($vo['isHidden'] && !$_SESSION[C('ADMIN_AUTH_KEY')]) continue; ?>
 		<tr sysID="{$vo['sysID']}">
 		  <td class="mouseClick">{:htmlspecialcharsx($vo['name'])}</td>
 		  <td>{:htmlspecialcharsx($vo['description'])}</td>
 		  <?php if ($_SESSION[C('ADMIN_AUTH_KEY')]) { ?>
-		  <td><input type="button" value="<?php if($vo['isHidden']) echo '顯示';else echo '隱藏'; ?>" class="tableActionButton"/></td>
+		  <td><input type="button" value="<?php if($vo['isHidden']) echo '显示';else echo '隐藏'; ?>" class="tableActionButton"/></td>
 		  <?php } ?>
 		</tr>
 		<?php } ?>
 	  </table>
     </div>
-    <!--模块权限列表-->
 	<div id="membersContainer" class="membersModule">
         <h2>模組權限<span id="moduleTitle"></span></h2>
         <form id="accessRightForm">
           <table id="memberTable">
             <tr class="tableHeader">
               <th class="selectState"></th>
-              <th class="groupName">用戶/組</th>
-			  <th class="userType">類型</th>
+              <th class="groupName">用戶/组</th>
+			  <th class="userType">类型</th>
 			  <th class="choice">查看<INPUT TYPE="checkbox" NAME="list"></th>
               <th class="choice">新增<INPUT TYPE="checkbox" NAME="create"></th>
-              <th class="choice">編輯<INPUT TYPE="checkbox" NAME="edit"></th>
+              <th class="choice">编辑<INPUT TYPE="checkbox" NAME="edit"></th>
 			  <th class="choice">刪除<INPUT TYPE="checkbox" NAME="delete"></th>
-			  <th class="choice">導出<INPUT TYPE="checkbox" NAME="export"></th>
+			  <th class="choice">导出<INPUT TYPE="checkbox" NAME="export"></th>
 			  <th class="choice">打印<INPUT TYPE="checkbox" NAME="print"></th>
             </tr>
           </table>

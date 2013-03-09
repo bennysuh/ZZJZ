@@ -51,7 +51,7 @@ class AssessAction extends EntryAction {
 		$key = $M ->data($data)-> add();//获取新增返回的id值用于添加到联系方式表中
 		if ($key) {
 			SysLogs::log("新增评价,id=" . $key);
-			$this -> success($key);
+			$this -> success('评价成功');
 		} else {
 			Log::write($M->getError());
 			$this -> error('增加失敗');
@@ -68,7 +68,6 @@ class AssessAction extends EntryAction {
 	{
 		$assessId = $_GET['assessId'];//已有记录
 		$orderId = $_GET['orderId'];
-		Log::write($assessId);
 		if($assessId){//assess列表过来的
 			$M = D('AssessView');
 			$result = $M->where("zz_assess.id=" . $assessId)->find();
@@ -84,7 +83,6 @@ class AssessAction extends EntryAction {
 				$this->assign("id",$result['id']);
 				$this->display();
 			}else{
-				Log::write(M()->getLastSql());
 				$this->error("无此评价");
 			}
 		}else if($orderId){//contract列表过来的
@@ -93,7 +91,6 @@ class AssessAction extends EntryAction {
 			$staffName = $_GET['staffName'];
 			$staffId = $_GET['staffId'];
 			$result = $M->where('orderId='. $orderId . " and staffId=" . $staffId)->find();
-			Log::write(M()->getLastSql());
 			if($result){
 				//显示记录
 				$this->assign("wsxgLevel",$result['wsxgLevel']);

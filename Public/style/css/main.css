@@ -4,6 +4,9 @@ body,ul,li,table,tbody,tr,td,button,form {
 	padding: 0;
 	font-family: Arial;
 }
+input {
+	height:20px;
+}
 form {
 	padding-left: 20px;
 }
@@ -563,8 +566,6 @@ body {
 
 /* 表格裡面的操作按紐 */
 .tableActionButton {
-    margin-left:10px;
-    margin-right:10px;
 }
 
 /* 用户搜索区域 */
@@ -610,7 +611,7 @@ body {
     font-weight: bold;
     height: 25px;
 	min-width: 70px;
-	max-width:90px;
+	max-width:200px;
 	margin-right:10px;
 	
 	background: rgb(182,211,255); /* Old browsers */

@@ -1,52 +1,310 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+{// 引入标签库 }
+<tagLib name="html" />
+<!DOCTYPE html>
 <html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <title>ThinkPHP示例：表单提交、自动验证和自动填充</title>
-        <link rel='stylesheet' type='text/css' href='__PUBLIC__/Css/common.css'>
-    </head>
-    <body>
-        <div class="main">
-            <h2>ThinkPHP示例之表单处理：自动获取表单数据生成数据对象</h2>
-            本示例对提交的表单数据进行处理，自动创建数据对象和进行自动验证和填充。
-            <form method='post' action="__URL__/insert">
-                <table cellpadding=2 cellspacing=2>
-                    <tr>
-                        <td class="tRight" width="12%">标题：</td>
-                        <td class="tLeft" ><input type="text" name="title" style="height:23px" class="large bLeft"></td>
-                    </tr>
-                    <tr>
-                        <td class="tRight" >邮箱：</td>
-                        <td class="tLeft" ><input type="text" name="email" style="height:23px" class="large bLeft"></td>
-                    </tr>
-                    <tr>
-                        <td class="tRight tTop" >内容：</td>
-                        <td><textarea name="content" class="large bLeft" rows="8" cols="25"></textarea></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td><input type="submit" class="button" value="提 交"> <input type="reset" class="button" value="清 空"></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td><hr></td>
-                    </tr>
-                    <volist name="list" id="vo">
-                        <tr>
-                            <td></td>
-                            <td style="border-bottom:1px dotted silver">{$vo.title} <span style="color:gray">[{$vo.email} {$vo.create_time|date='Y-m-d H:i:s',###}]</span></td>
-                        </tr>
-                        <tr >
-                            <td></td>
-                            <td><div class="content">{$vo.content|nl2br}</div></td>
-                        </tr>
-                    </volist>
-                    <tr>
-                        <td></td>
-                        <td><hr> 示例源码<br/>控制器IndexAction类<br/><php>highlight_file(LIB_PATH.'Action/IndexAction.class.php');</php><br/>模型FormModel类<br/><php>highlight_file(LIB_PATH.'Model/FormModel.class.php');</php></td>
-                    </tr>
-                </table>
-            </form>
-        </div>
-    </body>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title></title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="__PUBLIC__/Portal/css/ayi.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/Portal/css/slideBox.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/Portal/css/global.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/Portal/css/style.css" rel="stylesheet" type="text/css" />
+
+<script type="text/javascript" src="__PUBLIC__/Portal/js/jquery-1.7.2.js"></script>
+<script type="text/javascript" src="__PUBLIC__/Portal/js/jquery.common.js"></script>
+<script type="text/javascript" src="__PUBLIC__/Portal/js/jquery-ui-1.8.16.custom.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/Portal/js/search.js"></script>
+<script type="text/javascript" src="__PUBLIC__/Portal/js/highcharts.js"></script>
+<script type="text/javascript" src="__PUBLIC__/Portal/js/exporting.js"></script>
+<script type="text/javascript" src="__PUBLIC__/Portal/js/customerSer.js"></script>
+<script type="text/javascript" src="__PUBLIC__/Portal/js/guide.js"></script>
+<script type="text/javascript" src="__PUBLIC__/Portal/js/autoScroll.js"></script>
+<script type="text/javascript" src="__PUBLIC__/Portal/js/global.js"></script>
+<script type="text/javascript" src="__PUBLIC__/Portal/js/jquery.blockUI.js"></script>
+<script type="text/javascript" src="__PUBLIC__/Portal/js/jquery.easing.1.3.js"></script>
+<script type="text/javascript" src="__PUBLIC__/Portal/js/jquery.elastislide.js"></script>
+<script type="text/javascript" src="__PUBLIC__/Portal/js/jquery.slideBox.js"></script>
+<!-- Copyright ɠ2005. Spidersoft Ltd -->
+<style>
+A.applink:hover {border: 2px dotted #DCE6F4;padding:2px;background-color:#ffff00;color:green;text-decoration:none}
+A.applink       {border: 2px dotted #DCE6F4;padding:2px;color:#2F5BFF;background:transparent;text-decoration:none}
+A.info          {color:#2F5BFF;background:transparent;text-decoration:none}
+A.info:hover    {color:green;background:transparent;text-decoration:underline}
+</style>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	$('#nav ul li').hover(function(){
+		$(this).addClass('hover');
+	},function(){
+		$(this).removeClass('hover');
+	});
+});
+</script>
+
+<script type="text/javascript" src="__PUBLIC__/Portal/js/jquery.slideBox.js"></script>
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/Portal/css/slideBox.css"/>
+</head>
+
+<body>
+<include file="Public:header" />
+<div id="content">
+	<div class="clearfix">
+		<!--find box begin 查询-->
+		<div class="findbox">
+			<ul class="bar clearfix">
+				<li class="current"><a href="#">找月嫂</a></li>
+				<li><a href="#">找育儿嫂</a></li>
+			</ul>
+			<form method="get" action="index.php" target=_blank>
+			<input type=hidden id="type_id" name="type" value="1">
+			<div class="body">
+				<dl class="clearfix">
+					<dt>月嫂级别：</dt>
+					<dd>
+						<html:select class="txt-normal" options="ysLevelList" name="ysLevel" id="ysLevelList"/>
+					</dd>
+				</dl>
+				<dl class="clearfix">
+					<dt>薪酬范围：</dt>
+					<dd>
+						<select class="txt-normal" name="s_salary">
+							<option value=0>不限</option>
+							<option value=1>小于4800元/月</option>
+							<option value=2>4800 - 6800元/月</option>
+							<option value=3>6800 - 8800元/月</option>
+							<option value=4>8800 - 10800元/月</option>
+							<option value=5>大于10800元/月</option>
+						</select>
+					</dd>
+				</dl>
+				<dl class="clearfix">
+					<dt>籍　　贯：</dt>
+					<dd><input type="radio" name="s_ns" value=2 />南方　　<input type="radio" name="s_ns" value=1 />北方</dd>
+				</dl>
+				<dl class="clearfix">
+					<dt></dt>
+					<dd><input type="submit" class="b-find" value="" /></dd>
+				</dl>
+			</div>
+			</form>
+		</div>
+		<!--find box over-->
+		<!--cmbox-->
+		<div class="cmbox">
+			<div id="slideBox" class="slideBox">
+				<ul class="items">
+					<li><a href="#"><img src="http://s.ayi800.com/images/cm1.jpg" alt="轮播1"/></a></li>
+					<li><a href="#"><img src="http://s.ayi800.com/images/cm2.jpg" alt="轮播2"/></a></li>
+					<li><a href="#"><img src="http://s.ayi800.com/images/cm3.jpg" alt="轮播3"/></a></li>
+					<li><a href="#"><img src="http://s.ayi800.com/images/cm4.jpg" alt="轮播4"/></a></li>
+				</ul>
+			</div>
+		</div>
+		<!--cmbox over-->
+	</div>
+	<!--a cm begin-->
+	<div class="clearfix glmargin"><a href="#"><img src="http://s.ayi800.com/images/cm_1.jpg" alt="广告1" /></a></div>
+	<!--a cm over-->
+	<!--月嫂推荐 begin-->
+	<div class="tabItem">
+		<div class="gltitle bluetitle clearfix">
+			<span class="name">月嫂推荐</span>
+			<ul class="bar clearfix">
+				<li class="current"><a href="javascript:void(0);" class="rec_nur" type="0">推荐月嫂</a></li>
+				<li><a href="javascript:void(0);" class="rec_nur" type="1">最具性价比</a></li>
+				<li><a href="javascript:void(0);" class="rec_nur" type="2">最新月嫂</a></li>
+			</ul>
+			<a href="index.php.html" class="more">更多月嫂<em class="fam_more">&gt;&gt;</em></a>
+		</div>
+		<div class="auntCount">
+			<div class="auntList carousels es-carousel-wrapper">
+				<div class="es-carousel" id="eslide0">
+					<ul>
+						<li>
+						<p class="pic"><a target="_blank" href="nurse/0010034709.html"><img src="http://upload.ayi800.com/2012/08/23/529b2f84.jpg" width="90" height="120" alt="代宝玲" /></a></p>
+						<div class="body">
+							<p class="name"><a target="_blank" href="nurse/0010034709.html">代宝玲</a></p>
+							<p><span class="phone_bg orange">4006-625-800转1146</span></p>
+							<div class="comment">
+								<p class="bg">最新评论：<a href="nurse/0010034709.html">为人开朗，做事认真负责，有爱心，做事主动 ...</a></p>
+							</div>
+							<p class="opera">
+								<a href="#" class="icon_shi"></a><a href="#" class="icon_mian"></a>
+																<a href="#" class="icon_ping"></a>
+																<a target="_blank" href="nurse/0010034709.html">详情</a>
+							</p>
+						</div>
+					</li>
+					</ul>
+				</div>
+			</div>
+			<div class="auntList carousels es-carousel-wrapper">
+				<div class="es-carousel" id="eslide1">
+					<ul>
+										<li>
+						<p class="pic"><a target="_blank" target="_blank" href="nurse/0010220240.html"><img src="http://upload.ayi800.com/2012/06/29/07499e87.jpg" width="90" height="120" alt="魏晶" /></a></p>
+						<div class="body">
+							<p class="name"><a href="nurse/0010220240.html">魏晶</a></p>
+							<p>从业：29年</p>
+							<p>年龄：51岁</p>
+							<p>籍贯：辽宁省</p>
+							<p><span class="phone_bg orange">4006-625-800转1141</span></p>
+							<p class="opera">
+								<a href="#" class="icon_shi"></a><a href="#" class="icon_mian"></a>
+																<a target="_blank" href="nurse/0010220240.html">详情</a>
+							</p>
+						</div>
+					</li>
+										<li>
+						<p class="pic"><a target="_blank" target="_blank" href="nurse/0010199038.html"><img src="http://upload.ayi800.com/2012/04/25/f0bd9f41.png" width="90" height="120" alt="孙瑞焕" /></a></p>
+						<div class="body">
+							<p class="name"><a href="nurse/0010199038.html">孙瑞焕</a></p>
+							<p>从业：8年</p>
+							<p>年龄：43岁</p>
+							<p>籍贯：河北省</p>
+							<p><span class="phone_bg orange">4006-625-800转1042</span></p>
+							<p class="opera">
+								
+																<a target="_blank" href="nurse/0010199038.html">详情</a>
+							</p>
+						</div>
+					</li>
+					</ul>
+				</div>
+			</div>
+			<div class="auntList carousels es-carousel-wrapper">
+				<div class="es-carousel" id="eslide2">
+					<ul>
+										<li>
+						<p class="pic"><a target="_blank" href="nurse/0010519930.html"><img src="http://upload.ayi800.com/2012/09/28/db24868d.jpg" width="90" height="120" alt="朱晓欠" /></a></p>
+						<div class="body">
+							<p class="name"><a target="_blank" href="nurse/0010519930.html">朱晓欠</a></p>
+							<p>从业：8年4月</p>
+							<p>年龄：43岁</p>
+							<p>籍贯：山西省</p>
+							<p><span class="phone_bg orange">4006-625-800转1042</span></p>
+							<p class="opera">
+								
+																<a target="_blank" href="nurse/0010519930.html">详情</a>
+							</p>
+						</div>
+					</li>
+										<li>
+						<p class="pic"><a target="_blank" href="nurse/0010283268.html"><img src="http://upload.ayi800.com/2012/09/27/0eaa499a.jpg" width="90" height="120" alt="陈艳玲" /></a></p>
+						<div class="body">
+							<p class="name"><a target="_blank" href="nurse/0010283268.html">陈艳玲</a></p>
+							<p>从业：8年</p>
+							<p>年龄：47岁</p>
+							<p>籍贯：河南省</p>
+							<p><span class="phone_bg orange">4006-625-800转1052</span></p>
+							<p class="opera">
+								
+																<a target="_blank" href="nurse/0010283268.html">详情</a>
+							</p>
+						</div>
+					</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--月嫂推荐 over-->
+	<!--育儿嫂推荐 begin-->
+	<!--育儿推荐 over-->
+	<!--月嫂价格趋势-->
+	<div class="clearfix glmargin">
+		<div class="trend">
+			<div class="gltitle greentitle"><span class="name">广州 月嫂价格趋势图</span></div>
+			<div id="container" style="min-width: 400px; height: 230px; margin: 0 auto">
+				<img src="__PUBLIC__/export/guidePrice.png" alt="广州月嫂价格趋势图"/>
+			</div>
+		</div>
+		<div class="trend_right">
+			<div class="title clearfix">
+				<span class="name">月嫂话题</span> 
+				<a href="list/yuesaohuati_3.html" class="floatright">更多<em class="fam_more">&gt;&gt;</em></a>
+			</div>
+			<div class="body">
+				<a href="http://blog.sina.com.cn/s/blog_7c219d3f0100zzfy.html" target=_blank><img src="http://s.ayi800.com/images/uknow.gif" /></a>
+				<p>· <a target=_blank href="blog/yuesaohuati_733.html">请月嫂的“雷区”你别进</a></p>
+			</div>
+		</div>
+	</div>
+	<!--月嫂价格趋势 over-->
+	<!--a cm begin-->
+	<div class="clearfix glmargin"><a href="#"><img src="http://s.ayi800.com/images/cm_2.jpg" alt="广告2" /></a></div>
+	<!--a cm over-->
+	<!--母婴知识 begin-->
+	<div class="gltitle redtitle clearfix">
+		<span class="name">母婴知识</span>
+		<p class="floatleft">
+		<!-- 宝宝成长 / 孕产健康 / 专题区-->
+			<a href="list/baobaochengzhang_4.html">宝宝成长</a> / 
+			<a href="list/yunchanjiankang_1.html">孕产健康</a> / 
+			<a href="javascript:void(0)">专题区</a>
+		</p>
+	</div>
+	<div class="clearfix glmargin">
+		<div class="topic">
+			<dl class="clearfix">
+				<dt><img src="http://s.ayi800.com/images/baby.jpg" alt="专题图片" /></dt>
+				<dd class="name"><a href="javascript:void(0)">母婴知识最新文章</a></dd>
+				<dd>· <a target=_blank href="blog/yunchanjiankang005.html">坐月子的基本注意事项</a></dd>
+			</dl>
+			<div class="mores">
+				<a href="#">更多</a>
+			</div>
+		</div>		
+			
+		<div class="topic2">
+			<h2 class="title clearfix"><span class="name">宝宝成长</span><a href="list/baobaochengzhang_4.html" class="floatright">更多<em class="fam_more">&gt;&gt;</em></a> </h2>
+			<div class="body">
+				<volist id="babyGrowList" name="babyGrowList">
+					<p>· <a target=_blank href="blog/baobaochengzhang_729.html">宝宝吃夜奶的行为不要惯</a></p>
+				</volist>
+			</div>
+		</div>
+		<div class="topic2" style="border-right:none;">
+			<h2 class="title clearfix"><span class="name">孕产健康</span><a href="list/yunchanjiankang_1.html" class="floatright">更多<em class="fam_more">&gt;&gt;</em></a> </h2>
+			<div class="body">			
+				<p>· <a target=_blank href="blog/yunchanjiankang_726.html">过期妊娠危害大，怎样预防</a></p>
+			</div>
+		</div>
+	</div>
+	<!--母婴知识 over-->
+	<!--a cm begin-->
+	<div class="clearfix glmargin"><a href="#"><img src="http://s.ayi800.com/images/cm_3.jpg" alt="广告3" /></a></div>
+	<!--a cm over-->
+	<!--热门家政企业推荐-->
+	<div class="gltitle greentitle glmargin"><span class="size14 bold">热门家政企业推荐</span></div>
+	<ul class="clearfix firmList">
+		<li>
+			<a href="company/companyinfo.php~cid=170.html" target="_blank"><span class="name">北京爱婴佳美家政服务有限公司</span><br /><span>电话：4006-625-800转1161 </span></a>
+		</li>
+	</ul>
+	<!--热门家政企业推荐 over-->
+</div>
+<include file="Public:foot" />
+<script>
+$(function(){
+	$('.rec_nur').click(function(){
+		var $this = $(this);
+		$this.closest('ul').find('li').removeClass('current');
+		$this.closest('li').addClass('current');
+		$index = $this.closest('ul').find('li').index($this.closest('li'));
+		$auntList = $this.closest('.tabItem').find('.auntList');
+		$auntList.hide().eq($index).show();
+		return false;
+	});
+	$('.carousels').elastislide({
+		imageW		: 170,
+		minItems	: 5
+	});
+});
+
+</script>
+</body>
 </html>

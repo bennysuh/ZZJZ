@@ -4,14 +4,14 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<title>新增/編輯合同</title>
-		<script type="text/javascript" src="__PUBLIC__/js/jquery-1.7.2.min.js"></script>
+		<title>新增/編輯订单</title>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-1.8.0.min.js"></script>
 		<script type="text/javascript" src="__PUBLIC__/js/jquery.bgiframe.min.js"></script>
 		<script type="text/javascript" src="__PUBLIC__/js/loading-min.js"></script>
 		<script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
 		<script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
 		<script type="text/javascript" src="__PUBLIC__/js/jquery.json-2.3.min.js"></script>
-		<script type="text/javascript" src="__PUBLIC__/js/easyui/jquery.easyui.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.3.1/jquery.easyui.min.js"></script>
 		<script type="text/javascript" src="__PUBLIC__/js/validateType.js"></script>
 		<script type="text/javascript" src="__PUBLIC__/js/jquery.scrollTo-min.js"></script>
 		<script type="text/javascript" src="__PUBLIC__/js/jquery-overlay.js"></script>
@@ -20,11 +20,12 @@
 		<link href="__PUBLIC__/style/css/common.css" rel="stylesheet" type="text/css">
 		<link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
 		<link href="__PUBLIC__/style/css/loading.css" rel="stylesheet" type="text/css" />
-		<link href="__PUBLIC__/js/jquery-easyui-1.2.6/themes/default/easyui.css" rel="stylesheet" type="text/css">
+		<link href="__PUBLIC__/js/jquery-easyui-1.3.1/themes/default/easyui.css" rel="stylesheet" type="text/css">
 		<SCRIPT LANGUAGE="JavaScript">
 
 			var actionName = '__ACTION__';
 			$(document).ready(function() {
+				var loading = new ol.loading({id:"infoForm"});
 				var status;
 				//status区分add或edit
 				//编辑时显示删除按钮
@@ -34,30 +35,79 @@
 				} else {
 					status = "add";
 				}
+				//初始化下拉列表月嫂客戶数据
+				function loadData(){
+					var staffList = '{$staffList}';
+					var staffArr = JSON.parse(staffList);
+					//不选择任何人
+					var defaultObj = {staffid:0,name:"请选择"};
+					staffArr.unshift(defaultObj);
+					$('#staffSel').combobox({
+						data:staffArr,//转换成数组
+						valueField:'staffid',
+						textField:'name',
+						onChange:function(){  
+				            loading.show();
+				            var postData = {id:$("#staffSel").combobox("getValue")};
+				            $.post(root + "/Admin/Staff/getStaffById",postData,changeStaffHandler);
+				        } 
+					});
+					
+					$('#alternateSel1').combobox({
+						data:staffArr,//转换成数组
+						valueField:'staffid',
+						textField:'name',
+						onChange:function(){  
+				            var val = $("#alternateSel1").combobox("getValue");
+				            if(val!=0){
+				            	loading.show();
+				            	 var postData = {id:val};
+				            	$.post(root + "/Admin/Staff/getStaffById",postData,changeAlternate1Handler);
+				            }
+				        } 
+					});
+					$('#alternateSel2').combobox({
+						data:staffArr,//转换成数组
+						valueField:'staffid',
+						textField:'name',
+						onChange:function(){  
+				            var val = $("#alternateSel2").combobox("getValue");
+				            if(val != 0){
+				            	loading.show();
+				            	 var postData = {id:val};
+				            	$.post(root + "/Admin/Staff/getStaffById",postData,changeAlternate2Handler);
+				            }
+				        } 
+					});
+					var customerList = '{$customerList}';
+					var customerArr = JSON.parse(customerList);
+					//不选择任何人
+					defaultObj = {id:0,name:"请选择"};
+					customerArr.unshift(defaultObj);
+					$('#customerSel').combobox({
+						data:customerArr,//转换成数组
+						valueField:'id',
+						textField:'name',
+				        onChange:function(){  
+				            loading.show();
+				            var postData = {id:$("#customerSel").combobox("getValue")};
+				            $.post(root + "/Admin/Customer/getCustomerById",postData,changeCustomerHandler);
+				        }  
+					});
+					
+					if(status=="edit"){
+						$('#staffSel').combobox("setValue","{$staffId}");
+						$('#customerSel').combobox("setValue","{$customerId}");
+						$('#alternateSel1').combobox("setValue","{$alternate1}");
+						$('#alternateSel2').combobox("setValue","{$alternate2}");
+					}
+				}
+				loadData();
+				
 				//格式化日期控件的日期格式
 				$("#orderDate,#startDate,#endDate").datebox({
 					formatter:formater
 				});
-				$('#floatWin').dialog({
-					buttons : [{
-						text : 'Cancel',
-						handler : function() {
-							$('#floatWin').dialog('close');
-						}
-					}],
-					resizable:true
-				});
-				$('#floatWin').dialog("close");
-				$("#searchCustomerBtn").click(function() {
-					$("#iframeWin").attr("src",root + "/Admin/Customer/searchCustomer");
-					$('#floatWin').dialog({title:"查找客户"});
-					$('#floatWin').dialog('open');
-				})
-				$("#searchStaffBtn").click(function() {
-					$("#iframeWin").attr("src",root + "/Admin/Staff/searchStaff");
-					$('#floatWin').dialog({title:"查找月嫂"});
-					$('#floatWin').dialog('open');
-				})
 				//保存
 				$("#saveBtn").click(function() {
 					var form = $('#infoForm');
@@ -65,7 +115,15 @@
 						alert('請填寫必須的信息');
 						return;
 					}
-					$("#floatWin").remove();
+					if($('#customerSel').combobox("getValue") == 0){
+						alert('请选择客户');
+						return;
+					}
+					if($('#staffSel').combobox("getValue") == 0){
+						alert('请选择月嫂');
+						return;
+					}
+					loading.show();
 					var data = form.serialize();
 					if (status == "add") {
 						$.post(root + '/Admin/Contract/addContract', data, saveHandler, "json");
@@ -74,12 +132,14 @@
 					}
 				});
 				function saveHandler(response){
+					loading.hide();
 					alert(response.info);
 					if(response.status){
 						window.location.href = root + "/Admin/Contract/";
 					}
 				}
 				function ajaxHandler(response) {
+					loading.hide();
 					alert(response.info);
 					if (response.status == 1)
 						window.location.href =  root + "/Admin/Contract/";
@@ -87,28 +147,67 @@
 
 				//删除
 				$("#removeBtn").click(function() {
+					loading.show();
 					$.post(root + '/Admin/Contract/removeContract', "id=" + $("#id").val(), ajaxHandler, "json");
 				});
+				
+				//选择客户回调 
+				function changeCustomerHandler(response)
+				{
+					loading.hide();
+					var response = JSON.parse(response);
+					if(response.status){
+						var data = JSON.parse(response.info);
+						$("#hospital").text(data.hospital);
+						$("#expectedDay").text(data.expectedDay);
+						$("#birthday").text(data.birthday);
+						$("#address").text(data.address);
+						$("#customerId").val(data.id);
+					}else{
+						alert(response.info);
+					}
+				}
+				
+				//选择月嫂回调 
+				function changeStaffHandler(response)
+				{
+					loading.hide();
+					var response = JSON.parse(response);
+					if(response.status){
+						var data = JSON.parse(response.info);
+						$("#staffId").val(data.staffid);
+						$("#ysLevel").text(data.ysLevel);
+					}else{
+						alert(response.info);
+					}
+				}
+				//选择备选月嫂1回调 
+				function changeAlternate1Handler(response)
+				{
+					loading.hide();
+					var response = JSON.parse(response);
+					if(response.status){
+						var data = JSON.parse(response.info);
+						$("#alternate1").val(data.staffid);
+						$("#alternate1Level").text(data.ysLevel);
+					}else{
+						alert(response.info);
+					}
+				}
+				//选择备选月嫂2回调 
+				function changeAlternate2Handler(response)
+				{
+					loading.hide();
+					var response = JSON.parse(response);
+					if(response.status){
+						var data = JSON.parse(response.info);
+						$("#alternate2").val(data.staffid);
+						$("#alternate2Level").text(data.ysLevel);
+					}else{
+						alert(response.info);
+					}
+				}
 			});
-			//子页面调用该函数。不能放在$()中，否则调用不了
-			function getCustomer(data)
-			{
-				$("#floatWin").dialog("close");
-				$("#customerName").val(data.name);
-				$("#hospital").text(data.hospital);
-				$("#expectedDay").text(data.expectedDay);
-				$("#birthday").text(data.birthday);
-				$("#address").text(data.address);
-				$("#customerId").val(data.id);
-			}
-			//子页面调用该函数。不能放在$()中，否则调用不了
-			function getStaff(data)
-			{
-				$("#floatWin").dialog("close");
-				$("#staffId").val(data.staffid);
-				$("#staffName").val(data.name);
-				$("#ysLevel").text(data.ysLevel);
-			}
 		</SCRIPT>
 	</head>
 	<body>
@@ -120,16 +219,15 @@
 			<div id="rightWrap">
 				<!-- 所在位置地址 -->
 				<div class="addressBar">
-					合同管理 > 新增/編輯合同
+					订单管理 > 新增/編輯订单
 				</div>
 				<!--<div class="groupTitle">
-				<h2 class="pageTitle">新增/編輯合同</h2>
+				<h2 class="pageTitle">新增/編輯订单</h2>
 				</div>-->
 				<div class="locationInfo">
 					<form id="infoForm">
 						<input name="id" id="id" type="text" style="display:none;" value="{$id}" />
-						<input name="customerId"  id="customerId" type="text" style="display:none;" value="{$customerId}" />
-						<input name="staffId" id="staffId" type="text" style="display:none;" value="{$staffId}" />
+						
 						<table class="noBackground">
 							<tr>
 								<td class="noBackground inputName">编号:</td>
@@ -140,7 +238,9 @@
 							<tr>
 								<td class="noBackground inputName">查询客户:</td>
 								<td class="noBackground inputText" >
-									<input type="button" value="Search" id="searchCustomerBtn" />
+									<select id="customerSel" class="easyui-combobox" required="true" name="customerId" style="width:200px;">
+				              			<option value="0">请选择客戶</option>
+				              		</select>
 								</td>
 							</tr>
 							<tr>
@@ -148,13 +248,6 @@
 								<table  class="noBackground">
 									<tr>
 										<td class="noBackground inputName" colspan="2">客户信息</td>
-									</tr>
-									<tr>
-										<td class="noBackground inputName">姓名:</td>
-										<td class="noBackground inputName">
-											<input id="customerName" class="easyui-validatebox" 
-											value="{$customerName}" type="text" readonly="true" data-options="required:true,missingMessage:'请选择客户'" />
-										</td>
 									</tr>
 									<tr>
 										<td class="noBackground inputName">现住地址:</td>
@@ -176,27 +269,64 @@
 								</td>
 							</tr>
 							<tr>
-								<td class="noBackground inputName">查询员工:</td>
+								<td class="noBackground inputName">查询月嫂:</td>
 								<td class="noBackground inputText" >
-									<input type="button" value="Search" id="searchStaffBtn" />
+									<select id="staffSel" class="easyui-combobox" required="true" name="staffId" style="width:200px;">
+				              			<option value="0">请选择月嫂</option>
+				              		</select>
 								</td>
 							</tr>
 							<tr>
 								<td class="noBackground inputName" colspan="2">
 								<table  class="noBackground">
 									<tr>
-										<td class="noBackground inputName" colspan="2">员工信息</td>
-									</tr>
-									<tr>
-										<td class="noBackground inputName">姓名:</td>
-										<td class="noBackground inputName">
-											<input id="staffName" class="easyui-validatebox"
-											 value="{$staffName}" type="text" readonly="true" data-options="required:true,missingMessage:'请选择月嫂'" />
-										 </td>
+										<td class="noBackground inputName" colspan="2">月嫂信息</td>
 									</tr>
 									<tr>
 										<td class="noBackground inputName">级别:</td>
-										<td class="noBackground inputName"><label id="ysLevel"></label></td>
+										<td class="noBackground inputName"><label id="ysLevel">{$ysLevel}</label></td>
+									</tr>
+								</table>
+								</td>
+							</tr>
+							<tr class="alternate1">
+								<td class="noBackground inputName">备选月嫂1:</td>
+								<td class="noBackground inputText" >
+									<select id="alternateSel1" class="easyui-combobox" name="alternate1" style="width:200px;">
+				              			<option value="0">请选择月嫂</option>
+				              		</select>
+								</td>
+							</tr>
+							<tr class="alternate1">
+								<td class="noBackground inputName" colspan="2">
+								<table  class="noBackground">
+									<tr>
+										<td class="noBackground inputName" colspan="2">月嫂信息</td>
+									</tr>
+									<tr>
+										<td class="noBackground inputName">级别:</td>
+										<td class="noBackground inputName"><label id="alternate1Level">{$ysLevel}</label></td>
+									</tr>
+								</table>
+								</td>
+							</tr>
+							<tr class="alternate2">
+								<td class="noBackground inputName">备选月嫂2:</td>
+								<td class="noBackground inputText" >
+									<select id="alternateSel2" class="easyui-combobox" name="alternate2" style="width:200px;">
+				              			<option value="0">请选择月嫂</option>
+				              		</select>
+								</td>
+							</tr>
+							<tr class="alternate2">
+								<td class="noBackground inputName" colspan="2">
+								<table  class="noBackground">
+									<tr>
+										<td class="noBackground inputName" colspan="2">月嫂信息</td>
+									</tr>
+									<tr>
+										<td class="noBackground inputName">级别:</td>
+										<td class="noBackground inputName"><label id="alternate2Level">{$ysLevel}</label></td>
 									</tr>
 								</table>
 								</td>
@@ -249,10 +379,6 @@
 					</div>
 				</div>
 			</div>
-		</div>
-		<!--弹出窗口-->
-		<div id="floatWin" data-options="iconCls:'icon-save'" style="padding:5px;width:450px;height:650px;">
-			<iframe src="" id="iframeWin" frameborder="0" width="100%" height="100%" scrolling="no" ></iframe>
 		</div>
 	</body>
 </html>

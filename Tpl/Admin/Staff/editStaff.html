@@ -4,18 +4,18 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<title>新增/編輯员工</title>
+		<title>新增/編輯月嫂</title>
 		<link href="__PUBLIC__/style/css/common.css" rel="stylesheet" type="text/css">
 		<link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
 		<link href="__PUBLIC__/style/css/loading.css" rel="stylesheet" type="text/css" />
-		<link href="__PUBLIC__/js/jquery-easyui-1.2.6/themes/default/easyui.css" rel="stylesheet" type="text/css">
-		<script type="text/javascript" src="__PUBLIC__/js/jquery-1.7.2.min.js"></script>
+		<link href="__PUBLIC__/js/jquery-easyui-1.3.1/themes/default/easyui.css" rel="stylesheet" type="text/css">
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-1.8.0.min.js"></script>
 		<script type="text/javascript" src="__PUBLIC__/js/jquery.bgiframe.min.js"></script>
 		<script type="text/javascript" src="__PUBLIC__/js/loading-min.js"></script>
 		<script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
 		<script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
 		<script type="text/javascript" src="__PUBLIC__/js/jquery.json-2.3.min.js"></script>
-		<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.2.6/jquery.easyui.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.3.1/jquery.easyui.min.js"></script>
 		<script type="text/javascript" src="__PUBLIC__/js/validateType.js"></script>
 		<script type="text/javascript" src="__PUBLIC__/js/jquery.scrollTo-min.js"></script>
 		<script type="text/javascript" src="__PUBLIC__/js/jquery-overlay.js"></script>
@@ -127,7 +127,7 @@
 				if(response.status == 1)
 					window.location.href =  root + "/Admin/Staff";
 			}
-			//删除员工
+			//删除月嫂
 			$("#removeStaffBtn").click(function(){
 				$.post('{:U("Staff/removeStaff")}',"staffId="+$("#staffId").val(),ajaxHandler,"json");
 			});
@@ -166,7 +166,6 @@
 		            	$.post(root + '/Admin/Staff/updateIndex',{json:$.toJSON(data)},function(response){
 		            		loading.hide();
 		            		if(response.status){
-		            			console.log("up成功");
 		            			var prevIndex = tr.prev().attr("index");
 		            			var currIndex = tr.attr("index");
 		            			tr.attr("index",prevIndex);
@@ -322,7 +321,7 @@
 			if(oldImgName)
 				$("#uploadImages").val(oldImgName+","+name);
 			else
-				$("#uploadImages").val(name);
+				$("#uploadImages").val(name);
 			var tmp = name.split(",");
 			//保存到数据库
 			addUpload(tmp);
@@ -342,10 +341,9 @@
         				})
         			}
         		});
-        		console.log(fileArr);
 	        	$.post(root + "/Admin/Staff/addUpload",{json:$.toJSON(fileArr)},addUploadHandler,"json");
         	}else{
-        		console.log("no file upload");
+        		alert("no file upload");
         	}
         }
         function addUploadHandler(response){
@@ -432,7 +430,7 @@
         	data.path = path;
         	data.pid = $("#ygbh").val();
         	$.post(root+"/Admin/Staff/removeUpload",{json:$.toJSON(data)},function(response){
-        		console.log(response.info);
+        		//alert(response.info);
         	},"json");
         }
         //删除上传行数
@@ -460,10 +458,10 @@
 			<div id="rightWrap">
 				<!-- 所在位置地址 -->
 				<div class="addressBar">
-					员工管理 > 新增/編輯员工
+					月嫂管理 > 新增/編輯月嫂
 				</div>
 				<!--<div class="groupTitle">
-					<h2 class="pageTitle">新增/編輯员工</h2>
+					<h2 class="pageTitle">新增/編輯月嫂</h2>
 				</div>-->
 				<div class="locationInfo" id="locationInfo">
 					<form id="staffInfoForm">
@@ -472,7 +470,7 @@
 						<input name="imgShowIndex" id="imgShowIndex" type="text" style="display:none;" value="{$imageShowIndex}" />
 						<table class="noBackground">
 							<tr>
-								<td class="noBackground inputName">员工编号:</td>
+								<td class="noBackground inputName">月嫂编号:</td>
 								<td class="noBackground inputText">
 								<input name="ygbh" id="ygbh" type="text" style="width: 300px;" readonly="readonly" value="{$ygbh}" />
 								</td>

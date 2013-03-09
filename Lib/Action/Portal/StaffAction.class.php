@@ -10,7 +10,7 @@
 class StaffAction extends Action {
 	/**
 	 +----------------------------------------------------------
-	 * 根据查询条件显示员工列表
+	 * 根据查询条件显示月嫂列表
 	 +----------------------------------------------------------
 	 * @access public
 	 +----------------------------------------------------------
@@ -33,26 +33,13 @@ class StaffAction extends Action {
 	}
 	/**
 	 +----------------------------------------------------------
-	 * 员工详细资料
+	 * 月嫂详细资料
 	 +----------------------------------------------------------
 	 * @access public
 	 +----------------------------------------------------------
 	 */
-	public function viewStaffDetail()
+	public function viewStaff()
 	{
-		$staffId = $_GET["staffId"];
-		$staff = D("Staff")->getStaffInfo($staffId);
-		$this -> assign('jg_province', $staffInfo['jg_province']);
-		$this -> assign('jg_city', $staffInfo["jg_city"]);
-		$this -> assign('address', $staffInfo["address"]);
-		$this -> assign('remark', $staffInfo["remark"]);
-		$this -> assign('ysLevel', $staffInfo["ysLevel"]);
-		$this -> assign("name", $staffInfo["name"]);
-		$this -> assign("age", parseBirthdayToAge($staffInfo["birthday"]));
-		$this -> assign("whcd", $staffInfo["whcd"]);
-		$this -> assign("gzjy", $staffInfo["gzjy"]);
-		$this -> assign("ygbh", $staffInfo["ygbh"]);
-		$this -> assign("lang", $staffInfo["languages"]);
 		$this->display();
 	}
 }

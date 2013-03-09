@@ -1,7 +1,7 @@
 <?php
 /**
  +------------------------------------------------------------------------------
- * 员工控制類
+ * 月嫂控制類
  +------------------------------------------------------------------------------
  * @author    david <lhdst@163.com>
  * @version   $Id$
@@ -10,7 +10,7 @@
 class StaffAction extends EntryAction {
 	/**
 	 +----------------------------------------------------------
-	 * 根据查询条件显示员工列表
+	 * 根据查询条件显示月嫂列表
 	 +----------------------------------------------------------
 	 * @access public
 	 +----------------------------------------------------------
@@ -28,15 +28,14 @@ class StaffAction extends EntryAction {
 			// ORDER BY parent.updatetime DESC ,sub.id desc";
 		$M = D("StaffListView");
 		if($keyword)
-			$data["name"] = $keyword;
+			$data["name"] = array("like","%$keyword%");
 		
 		$count = $M->where($data)->count();
+		
 		//分页
 		$p = new Page($count, 10);
 		$page = $p -> show();
 		$list = $M->where($data)->limit($p -> firstRow . " , " . $p -> listRows)->order('updateTime desc')->select();
-		Log::write(M()->getLastSql());
-		//$M -> query($sql . " LIMIT " . );
 		$this -> assign('page', $page);
 		$this -> assign('list', $list);
 		$this -> display();
@@ -44,7 +43,7 @@ class StaffAction extends EntryAction {
 
 	/**
 	 +----------------------------------------------------------
-	 * 新建员工
+	 * 新建月嫂
 	 +----------------------------------------------------------
 	 * @access public
 	 +----------------------------------------------------------
@@ -58,7 +57,7 @@ class StaffAction extends EntryAction {
 		//获取POST数据
 		$count = $staff -> where("name = '" . $_POST["name"] . "'") -> count();
 		if ($count) {
-			$this -> error("员工名已存在");
+			$this -> error("月嫂名已存在");
 		}
 
 		$key = $staff -> data($data) -> add();
@@ -81,12 +80,12 @@ class StaffAction extends EntryAction {
 			//保存图片到zz_upload
 			if($data["images"]){
 				$imgArr = explode(",", $data['images']);
-				SysLogs::log("新增员工" . $_POST["name"]);
-				$logData["tablename"] = "zz_staff";
-				$logData["no"] = $key;
-				$logData["createUser"] = $_SESSION['loginName'];
-				ZZLogModel::addLog($logData);
 			}
+			SysLogs::log("新增月嫂" . $_POST["name"]);
+			$logData["tablename"] = "zz_staff";
+			$logData["no"] = $key;
+			$logData["createUser"] = $_SESSION['loginName'];
+			ZZLogModel::addLog($logData);
 			$this -> success($key);
 		} else {
 			$this -> error('增加失敗');
@@ -128,7 +127,7 @@ class StaffAction extends EntryAction {
 
 	/**
 	 +----------------------------------------------------------
-	 * 显示要编辑员工信息
+	 * 显示要编辑月嫂信息
 	 +----------------------------------------------------------
 	 * @access public
 	 +----------------------------------------------------------
@@ -158,7 +157,7 @@ class StaffAction extends EntryAction {
 			// if ($staffInfo["images"]) {
 				// $vo = explode(",", $staffInfo["images"]);
 				// $this -> assign("list", $vo);
-			// }
+			// }
 			//查询级别的enum。并转换为数组
 			$M = M('zz_stafflevel');
 			$levelAttr = $M -> getField("id,level");
@@ -228,7 +227,7 @@ class StaffAction extends EntryAction {
 	
 	/**
 	 +----------------------------------------------------------
-	 * 保存编辑的员工信息
+	 * 保存编辑的月嫂信息
 	 +----------------------------------------------------------
 	 * @access public
 	 +----------------------------------------------------------
@@ -258,7 +257,7 @@ class StaffAction extends EntryAction {
 				}
 			}
 			
-			SysLogs::log("更新员工" . $POST["name"] );
+			SysLogs::log("更新月嫂" . $POST["name"] );
 			$logData["tablename"] = "zz_staff";
 			$logData["no"] = $_POST['staffId'];
 			$logData["operate"] = "update";
@@ -392,7 +391,7 @@ class StaffAction extends EntryAction {
 		$data["isHidden"] = $_POST['isHidden'];
 		$result = $staff -> where("staffId='" . $_POST['staffId'] . "'") -> save($data);
 		if (is_int($result)) {
-			SysLogs::log("更改员工显示状态,id=" . $_POST["staffId"]);
+			SysLogs::log("更改月嫂显示状态,id=" . $_POST["staffId"]);
 			$this -> success('保存成功');
 		} else {
 			$this -> error('保存失敗');
@@ -429,7 +428,7 @@ class StaffAction extends EntryAction {
 
 	/**
 	 +----------------------------------------------------------
-	 * 刪除员工
+	 * 刪除月嫂
 	 +----------------------------------------------------------
 	 * @access public
 	 +----------------------------------------------------------
@@ -671,7 +670,9 @@ class StaffAction extends EntryAction {
 		if ($id) {
 			$M = M('zz_staff');
 			$info = $M -> where("staffid = " . $id) -> find();
-			echo json_encode($info);
+			$this->success(json_encode($info));
+		}else{
+			$this->error("查询失败");
 		}
 	}
 	

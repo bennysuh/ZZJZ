@@ -1,12 +1,12 @@
 <?php
 // +----------------------------------------------------------------------
-// | Elibrary [ ENJOY LIFE ]
+// | CommonCMS [IT IS LIFE]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2011 http://elibrary.nmg.com.hk All rights reserved.
+// | Copyright (c) 2013  All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
 // +----------------------------------------------------------------------
-// | Author: ccxopen <ccxopen@gmail.com>
+// | Author: davidhuang <mchuang1140@gmail.com>
 // +----------------------------------------------------------------------
 // $Id$
 
@@ -14,24 +14,17 @@
  +------------------------------------------------------------------------------
  * 用戶控制類
  +------------------------------------------------------------------------------
- * @author    ccxopen <ccxopen@gmail.com>
+ * @author    davidhuang <mchuang1140@gmail.com>
  * @version   $Id$
  +------------------------------------------------------------------------------
  */
 class UserAction extends EntryAction
 {
-    /**
-     +----------------------------------------------------------
-     * 根据查询条件显示用户列表
-     +----------------------------------------------------------
-	 * @access public
-     +----------------------------------------------------------
-     */
+    
     public function index()
     {
 		$userModel = D('User');
-		//根据URL参数查询用户
-		$result = $userModel->getUserList(array('keyword'=>$_GET['keyword']));//URL有多个keyword$_GET只获取最后一个keyword的值
+		$result = $userModel->getUserList(array('keyword'=>$_GET['keyword']));
 
 		$this->assign('page', $result['page']);
 		$this->assign('list', $result['data']);
@@ -50,19 +43,9 @@ class UserAction extends EntryAction
 	public function addUser()
 	{
 		$userID = $_POST['userID'];
-		//如果同步EDB用戶，先要檢查EDB中是否已經存在此用戶名
-		if (C('ENABLE_EDB')) {
-			import("@.ORG.NmpsSoapClient");
-			$NmpsSoapClient = new NmpsSoapClient();
-			$params->loginID = $userID;
-			$result = $NmpsSoapClient->isUserExists($params);//isUserExists 调用Java的方法
-			$result = $result[0];
-			if ($result) {
-				$this->error("用户名已存在");
-			}
-		}
 
 		$userModel = M('user');
+		
 		//是否已經存在於本地數據庫
 		$count = $userModel->where("userID = '$userID'")->count();
 		if ($count) {
@@ -104,12 +87,11 @@ class UserAction extends EntryAction
 		$userID = $_POST['userID'];
 		$info = M('user')->where("userID='$userID'")->find();
 		if ($info) {
-			$this->ajaxReturn($info);
+			$this->success($info);
 		} else {
-			$this->ajaxReturn('','',0);
+			$this->error('','',0);
 		}
 	}
-
 	/**
      +----------------------------------------------------------
      * 保存用戶信息
@@ -133,46 +115,6 @@ class UserAction extends EntryAction
 		$this->success('编辑用戶成功');
 	}
 
-	/**
-     +----------------------------------------------------------
-     * 同步EDB用戶
-     +----------------------------------------------------------
-	 * @access public
-     +----------------------------------------------------------
-     */
-	public function syncFromEDB()
-	{
-		$this->display();
-	}
-
-	/**
-     +----------------------------------------------------------
-     * 同步EDB用戶
-     +----------------------------------------------------------
-	 * @access public
-     +----------------------------------------------------------
-     */
-	public function doSyncFromEDB()
-	{
-		if (!C('ENABLE_EDB')) {
-			$this->error('當前的系統設置不允許同步EDB員工');
-		}
-
-		$userModel = D('User');
-		
-		$succ = true;
-		try {
-			$userModel->syncFromEDB();
-		} catch(Exception $fault) {
-			$succ = false;
-			SysLogs::log("同步EDB失敗");
-			$this->error('同步失敗');
-		}
-		if ($succ) {
-			SysLogs::log("同步EDB成功");
-			$this->success('同步成功');
-		}
-	}
 
 	/**
      +----------------------------------------------------------
@@ -206,10 +148,10 @@ class UserAction extends EntryAction
 		}
 
 		//var_dump($accessRights);
-		//页面赋值
-		$this->assign('groupList', $groupList);//所属群组
-		$this->assign('accessRights', $accessRights);//权限
-		$this->assign('members', json_encode($members));//成员权限
+
+		$this->assign('groupList', $groupList);
+		$this->assign('accessRights', $accessRights);
+		$this->assign('members', json_encode($members));
 		$this->display();
 	}
     
@@ -219,12 +161,6 @@ class UserAction extends EntryAction
      +----------------------------------------------------------
 	 * @access public
      +----------------------------------------------------------
-	 * @param $sysID 系统功能ID
-	 * @param $userID 用户ID
-	 * @param $level 用户权限数值 2 4 8 16 32 
-	 +----------------------------------------------------------
-	 * @return array 用户权限集合
-	 +----------------------------------------------------------
      */
 	private function getUserAccess($sysID, $userID, $level)
 	{
@@ -237,7 +173,7 @@ class UserAction extends EntryAction
 			$groups = implode(',', $belongToGroups);
 		}
 
-		if (in_array(1, $belongToGroups)) {//系統管理員
+		if (in_array(1, $belongToGroups)) {//系统管理員
 			$tmp['groupID'] = 1;
 			$list[] = $tmp;
 		} else {
@@ -253,11 +189,6 @@ class UserAction extends EntryAction
      +----------------------------------------------------------
 	 * @access public
      +----------------------------------------------------------
-	 * @param $sysID 系统功能ID
-	 * @param $userID 用户ID
-	 +----------------------------------------------------------
-	 * @return array 模块权限信息
-	 +----------------------------------------------------------
      */
 	private function getModuleAccess($sysID, $userID)
 	{
@@ -265,7 +196,7 @@ class UserAction extends EntryAction
 		$sysAccessAction = M('sysAccessAction');
 		$result = array();
 		for ($i = 0; $i < 6; $i++) {
-			$level = pow(2, $i);//返回2的$i次方
+			$level = pow(2, $i);
 			$access = $this->getUserAccess($sysID, $userID, $level);
 			
 			$accessInfo = array();

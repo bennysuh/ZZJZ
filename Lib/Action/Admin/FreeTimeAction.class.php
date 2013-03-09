@@ -28,13 +28,12 @@ class FreeTimeAction extends EntryAction {
 		}
 		$M = M("zz_freetime");
 		//月嫂下拉列表
-		$staffList = M("zz_staff")->field("staffid,name")->order("name asc")->select();
+		$staffList = D("Staff")->getStafflist();
 		import("@.ORG.Page");
 		$count = D('FreeTimeView')->where($data)->count();
 		$p = new Page($count, 10);
 		$page = $p -> show();
 		$result = D('FreeTimeView')->where($data)->limit($p -> firstRow.','.$p -> listRows)->order("updatetime desc")->select();
-
 		foreach ($result as $key=>$freetime) {
 			if($freetime['endDate']){
 				if(strtotime($freetime['endDate']) < strtotime(date("Y-m-d"))){
@@ -66,7 +65,6 @@ class FreeTimeAction extends EntryAction {
 		$M = M('zz_freetime');
 		$data = $M->create();
 		$key = $M ->data($data)-> add();//获取新增返回的id值用于添加到联系方式表中
-
 		if ($key) {
 			SysLogs::log("新增空檔期,id=" . $key);
 			$logData["tablename"] = "zz_freetime";
@@ -78,7 +76,33 @@ class FreeTimeAction extends EntryAction {
 			$this -> error('增加失敗');
 		}
 	}
-	
+	/**
+	 +----------------------------------------------------------
+	 * 显示新增/编辑信息
+	 +----------------------------------------------------------
+	 * @access public
+	 +----------------------------------------------------------
+	 */
+	public function editFreetime()
+	{
+		$freetimeId = $_GET['id'];//已有记录
+		if($freetimeId){//assess列表过来的
+			$M = D('AssessView');
+			$result = $M->where("zz_assess.id=" . $assessId)->find();
+			if($result){
+				$this->assign("ygbh",$result['ygbh']);
+				$this->assign("staffName",$result['staffName']);
+				$this->assign("startDate",$result['startDate']);
+				$this->assign("endDate",$result['endDate']);
+				$this->display();
+			}else{
+				Log::write(M()->getLastSql());
+				$this->error("无此空檔期");
+			}
+		}else{
+			$this->error("缺少订单号");
+		}
+	}
 	/**
 	 +----------------------------------------------------------
 	 * 更新

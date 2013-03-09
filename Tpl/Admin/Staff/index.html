@@ -3,19 +3,19 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title></title>
-<script type="text/javascript" src="__PUBLIC__/js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-1.8.0.min.js"></script>
 <!--解决IE6 select遮罩 hack插件 配合loading插件使用-->
 <script type="text/javascript" src="__PUBLIC__/js/jquery.bgiframe.min.js"></script>
 <!--loading mask插件-->
 <script type="text/javascript" src="__PUBLIC__/js/loading-min.js"></script>
 <script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
 <script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
-<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.2.6/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.3.1/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="__PUBLIC__/js/validateType.js"></script>
 <script type="text/javascript" src="__PUBLIC__/js/jquery.json-2.3.min.js"></script>
 <link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
 <link href="__PUBLIC__/style/css/loading.css" rel="stylesheet" type="text/css" />
-<link href="__PUBLIC__/js/jquery-easyui-1.2.6/themes/default/easyui.css" rel="stylesheet" type="text/css">
+<link href="__PUBLIC__/js/jquery-easyui-1.3.1/themes/default/easyui.css" rel="stylesheet" type="text/css">
 
 <SCRIPT LANGUAGE="JavaScript">
 <!--
@@ -53,12 +53,12 @@ $(document).ready(function(){
 			return;
 		}
 		if ($(this).attr('value') == '刪除') {
-		    if (!confirm('你確定要刪除此员工？')) return; 
+		    if (!confirm('你確定要刪除此月嫂？')) return; 
 		    loading.show();
 		    $.post('{:U("__ROOT__/Admin/Staff/removeStaff")}', "staffId="+staffId, removeStaffHandler, 'json');
 		}
-		if ($(this).attr('value') == '评价记录') {
-		    window.location.href = '__ROOT__/Admin/Assess/?staffId='+staffId+"&staffName=" + currentRow.children().eq(0).text();
+		if ($(this).attr('value') == '订单记录') {
+		    window.location.href = '__ROOT__/Admin/Contract/ContractOfStaffLog/?staffId='+staffId+"&staffName=" + currentRow.children().eq(1).text();
 			return;
 		}
 	});
@@ -87,7 +87,7 @@ $(document).ready(function(){
   <!-- 右框架 -->
   <div id="rightWrap">
     <!-- 所在位置地址 -->
-    <div class="addressBar">员工管理 > </div>
+    <div class="addressBar">月嫂管理 > </div>
     <!-- 用戶管理框架 -->
   	<div class="UMWrap">
   		 <div class="formLine">
@@ -104,12 +104,12 @@ $(document).ready(function(){
       </div>
         <!-- 列表框架 -->
         <div class="listWrap">
-          <h2>员工列表</h2> 
+          <h2>月嫂列表</h2> 
           <button id="addBtn" class="TinputAdd noselected"> 新 增 </button>
             <table id="staffList">
               <tr class="tableHeader">
                 <!-- F代表Form -->
-                <th class="emailField">员工编号</th>
+                <th class="emailField">月嫂编号</th>
                 <th class="emailField">姓名</th>
                 <th class="emailField">籍贯</th>
                 <th class="nameF">创建人</th>
@@ -124,9 +124,13 @@ $(document).ready(function(){
 				<td>{$vo['createUser']}<br/>{$vo['createTime']}</td>
 				<td>{$vo['updateUser']}<br/>{$vo['updateTime']}</td>
 				<td >
+					<?php if (Auth::AccessDecision('Admin','Staff','editStaff')) { ?>
 					<input type="button" value="編輯" class="tableActionButton"/>
-					<!--<input type="button" value="刪除" class="tableActionButton"/>-->
-					<input type="button" value="评价记录" class="tableActionButton"/>
+					<?php } ?>
+					<?php if (Auth::AccessDecision('Admin','Staff','removeStaff')) { ?>
+					<input type="button" value="刪除" class="tableActionButton"/>
+					<?php } ?>
+					<input type="button" value="订单记录" class="tableActionButton"/>
 					<input type="button" value="<?php if($vo['isHidden']) echo '隐藏';else echo '显示'; ?>" class="tableActionButton"/> 
 				</td>
               </tr>
