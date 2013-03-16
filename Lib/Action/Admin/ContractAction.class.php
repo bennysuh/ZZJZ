@@ -160,11 +160,9 @@ class ContractAction extends EntryAction {
 				ZZLogModel::updateLog($logData);
 				$this -> success('保存成功');
 			} else {
-				Log::write(M()->getLastSql());
 				$this -> error('保存失敗');
 			}
 		}else{
-			Log::write(M()->getLastSql());
 			$this -> error('保存失敗');
 		}
 	}

@@ -83,18 +83,14 @@ class CustomerAction extends EntryAction {
 	 */
 	public function editCustomer() {
 		$id = $_GET["id"];
-		//类别
-		$typeAttr = array();
-		$typeAttr['ysCustomer'] = '月嫂客户';
-		$typeAttr['zdgCustomer'] = '钟点工客户';
-		$this -> assign('customerTypeList', $typeAttr);
 		//编辑页面
 		if ($id) {
 			$M = M('zz_customer');
 			$info = $M -> where("id = " . $id) -> find();
 			$this -> assign("name", $info["name"]);
+			$this->assign("sex",$info['sex']);
 			$this -> assign("id", $info['id']);
-			$this -> assign("customerType", $info['customerType']);
+			$this -> assign("remark", $info['remark']);
 			//显示联系方式
 			$contactArr = D("Contact") -> getContact($id, "zz_customer");
 			$this -> assign("contactList", $contactArr);
@@ -151,13 +147,8 @@ class CustomerAction extends EntryAction {
 					}
 				}
 			}
-			$data['customerType'] = '';
-			foreach ($_POST['customerType'] as $key => $value) {
-				$data['customerType'] .= $value . ',';
-			}
-			$data['customerType'] = substr($data['customerType'], 0, -1);
+			
 			$result = $M -> data($data) -> save();
-			Log::write( M() -> getLastSql());
 			//保存成功返回影响的记录数不成功返回false。若无更改则返回0
 			if (is_int($result)) {
 				SysLogs::log("保存客户信息,id=" . $data["id"]);
@@ -318,9 +309,18 @@ class CustomerAction extends EntryAction {
 	 +----------------------------------------------------------
 	 */
 	public function removeCustomerLog() {
-		$logId = $_POST["logId"];
-		if ($logId) {
-
+		$logID = $_POST["logID"];
+		if ($logID && $_POST['logType']) {
+			if($_POST['logType'] == "月嫂记录"){
+				$result = M("zz_yscustomerlog")->where("id=".$_POST['logID'])->delete();
+			}else{
+				$result = M("zz_zdgcustomerlog")->where("id=".$_POST['logID'])->delete();
+			}
+			if ($result) {
+				$this->success("删除成功");
+			} else {
+				$this->error("删除失败");
+			}
 		} else {
 			$this -> error("no customer log id");
 		}
@@ -329,19 +329,39 @@ class CustomerAction extends EntryAction {
 	public function editYsLog() {
 		if ($_GET['customerID']) {
 			$customerID = $_GET["customerID"];
-			$logID = $_GET["logID"];
-			$M = M('zz_yscustomerlog');
-			$customer = M("zzCustomer")->data("id=$customerID")->find();
-			$this->assign("customerName",$customerName);
+			
+			
+			$customer = M("zz_customer")->where("id=$customerID")->find();
+			$this -> initOptions();
+			$this->assign("customerName",$customer['name']);
 			$this->assign("customerID",$customerID);
-			$this->assign("logID",$logID);
-			$info = $M -> where("customerID = " . $customerID) -> find();
-			$this -> assign("name", $info["name"]);
+			
 			$this -> assign("id", $info['id']);
-			$this -> assign("customerType", $info['customerType']);
 			//显示联系方式
 			$contactArr = D("Contact") -> getContact($customerID, "zz_customer");
+			
 			$this -> assign("contactList", $contactArr);
+			
+			if ($_GET["logID"]) {
+				$logID = $_GET["logID"];
+				$M = M('zz_yscustomerlog');
+				$info = $M -> where("id = " . $logID) -> find();
+				$this -> assign('address', $info["address"]);
+				$this -> assign('ysRemark', $info["ysRemark"]);
+				$this -> assign('ysLevel', $info["ysLevel"]);
+				$this -> assign("name", $info["name"]);
+				$this -> assign("id", $info['id']);
+				$this -> assign("area", $info['area']);
+				$this -> assign("hospital", $info['hospital']);
+				//checkbox多选框。传递的是数组 若传给checkbox必须是lang[].checkbox的checked="lang[]" .
+				//checkbox存在缓存问题。
+				//$this -> assign("lang[]", explode(",", $info['lang']));
+				$this -> assign("lang", $info['lang']);
+				$this -> assign("py", $info['py']);
+				$this -> assign("birthday", $info['birthday']);
+				$this -> assign("expectedDay", $info['expectedDay']);
+			} 
+			
 			$this -> display();
 		} else {
 			$this -> error("缺少ID");
@@ -354,20 +374,134 @@ class CustomerAction extends EntryAction {
 		$M = M('zz_yscustomerlog');
 		$data = $M -> create();
 		if ($M -> create()) {
+			$data['lang'] = join(",", $_POST['lang']);
 			if($_POST['id']){
 				$result = $M -> data($data) -> save();
+				if (is_int($result)) {
+					SysLogs::log("保存客户月嫂记录信息,id=" . $_POST["id"]);
+					$logData["tablename"] = "zz_yscustomerlog";
+					$logData["no"] = $_POST["id"];
+					$logData["updateUser"] = $_SESSION['loginName'];
+					ZZLogModel::updateLog($logData);
+					$this->success("保存成功");
+				} else {
+					$this -> error('保存失敗');
+				}
 			}else{
 				$result = $M -> add($data);
-			}
-			Log::write( M() -> getLastSql());
-			//保存成功返回影响的记录数不成功返回false。若无更改则返回0
-			if (is_int($result)) {
-				$this -> success('保存成功');
-			} else {
-				$this -> error('保存失敗');
+				if ($result) {
+					SysLogs::log("新增客户月嫂记录信息,id=" . $_POST["id"]);
+					$logData["tablename"] = "zz_yscustomerlog";
+					$logData["no"] = $result;
+					ZZLogModel::addLog($logData);
+					$this->success("新增成功");
+				} else {
+					$this -> error('新增失敗');
+				}
 			}
 		} else {
-			$this -> error('保存失敗');
+			$this -> error('缺少参数');
+		}
+	}
+	
+	public function customerLog()
+	{
+		if ($_GET['customerID']) {
+			$customer = M("zz_customer")->where("id=".$_GET['customerID'])->find();
+			
+			$this->assign("customerName",$customer['name']);
+			$ysLogs = D('YsLogView')->where('customerID=' . $_GET['customerID'])->order("updateTime desc")->select();
+			
+			foreach ($ysLogs as $key => $value) {
+				$ysLogs[$key]['logType'] = '月嫂记录';
+			}
+			$zdgLogs = D("ZdgLogView")->where('customerID=' . $_GET['customerID'])->order("updateTime desc")->select();
+			foreach ($zdgLogs as $key => $value) {
+				$zdgLogs[$key]['logType'] = '钟点工记录';
+			}
+			if ($ysLogs) {
+				if ($zdgLogs) {
+					$logs = array_merge($ysLogs,$zdgLogs);
+				} else {
+					$logs = $ysLogs;
+				}
+			} else {
+				$logs = $zdgLogs;
+			}
+			//根据更新时间降序排序
+			$logs = multi_array_sort($logs,"updateTime",SORT_DESC);
+			$this->assign("list",$logs);
+			$this->assign("customerID",$_GET['customerID']);
+			$this->display();	
+		} else {
+			$this->error("no customer id");
+		}
+	}
+	
+	public function editZdgLog() {
+		if ($_GET['customerID']) {
+			$customerID = $_GET["customerID"];
+			
+			$customer = M("zz_customer")->where("id=$customerID")->find();
+			$this->assign("customerName",$customer['name']);
+			$this->assign("customerID",$customerID);
+			
+			$this -> assign("id", $info['id']);
+			//显示联系方式
+			$contactArr = D("Contact") -> getContact($customerID, "zz_customer");
+			
+			$this -> assign("contactList", $contactArr);
+			
+			if ($_GET["logID"]) {
+				$logID = $_GET["logID"];
+				$this->assign("id",$logID);
+				$M = M('zz_zdgcustomerlog');
+				$info = $M -> where("id = " . $logID) -> find();
+				$this -> assign('address', $info["address"]);
+				$this -> assign('remark', $info["remark"]);
+				$this -> assign('personNumber', $info["personNumber"]);
+				$this -> assign("area", $info["area"]);
+				$this -> assign("habits", $info['habits']);
+			} 
+			
+			$this -> display();
+		} else {
+			$this -> error("缺少ID");
+		}
+	}
+	
+	public function saveZdgLog()
+	{
+		//是否已經存在於本地數據庫
+		$M = M('zz_zdgcustomerlog');
+		$data = $M -> create();
+		if ($M -> create()) {
+			if($_POST['id']){
+				$result = $M -> data($data) -> save();
+				if (is_int($result)) {
+					SysLogs::log("保存客户钟点工记录信息,id=" . $_POST["id"]);
+					$logData["tablename"] = "zz_zdgcustomerlog";
+					$logData["no"] = $_POST["id"];
+					$logData["updateUser"] = $_SESSION['loginName'];
+					ZZLogModel::updateLog($logData);
+					$this->success("保存成功");
+				} else {
+					$this -> error('保存失敗');
+				}
+			}else{
+				$result = $M -> add($data);
+				if ($result) {
+					SysLogs::log("新增客户钟点工记录信息,id=" . $data["id"]);
+					$logData["tablename"] = "zz_zdgcustomerlog";
+					$logData["no"] = $result;
+					ZZLogModel::addLog($logData);
+					$this->success("新增成功");
+				} else {
+					$this -> error('新增失敗');
+				}
+			}
+		} else {
+			$this -> error('缺少参数');
 		}
 	}
 

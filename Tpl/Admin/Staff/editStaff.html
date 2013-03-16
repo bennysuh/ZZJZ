@@ -16,6 +16,7 @@
 		<script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
 		<script type="text/javascript" src="__PUBLIC__/js/jquery.json-2.3.min.js"></script>
 		<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.3.1/jquery.easyui.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.3.1/locale/easyui-lang-zh_CN.js"></script>
 		<script type="text/javascript" src="__PUBLIC__/js/validateType.js"></script>
 		<script type="text/javascript" src="__PUBLIC__/js/jquery.scrollTo-min.js"></script>
 		<script type="text/javascript" src="__PUBLIC__/js/jquery-overlay.js"></script>
@@ -40,10 +41,7 @@
 				status = "add";
 				$("#firstContact").show();
 			}
-			//格式化日期控件的日期格式
-			$("#birthday").datebox({
-				formatter:formater
-			});
+			
 			//保存
 			var postData = {};
 			$("#saveStaffBtn").click(function(){
@@ -539,7 +537,7 @@
 							<tr>
 								<td class="noBackground inputName">工作经验:</td>
 								<td class="noBackground inputText">
-									<input name="gzjy" id="gzjy" type="text" class="easyui-validatebox" required="true" value="{$gzjy}" />
+									<input style="width: 400px;" name="gzjy" id="gzjy" type="text" class="easyui-validatebox" required="true" value="{$gzjy}" />
 								</td>
 							</tr>
 							<tr>
@@ -645,7 +643,7 @@
 						</table>
                 	</div>
 				</div>
-				<div id="toolbar2" class="formLine" style="clear:both;">
+				<div id="toolbar2" class="formLine" >
 						<?php if (Auth::AccessDecision('Admin','Staff','editStaff')) { ?>
 						<button class="actionButton" id="saveStaffBtn">
 							儲存

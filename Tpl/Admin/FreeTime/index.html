@@ -11,6 +11,7 @@
 <script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
 <script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
 <script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.3.1/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.3.1/locale/easyui-lang-zh_CN.js"></script>
 <script type="text/javascript" src="__PUBLIC__/js/validateType.js"></script>
 <script type="text/javascript" src="__PUBLIC__/js/jquery.json-2.3.min.js"></script>
 <link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
@@ -35,11 +36,7 @@ $(document).ready(function(){
 		});
 	}
 	loadData();
-	
-	
-	$("#startDate,#endDate,#freeDate,#editStart,#editEnd").datebox({
-		formatter:formater
-	});
+
 	//编辑或删除的按纽被按下
 	$('#freeTimeList').delegate(".tableActionButton","click",function(){
 		var currentRow = $(this).parent().parent();

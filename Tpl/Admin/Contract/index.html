@@ -11,6 +11,7 @@
 		<script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
 		
 		<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.3.1/jquery.easyui.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.3.1/locale/easyui-lang-zh_CN.js"></script>
 		<script type="text/javascript" src="__PUBLIC__/js/validateType.js"></script>
 		<script type="text/javascript" src="__PUBLIC__/js/jquery.json-2.3.min.js"></script>
 		<link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
@@ -29,10 +30,7 @@ $(document).ready(function(){
 		var url = root + "/Admin/Contract/?" + postData;
 		window.location.href = url;
 	});
-	//格式化日期控件的日期格式
-	$("#startDate,#endDate,#expectFrom,#expectTo").datebox({
-		formatter:formater
-	});
+	
 	$("#addBtn").click(function(){
 		window.location.href = root + "/Admin/Contract/editContract/";
 	});

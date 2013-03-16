@@ -406,7 +406,7 @@ body {
     font-weight: bold;
     height: 25px;
 	min-width: 80px;
-	
+	margin:5px;
 	background: rgb(182,211,255); /* Old browsers */
 	background: -moz-linear-gradient(top,  rgba(182,211,255,1) 0%, rgba(119,170,255,1) 42%, rgba(103,160,255,1) 44%, rgba(97,152,255,1) 100%); /* FF3.6+ */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(182,211,255,1)), color-stop(42%,rgba(119,170,255,1)), color-stop(44%,rgba(103,160,255,1)), color-stop(100%,rgba(97,152,255,1))); /* Chrome,Safari4+ */
@@ -632,7 +632,7 @@ body {
     font-weight: bold;
     height: 25px;
 	min-width: 70px;
-	max-width:90px;
+	max-width:200px;
 	margin-right:10px;
 	
 	background: rgb(177,205,255); /* Old browsers */
@@ -1285,4 +1285,8 @@ input[type="checkbox"] {
 }
 .delImg {
 	cursor:hand;
+}
+.zdgImg {
+	width:100px;
+	height:100px;
 }

@@ -4,7 +4,6 @@ class UploadModel extends Model {
 	{
 		if($data){
 			$result = M("zz_upload")->data($data)->add();
-			Log::write(M()->getLastSql());
 			if($result){
 				return $result;
 			}else{
@@ -19,7 +18,6 @@ class UploadModel extends Model {
 	{
 		if($data){
 			$result = M("zz_upload")->where($cond)->data($data)->save();
-			Log::write(M()->getLastSql());
 			if(is_int($result)){
 				return true;
 			}else{

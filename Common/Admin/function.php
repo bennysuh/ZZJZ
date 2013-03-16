@@ -161,4 +161,20 @@ function timetostring($time, $full = false) {
 	$time = ($time >= 31536000 ? floor($time / 31536000) . ($full ? " year" . (floor($time / 31536000) > 1 ? "s" : "") : "y") . ", " : "") . ($time % 31536000 >= 86400 ? floor($time % 31536000 / 86400) . ($full ? " day" . (floor($time % 31536000 / 86400) > 1 ? "s" : "") : "d") . ", " : "") . ($time % 31536000 % 86400 >= 3600 ? floor($time % 31536000 % 86400 / 3600) . ($full ? " hour" . (floor($time % 31536000 % 86400 / 3600) > 1 ? "s" : "") : "h") . ", " : "") . ($time % 31536000 % 86400 % 3600 >= 60 ? floor($time % 31536000 % 86400 % 3600 / 60) . ($full ? " minute" . (floor($time % 31536000 % 86400 % 3600 / 60) > 1 ? "s" : "") : "m") . ", " : "") . ($time % 31536000 % 86400 % 3600 % 60 > 0 ? ($time % 31536000 % 86400 % 3600 % 60) . ($full ? " second" . (floor($time % 31536000 % 86400 % 3600 % 60) > 1 ? "s" : "") : "s") . ", " : "");
 	return substr($time, 0, strlen($time) - 2);
 }
+
+function multi_array_sort($multi_array, $sort_key, $sort = SORT_DESC) {
+	if (is_array($multi_array)) {
+		foreach ($multi_array as $row_array) {
+			if (is_array($row_array)) {
+				$key_array[] = $row_array[$sort_key];
+			} else {
+				return FALSE;
+			}
+		}
+	} else {
+		return FALSE;
+	}
+	array_multisort($key_array, $sort, $multi_array);
+	return $multi_array;
+}
 ?>

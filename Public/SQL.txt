@@ -1,0 +1,32 @@
+INSERT INTO zz_log (`no`,`createTime`)  SELECT  STAFFID,UPDATETIME FROM `zz_staff` WHERE 1
+
+update zz_log set `tablename` ='zz_staff',`createUser`='admin',`operate`='add' where tablename =""
+
+
+INSERT INTO zz_log (`no`,`createTime`)  SELECT  id,`updateTime`FROM `zz_customer` WHERE 1
+
+
+SELECT zz_staff.staffid AS staffid,zz_staff.ygbh AS ygbh,zz_staff.name AS name,
+		zz_staff.jg_city AS jg_city,zz_staff.birthday AS birthday,zz_staff.isHidden AS isHidden,
+		city.city AS city , zz_upload.path FROM zz_staff zz_staff 
+		 JOIN city city ON zz_staff.jg_city=city.cid and zz_staff.jg_province=city.pid  JOIN 
+		 zz_log zz_log ON zz_staff.staffid=zz_log.no  
+left join zz_upload on zz_staff.ygbh = zz_upload.pid and zz_upload.tip like '%ÍøÕÕ%'
+ORDER BY zz_log.updateTime desc LIMIT 0 , 10
+
+
+select * from zz_staff,zz_upload where zz_staff.staffid='1543' and zz_staff.ygbh = zz_upload.pid and zz_upload.tip like '%ÍøÕÕ%'
+
+SELECT * FROM zz_staff,city,zz_degree,zz_upload where  zz_staff.staffid = '1543' 
+and zz_staff.jg_city=city.cid and zz_staff.jg_province=city.pid
+and zz_staff.whcd=zz_degree.degreeID 
+and  zz_staff.ygbh = zz_upload.pid and zz_upload.tip like '%ÍøÕÕ%'
+
+SELECT staffid, jg_city, jg_province, zz_staff.birthday AS birthday, city, zz_staff.languages, zz_staff.ysLevel, zz_staff.gzjy, zz_degree.degree AS degree, zz_staff.tc, zz_upload.path AS path
+FROM  `zz_staff` 
+LEFT JOIN city ON zz_staff.jg_city = city.cid
+AND zz_staff.jg_province = city.pid
+LEFT JOIN zz_degree ON zz_staff.whcd = zz_degree.degreeID
+LEFT JOIN zz_upload ON zz_staff.ygbh = zz_upload.pid
+AND zz_upload.tip LIKE  '%ÍøÕÕ%'
+WHERE staffid =  '1543'

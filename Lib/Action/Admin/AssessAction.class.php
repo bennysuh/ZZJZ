@@ -53,7 +53,6 @@ class AssessAction extends EntryAction {
 			SysLogs::log("新增评价,id=" . $key);
 			$this -> success('评价成功');
 		} else {
-			Log::write($M->getError());
 			$this -> error('增加失敗');
 		}
 	}
