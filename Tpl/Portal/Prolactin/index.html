@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<HTML>
+	<HEAD>
+		<TITLE>广州催乳师 特级催乳师 家政服务 胎毛笔 手足印</TITLE>
+		<META http-equiv=Content-Type content="text/html; charset=utf-8">
+		<LINK href="__PUBLIC__/style/css/portal/style.css" type='text/css' rel="stylesheet" >
+		<LINK href="__PUBLIC__/style/css/portal/mystyle.css" type='text/css' rel="stylesheet" >
+		<link rel="stylesheet" type="text/css" href="__PUBLIC__/js/portal/pro_dropdown_2/pro_dropdown_2.css" />
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-1.8.0.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				//查看详细信息
+				$("#prolactinList").delegate(".viewBtn", "click", function() {
+					var prolactinID = $(this).parents("tr").attr("prolactinID");
+					window.location.href = "__ROOT__/Portal/Prolactin/viewProlactin?prolactinID=" + prolactinID;
+				});
+			});
+		</script>
+		<BODY>
+			<div class="wrapper">
+				<include file="Public:header" />
+			</div>
+			<div  class="content2 clearfix">
+				<div  class="content2 clearfix">
+					<div class="side">
+						<include file="Public:left" />
+					</div>
+					<div class="main">
+						<h2 class="ntit2" id="pageTitle">现有催乳师</h2>
+						
+						<div class="edittext" id="pageContent">
+							<table id="prolactinList">
+								<tr class="tableHeader">
+					                <th class="emailField">相片</th>
+					                <th class="emailField">催乳师资料</th>
+					                <th class="emailField">查看</th>
+					            </tr>
+								<volist name="list" id="vo">
+									<tr prolactinID={$vo['id']}>
+										<td class="staffPic"><img src="__PUBLIC__{$vo['path']}"  
+												class="prolactinImg"/> </td>
+										<td class="staffInfo">
+											编号：{$vo['ygbh']} <br>
+											籍贯：{$vo['city']}<br>
+											年龄：{$vo['age']}<br>
+										</td>
+										<td class="viewTD"><input type="button" value="查看" class="viewBtn"/></td>
+									</tr>
+								</volist>
+							</table>
+							{:$page}
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--end right side -->
+			<include file="Public:footer" />
+		</BODY>
+</HTML>

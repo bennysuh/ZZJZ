@@ -4,14 +4,15 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<title>新增/編輯合同</title>
-		<script type="text/javascript" src="__PUBLIC__/js/jquery-1.7.2.min.js"></script>
+		<title>新增/編輯订单</title>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-1.8.0.min.js"></script>
 		<script type="text/javascript" src="__PUBLIC__/js/jquery.bgiframe.min.js"></script>
 		<script type="text/javascript" src="__PUBLIC__/js/loading-min.js"></script>
 		<script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
 		<script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
 		<script type="text/javascript" src="__PUBLIC__/js/jquery.json-2.3.min.js"></script>
-		<script type="text/javascript" src="__PUBLIC__/js/easyui/jquery.easyui.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.3.1/jquery.easyui.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.3.1/locale/easyui-lang-zh_CN.js"></script>
 		<script type="text/javascript" src="__PUBLIC__/js/validateType.js"></script>
 		<script type="text/javascript" src="__PUBLIC__/js/jquery.scrollTo-min.js"></script>
 		<script type="text/javascript" src="__PUBLIC__/js/jquery-overlay.js"></script>
@@ -20,7 +21,7 @@
 		<link href="__PUBLIC__/style/css/common.css" rel="stylesheet" type="text/css">
 		<link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
 		<link href="__PUBLIC__/style/css/loading.css" rel="stylesheet" type="text/css" />
-		<link href="__PUBLIC__/js/jquery-easyui-1.2.6/themes/default/easyui.css" rel="stylesheet" type="text/css">
+		<link href="__PUBLIC__/js/jquery-easyui-1.3.1/themes/default/easyui.css" rel="stylesheet" type="text/css">
 		<SCRIPT LANGUAGE="JavaScript">
 
 			var actionName = '__ACTION__';
@@ -39,6 +40,9 @@
 				function loadData(){
 					var staffList = '{$staffList}';
 					var staffArr = JSON.parse(staffList);
+					//不选择任何人
+					var defaultObj = {staffid:0,name:"请选择"};
+					staffArr.unshift(defaultObj);
 					$('#staffSel').combobox({
 						data:staffArr,//转换成数组
 						valueField:'staffid',
@@ -49,14 +53,15 @@
 				            $.post(root + "/Admin/Staff/getStaffById",postData,changeStaffHandler);
 				        } 
 					});
+					
 					$('#alternateSel1').combobox({
 						data:staffArr,//转换成数组
 						valueField:'staffid',
 						textField:'name',
 						onChange:function(){  
-				            loading.show();
 				            var val = $("#alternateSel1").combobox("getValue");
-				            if(val){
+				            if(val!=0){
+				            	loading.show();
 				            	 var postData = {id:val};
 				            	$.post(root + "/Admin/Staff/getStaffById",postData,changeAlternate1Handler);
 				            }
@@ -67,9 +72,9 @@
 						valueField:'staffid',
 						textField:'name',
 						onChange:function(){  
-				            loading.show();
 				            var val = $("#alternateSel2").combobox("getValue");
-				            if(val){
+				            if(val != 0){
+				            	loading.show();
 				            	 var postData = {id:val};
 				            	$.post(root + "/Admin/Staff/getStaffById",postData,changeAlternate2Handler);
 				            }
@@ -77,6 +82,9 @@
 					});
 					var customerList = '{$customerList}';
 					var customerArr = JSON.parse(customerList);
+					//不选择任何人
+					defaultObj = {id:0,name:"请选择"};
+					customerArr.unshift(defaultObj);
 					$('#customerSel').combobox({
 						data:customerArr,//转换成数组
 						valueField:'id',
@@ -97,15 +105,19 @@
 				}
 				loadData();
 				
-				//格式化日期控件的日期格式
-				$("#orderDate,#startDate,#endDate").datebox({
-					formatter:formater
-				});
 				//保存
 				$("#saveBtn").click(function() {
 					var form = $('#infoForm');
 					if (!form.form("validate")) {
 						alert('請填寫必須的信息');
+						return;
+					}
+					if($('#customerSel').combobox("getValue") == 0){
+						alert('请选择客户');
+						return;
+					}
+					if($('#staffSel').combobox("getValue") == 0){
+						alert('请选择月嫂');
 						return;
 					}
 					loading.show();
@@ -204,18 +216,15 @@
 			<div id="rightWrap">
 				<!-- 所在位置地址 -->
 				<div class="addressBar">
-					合同管理 > 新增/編輯合同
+					订单管理 > 新增/編輯订单
 				</div>
 				<!--<div class="groupTitle">
-				<h2 class="pageTitle">新增/編輯合同</h2>
+				<h2 class="pageTitle">新增/編輯订单</h2>
 				</div>-->
 				<div class="locationInfo">
 					<form id="infoForm">
 						<input name="id" id="id" type="text" style="display:none;" value="{$id}" />
-						<input name="customerId"  id="customerId" type="text" style="display:none;" value="{$customerId}" />
-						<input name="staffId" id="staffId" type="text" style="display:none;" value="{$staffId}" />
-						<input name="alternate1" id="alternateID1" type="text" style="display:none;" value="{$alternate1}" />
-						<input name="alternate2" id="alternateID2" type="text" style="display:none;" value="{$alternate2}" />
+						
 						<table class="noBackground">
 							<tr>
 								<td class="noBackground inputName">编号:</td>
@@ -227,7 +236,7 @@
 								<td class="noBackground inputName">查询客户:</td>
 								<td class="noBackground inputText" >
 									<select id="customerSel" class="easyui-combobox" required="true" name="customerId" style="width:200px;">
-				              			<option>请选择客戶</option>
+				              			<option value="0">请选择客戶</option>
 				              		</select>
 								</td>
 							</tr>
@@ -260,7 +269,7 @@
 								<td class="noBackground inputName">查询月嫂:</td>
 								<td class="noBackground inputText" >
 									<select id="staffSel" class="easyui-combobox" required="true" name="staffId" style="width:200px;">
-				              			<option>请选择月嫂</option>
+				              			<option value="0">请选择月嫂</option>
 				              		</select>
 								</td>
 							</tr>
@@ -281,7 +290,7 @@
 								<td class="noBackground inputName">备选月嫂1:</td>
 								<td class="noBackground inputText" >
 									<select id="alternateSel1" class="easyui-combobox" name="alternate1" style="width:200px;">
-				              			<option>请选择月嫂</option>
+				              			<option value="0">请选择月嫂</option>
 				              		</select>
 								</td>
 							</tr>
@@ -302,7 +311,7 @@
 								<td class="noBackground inputName">备选月嫂2:</td>
 								<td class="noBackground inputText" >
 									<select id="alternateSel2" class="easyui-combobox" name="alternate2" style="width:200px;">
-				              			<option>请选择月嫂</option>
+				              			<option value="0">请选择月嫂</option>
 				              		</select>
 								</td>
 							</tr>

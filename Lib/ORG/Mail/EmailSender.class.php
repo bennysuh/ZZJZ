@@ -45,14 +45,13 @@ class EmailSender
 		$this->mail->IsSMTP();//使用SMTP方式发送
 		$this->mail->IsHTML();
 		$this->mail->Host = C('SMTP'); //设置SMTP服务器
-		$this->mail->SMTPAuth = false;//启用SMTP验证功能
+		$this->mail->SMTPAuth = true;//启用SMTP验证功能
 		$this->mail->CharSet = "UTF-8";
-
-		//$this->mail->Username = "1111@163.com";//发送帐号
-		//$this->mail->Password = "11111"; //密码
-
+		//$this->mail->AltBody = "To view the message, please use an HTML compatible email viewer!";
+		$this->mail->Username = C("EMAIL_ACCOUNT");//发送帐号
+		$this->mail->Password = C("EMAIL_PASSWORD"); //密码		
 		$this->mail->From = C('SEND_FROM'); //发件人E-mail地址
-		$this->mail->FromName = "";   //发件人称呼
+		$this->mail->FromName = C('SEND_FROMNAME');   //发件人称呼
 		
 		$this->toAddress = array();
 	}
@@ -66,7 +65,8 @@ class EmailSender
      */
 	public function setSubject($subject)
 	{
-		$this->mail->Subject = $subject.'--'.date('m/d/Y H:i:s');
+		//$this->mail->Subject = $subject.'--'.date('Y/m/d H:i:s');
+		$this->mail->Subject = $subject;
 	}
 
 	/**
@@ -110,12 +110,15 @@ class EmailSender
 			$to = $this->toAddress;
 			$this->toAddress = array();
 		}
-
+		Log::write("send email");
 		foreach ($to as $email) {
 			$this->mail->AddAddress($email[0], $email[1]);
+			Log::write($email[0] . "," . $email[1]);
 		}
+		$result = $this->mail->Send();
 		
-		return $this->mail->Send();
+		Log::write($this->mail->ErrorInfo);
+		return $result;
 	}
 
 }

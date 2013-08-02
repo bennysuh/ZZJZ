@@ -1,12 +1,12 @@
 <?php
 // +----------------------------------------------------------------------
-// | Elibrary [ ENJOY LIFE ]
+// | CommonCMS [IT IS LIFE]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2011 http://elibrary.nmg.com.hk All rights reserved.
+// | Copyright (c) 2013  All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
 // +----------------------------------------------------------------------
-// | Author: ccxopen <ccxopen@gmail.com>
+// | Author: davidhuang <mchuang1140@gmail.com>
 // +----------------------------------------------------------------------
 // $Id$
 
@@ -14,19 +14,13 @@
  +------------------------------------------------------------------------------
  * 權限管理類
  +------------------------------------------------------------------------------
- * @author    ccxopen <ccxopen@gmail.com>
+ * @author    davidhuang <mchuang1140@gmail.com>
  * @version   $Id$
  +------------------------------------------------------------------------------
  */
 class SysAuthAction extends EntryAction
 {
-    /**
-     +----------------------------------------------------------
-     * 查询功能权限
-     +----------------------------------------------------------
-	 * @access public
-     +----------------------------------------------------------
-     */
+    
     public function index()
     {
 		$list = M('sysAccess')->order('sysID')->select();
@@ -37,7 +31,7 @@ class SysAuthAction extends EntryAction
 
 	/**
      +----------------------------------------------------------
-     * 系統權限設置
+     * 系统權限設置
      +----------------------------------------------------------
 	 * @access public
      +----------------------------------------------------------
@@ -51,7 +45,7 @@ class SysAuthAction extends EntryAction
 
 		$sysInfo = M('sysAccess')->getBySysid($sysID);
 
-		$log = "對系統功能模塊[${sysInfo['name']}]作了以下修改：";
+		$log = "對系统功能模塊[${sysInfo['name']}]作了以下修改：";
 
 		$data['sysID'] = $sysID;
 
@@ -105,11 +99,7 @@ class SysAuthAction extends EntryAction
      * 根據權限級別返回描述信息
      +----------------------------------------------------------
 	 * @access public
-	 +----------------------------------------------------------
-	 * @param $level 权限级别
      +----------------------------------------------------------
-	 * @return string 权限描述信息
-	 +----------------------------------------------------------
      */
 	private function getAccessDescription($level)
 	{
@@ -130,8 +120,6 @@ class SysAuthAction extends EntryAction
      +----------------------------------------------------------
 	 * @access public
      +----------------------------------------------------------
-	 * @return ajax 权限列表
-	 +----------------------------------------------------------
      */
 	public function getAccessRightList()
 	{
@@ -152,7 +140,7 @@ class SysAuthAction extends EntryAction
 		
 		$list = $list ? $list : array();
 
-		$this->ajaxReturn($list);
+		$this->success($list);
 	}
 
 	/**

@@ -72,7 +72,6 @@ class FreeTimeAction extends EntryAction {
 			ZZLogModel::addLog($logData);
 			$this -> success("新增成功");
 		} else {
-			Log::write($M->getError());
 			$this -> error('增加失敗');
 		}
 	}
@@ -96,7 +95,6 @@ class FreeTimeAction extends EntryAction {
 				$this->assign("endDate",$result['endDate']);
 				$this->display();
 			}else{
-				Log::write(M()->getLastSql());
 				$this->error("无此空檔期");
 			}
 		}else{

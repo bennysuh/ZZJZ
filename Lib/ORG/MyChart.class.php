@@ -19,9 +19,9 @@ class MyChart {
 		$Test -> setFontProperties("pChart/Fonts/tahoma.ttf", 10);
 		$Test -> setGraphArea(40, 30, 680, 200);
 		$Test -> drawGraphArea(252, 252, 252, TRUE);
-		 Log::write("dffdf"); 
+	
 		$Test -> drawScale($DataSet -> GetData(), $DataSet -> GetDataDescription(), SCALE_NORMAL, 150, 150, 150, TRUE, 0, 2);
-		 Log::write("erer"); 
+		
 		$Test -> drawGrid(4, TRUE, 230, 230, 230, 70);
 		
 		// Draw the line graph

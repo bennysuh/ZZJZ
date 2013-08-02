@@ -87,7 +87,7 @@ class LoginAction extends Action {
 		
 		//先去数据库中查找openid存在不
 		$temp_data = $this->user->where ( array ('open_id' => $_SESSION [SES_OPENID_NAME] ) )->find ();
-		Log::write($temp_data);
+	
 		if ($temp_data == null) {
 			//证明该QQ还没有在本站登录过
 			$userInfo = json_decode ( $this->qqHelper->get_user_info (), true );

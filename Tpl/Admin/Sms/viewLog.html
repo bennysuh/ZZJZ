@@ -1,0 +1,90 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<!DOCTYPE>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>查看Email</title>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-1.8.0.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.bgiframe.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/loading-min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.scrollTo-min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-overlay.js"></script>
+		<link href="__PUBLIC__/style/css/common.css" rel="stylesheet" type="text/css">
+		<link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
+		<link href="__PUBLIC__/style/css/loading.css" rel="stylesheet" type="text/css" />
+		<SCRIPT LANGUAGE="JavaScript">
+			<!--
+			var actionName = '__ACTION__';
+			
+			$(document).ready(function() {
+				
+
+			});
+			//-->
+		</SCRIPT>
+	</head>
+	<body>
+<include file="Public:header" />
+		<!-- 主要內容 -->
+		<div id="content">
+			<include file="Public:leftForContent" />
+	
+			<!-- 右框架 -->
+			<div id="rightWrap">
+				<!-- 所在位置地址 -->
+				<div class="addressBar">
+					Email管理 > 查看Email
+				</div>
+				<div class="locationInfo">
+					<form id="infoForm">
+						<input name="articleid" id="id" type="text" style="display:none;" value="{$id}" />
+						<table class="noBackground">
+							<tr>
+								<td class="noBackground inputName">收件人:</td>
+								<td class="noBackground inputText">
+									<label>{$sender}</label>
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">发送人:</td>
+								<td class="noBackground inputName">								
+									<label>{$user}</label>	
+								</td>	
+							</tr>
+							<tr>
+								<td class="noBackground inputName">发送日期:</td>
+								<td class="noBackground inputName">								
+									<label>{$updateTime}</label>	
+								</td>	
+							</tr>
+							<tr>
+								<td class="noBackground inputName">Email标题:</td>
+								<td class="noBackground inputText">
+									<label>{$title}</label>
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">Email内容:</td>
+								<td class="noBackground inputName">	
+									<label>{$content}</label>	
+								</td>	
+							</tr>
+							
+							
+						</table>
+					</form>
+				</div>
+				<div class="formLine" style="padding:0px;">
+					<div id="toolbar2" class="formLine">
+						<button class="actionButton" onclick="window.location.href='__ROOT__/Admin/Email'">
+							返回
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

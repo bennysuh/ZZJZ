@@ -1,0 +1,206 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<!DOCTYPE>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>新增/編輯客户</title>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-1.8.0.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.bgiframe.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/loading-min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.json-2.3.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.3.1/jquery.easyui.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.3.1/locale/easyui-lang-zh_CN.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/validateType.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.scrollTo-min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-overlay.js"></script>
+		<!--<link href="__PUBLIC__/js/uploadifive/uploadifive.css" rel="stylesheet" type="text/css">-->
+
+		<link href="__PUBLIC__/style/css/common.css" rel="stylesheet" type="text/css">
+		<link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
+		<link href="__PUBLIC__/style/css/loading.css" rel="stylesheet" type="text/css" />
+		<link href="__PUBLIC__/js/jquery-easyui-1.3.1/themes/default/easyui.css" rel="stylesheet" type="text/css">
+		<SCRIPT LANGUAGE="JavaScript">
+			<!--
+			var actionName = '__ACTION__';
+			
+			$(document).ready(function() {
+				var loading = new ol.loading({id:"infoForm"});
+				//初始化语言选择项
+				setLangSel();
+				var status;
+				//status区分add或edit
+				//编辑时显示删除按钮
+				if (window.location.href.indexOf("id") != -1) {
+					$("#removeBtn").show();
+					status = "edit";
+					$("#customerName").attr("readonly", true);
+					$("#vo").empty();
+				} else {
+					status = "add";
+				}
+				//保存
+				$("#saveBtn").click(function() {
+					if (!$('#infoForm').form("validate")) {
+						alert('請填寫必須的信息');
+						return;
+					}
+					var data = $('#infoForm').serialize();
+					loading.show();
+					$.post('{:U("Customer/saveYsLog")}', data, ajaxHandler, "json");
+				});
+				
+				function ajaxHandler(response) {
+					loading.hide();
+					alert(response.info);
+					if (response.status == 1)
+						window.location.href = root + "/Admin/Customer/customerLog/customerID/" + $("#customerID").val();
+				}
+
+				//删除
+				$("#removeBtn").click(function() {
+					$.post('{:U("Customer/removeYsLog")}', "id=" + $("#id").val(), ajaxHandler, "json");
+				});
+
+				
+				//给checkbox重新赋值。解决html:checkbox缓存问题
+				function setLangSel() {
+					var langs = '{$lang}';
+					langs = langs.split(",");
+					var input;
+					$("input[name='lang[]']").each(function() {
+						input = this;
+						$(this).removeAttr("checked");
+						//设置checked “” 无效
+						$.each(langs, function() {
+							if ($(input).attr("value") == this) {
+								$(input).attr("checked", "checked");
+							}
+						})
+					})
+				}
+
+			});
+			//-->
+		</SCRIPT>
+	</head>
+	<body>
+
+		<div id="uploadifyQueue"></div>
+		<include file="Public:header" />
+		<!-- 主要內容 -->
+		<div id="content">
+			<include file="Public:leftForContent" />
+			<!-- 右框架 -->
+			<div id="rightWrap">
+				<!-- 所在位置地址 -->
+				<div class="addressBar">
+					客户管理 > 新增/編輯客户月嫂记录
+				</div>
+				<div class="locationInfo">
+					<form id="infoForm">
+						<input name="customerID" id="customerID" type="hidden" value="{$customerID}" />
+						<input name="id" id="id" type="hidden" value="{$id}" />
+						<table class="noBackground">
+							<tr>
+								<td class="noBackground inputName">姓名:</td>
+								<td class="noBackground inputText">
+									<label>{$customerName}</label>
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">联系方式:</td>
+								<td class="noBackground inputText" >
+								<ul id="contactUl">
+									<!--编辑页面-->
+									<volist name="contactList" id="contactVo" key="k">
+										<li>
+											<label style="font-weight: bold;">{$contactVo['type']}:</label>
+											<label>{$contactVo['fieldA']}</label>
+										</li>
+									</volist>
+								</ul></td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">现住地址:</td>
+								<td class="noBackground inputName">								<textarea cols="5" class="easyui-validatebox" 
+									name="address">{$address}</textarea></td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">预产期:</td>
+								<td class="noBackground inputName">
+								<input name="expectedDay" value="{$expectedDay}" id="expectedDay" class="easyui-datebox" />
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">生产日期:</td>
+								<td class="noBackground inputName">
+								<input name="birthday" value="{$birthday}" id="birthday" class="easyui-datebox" />
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">医院:</td>
+								<td class="noBackground inputName">
+								<input name="hospital" id="hospital" style="width: 350px;" type="text" class="easyui-validatebox" value="{$hospital}" />
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">级别需求:</td>
+								<td class="noBackground inputName">
+								<html:select options="ysLevelList" first="请选择" selected="ysLevel" name="ysLevel" />
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">语言需求:</td>
+								<td class="noBackground inputName"><!--html:checkbox有缓存bug。显示一次后之后都会勾选第一次的选择项。不会更新。必须删除runtime目录才会更新
+								因此在js中重新给checkbox赋值-->
+								<html:checkbox checkboxes="langList" checked="lang[]" name="lang" id="langCheckBoxes"/>
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">是否陪院:</td>
+								<td class="noBackground inputName"><!--<html:select selected="py" options="pyList" name="py" first="请选择"/>-->
+								<select name="py" id="pySel">
+									<option value="1" <?php if($py=='1') echo "selected='true'" ?>>是</option>
+									<option value="0" <?php if($py=='0') echo "selected='true'" ?>>否</option>
+								</select></td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">地区需求:</td>
+								<td class="noBackground inputName">
+								<input name="area" id="area" type="text" style="width: 350px;" style="medium" class="easyui-validatebox" value="{$area}" />
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">其它需求:</td>
+								<td class="noBackground inputName">								<textarea cols="5" name="ysRemark" class="easyui-validatebox" validType="text">
+										{$ysRemark}
+									</textarea></td>
+							</tr>
+
+						</table>
+					</form>
+				</div>
+				<div class="formLine" style="padding:0px;">
+					<div id="toolbar2" class="formLine">
+						<?php if (Auth::AccessDecision('Admin','Customer','editYsLog')) { ?>
+						<button class="actionButton" id="saveBtn">
+							保存
+						</button>
+						<?php } ?>
+						<?php if (Auth::AccessDecision('Admin','Customer','removeYsLog')) { ?>
+						<button class="actionButton" id="removeBtn" style="display: none;">
+							刪除
+						</button>
+						<?php } ?>
+						<button class="actionButton" onclick="window.location.href='__ROOT__/Admin/Customer/customerLog/customerID/{$customerID}'">
+							返回
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

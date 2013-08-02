@@ -1,21 +1,21 @@
-<!DOCTYPE>
+<!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title></title>
-<script type="text/javascript" src="__PUBLIC__/js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-1.8.0.min.js"></script>
 <!--解决IE6 select遮罩 hack插件 配合loading插件使用-->
 <script type="text/javascript" src="__PUBLIC__/js/jquery.bgiframe.min.js"></script>
 <!--loading mask插件-->
 <script type="text/javascript" src="__PUBLIC__/js/loading-min.js"></script>
 <script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
 <script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
-<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.2.6/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.3.1/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="__PUBLIC__/js/validateType.js"></script>
 <script type="text/javascript" src="__PUBLIC__/js/jquery.json-2.3.min.js"></script>
 <link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
 <link href="__PUBLIC__/style/css/loading.css" rel="stylesheet" type="text/css" />
-<link href="__PUBLIC__/js/jquery-easyui-1.2.6/themes/default/easyui.css" rel="stylesheet" type="text/css">
+<link href="__PUBLIC__/js/jquery-easyui-1.3.1/themes/default/easyui.css" rel="stylesheet" type="text/css">
 
 <SCRIPT LANGUAGE="JavaScript">
 <!--
@@ -38,16 +38,25 @@ $(document).ready(function(){
 	$('#listTb').delegate(".tableActionButton","click",function(){
 		var currentRow = $(this).parent().parent();
 		var customerId = currentRow.attr('customerId');
+		var customerName = currentRow.children().eq(0).text();
 		var isHidden;//显示隐藏按钮状态
 		if ($(this).attr('value') == '編輯') {
 			window.location.href = group + '/Customer/editCustomer/id/'+customerId;
 			return;
 		}
-		
 		if ($(this).attr('value') == '刪除') {
 		    if (!confirm('你確定要刪除此客户？')) return; 
 			loading.show();
 		    $.post('{:U("Customer/removeCustomer")}', "id="+customerId, removeHandler, 'json');
+		}
+		if ($(this).attr('value') == '新增月嫂记录') {
+		    window.location.href = group + '/Customer/editYsLog/customerID/'+customerId;
+		}
+		if ($(this).attr('value') == '新增钟点工记录') {
+		    window.location.href = group + '/Customer/editZdgLog/customerID/'+customerId;
+		}
+		if ($(this).attr('value') == '历史记录') {
+			window.location.href = group + '/Customer/customerLog/customerID/'+customerId;
 		}
 	});
 	function removeHandler(response) {
@@ -93,25 +102,37 @@ $(document).ready(function(){
         <!-- 列表框架 -->
         <div class="listWrap">
           <h2>客户列表</h2> 
-          <button id="addBtn" class="TinputAdd noselected"> 新 增 </button>
+          <button id="addBtn" class="TinputAdd noselected"> 新增客户 </button>
             <table id="listTb">
               <tr class="tableHeader">
                 <!-- F代表Form -->
-                <th class="nameF">姓名</th>
-                <th class="nameF">预产期</th>
-                <th class="nameF">创建人</th>
-                <th class="nameF">最后更新</th>
-				<th class="tableActionTD">操作</th>
+                <th class="nameF" style="width:80px;">姓名</th>
+                <th class="nameF" style="width:180px;">创建人</th>
+                <th class="nameF" style="width:180px;">最后更新</th>
+				<th class="tableActionTD" style="width:250px;">操作</th>
               </tr>
               <volist name="list" id="vo">
 			  <tr customerId={$vo['id']}>
                 <td>{$vo['name']}</td>
-                 <td>{$vo['expectedDay']}</td>
-                <td>{$vo['createUser']}<br/>{$vo['createTime']}</td>
-				<td>{$vo['updateUser']}<br/>{$vo['updateTime']}</td>
+                <td >{$vo['createUser']}<br/>{$vo['createTime']}</td>
+				<td >{$vo['updateUser']}<br/>{$vo['updateTime']}</td>
 				<td>
+					
+					<?php if (Auth::AccessDecision('Admin','Customer','addYsLog')) { ?>
+					<input type="button" value="新增月嫂记录" class="tableActionButton"/>
+					<?php } ?>
+					<?php if (Auth::AccessDecision('Admin','Customer','addZdgLog')) { ?>
+					<input type="button" value="新增钟点工记录" class="tableActionButton"/>
+					<?php } ?>
+					<?php if (Auth::AccessDecision('Admin','Customer','customerLog')) { ?>
+					<input type="button" value="历史记录" class="tableActionButton"/>
+					<?php } ?>
+					<?php if (Auth::AccessDecision('Admin','Customer','editCustomer')) { ?>
 					<input type="button" value="編輯" class="tableActionButton"/>
-					<!--<input type="button" value="刪除" class="tableActionButton"/>-->
+					<?php } ?>
+					<?php if (Auth::AccessDecision('Admin','Customer','removeCustomer')) { ?>
+					<input type="button" value="刪除" class="tableActionButton"/>
+					<?php } ?>
 				</td>
               </tr>
               </volist>

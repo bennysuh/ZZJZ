@@ -1,0 +1,147 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<!DOCTYPE>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>发送短信</title>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-1.8.0.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.bgiframe.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/loading-min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.3.1/jquery.easyui.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.3.1/locale/easyui-lang-zh_CN.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/validateType.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-overlay.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.json-2.3.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.multiselect2side.js"></script>
+		<link href="__PUBLIC__/style/css/common.css" rel="stylesheet" type="text/css">
+		<link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
+		<link href="__PUBLIC__/style/css/loading.css" rel="stylesheet" type="text/css" />
+		<link href="__PUBLIC__/js/jquery-easyui-1.3.1/themes/default/easyui.css" rel="stylesheet" type="text/css">
+		<link rel="stylesheet" href="__PUBLIC__/style/css/jquery.multiselect2side.css" type="text/css" media="screen" />
+		<SCRIPT LANGUAGE="JavaScript">
+			<!--
+			var actionName = '__ACTION__';
+			
+			$(document).ready(function() {
+				var loading = new ol.loading({id:"infoForm"});
+				var sendArr = [];
+				var senderList = {$senderList};
+				var sendSel = $('#sendSel');
+				if(senderList){
+					sendList = $.toJSON(senderList);
+					$.each(senderList,function(){
+						sendSel.append("<option value='" +
+							 this.type + "_" + this.id + "'>" +
+							 this.name + "(" + this.phone + ")" + "</option>");
+					})
+				}
+				
+				sendSel.multiselect2side({
+					search: "<img src='__PUBLIC__/style/img/search.gif' />",
+					autoSortAvailable: true,
+					autoSort: true,
+					moveOptions: false,
+				});
+				
+				//保存
+				$("#saveBtn").click(function() {
+					if (!$('#infoForm').form("validate")) {
+						alert('請填寫必須的信息');
+						return;
+					}
+					var data = $('#infoForm').serialize();
+					loading.show();
+					$.post('{:U("Sms/addSms")}', data, ajaxHandler, "json");
+				});
+
+				function ajaxHandler(response) {
+					loading.hide();
+					alert(response.info);
+					if (response.status == 1)
+						window.location.href = '{:U("/Admin/Sms")}';
+				}
+
+				$("#nextBtn").click(function(){
+					var selectedOption = $("#sendersms2side__dx option");
+					var sendStr = ""; 
+					if(selectedOption.length > 0 ){
+						selectedOption.each(function(){
+							sendStr += $(this).text() + ",";
+						})
+						$("#selectDiv").hide();
+						$("#contentDiv,#sendDiv").show();
+						sendStr = sendStr.substr(0,sendStr.length-1);
+						$("#sender").text(sendStr);
+						$("#infoForm").parent().css({"margin-left":"0px",width:"730px"});
+					}else{
+						alert("请选择发送对象！");	
+					}
+				})
+				
+				
+			});
+			//-->
+		</SCRIPT>
+	</head>
+	<body>
+<include file="Public:header" />
+		<!-- 主要內容 -->
+		<div id="content">
+			<include file="Public:leftForContent" />
+	
+			<!-- 右框架 -->
+			<div id="rightWrap">
+				<!-- 所在位置地址 -->
+				<div class="addressBar">
+					发送短信 > 
+				</div>
+				<div class="locationInfo" id="selectDiv">
+						<select name="senders[]" id='sendSel' multiple='multiple' >
+						
+						</select>
+					<button class="actionButton" id="nextBtn">
+							下一步
+					</button>
+				</div>
+				<div class="locationInfo" id="contentDiv" style="display: none;">
+					<form id="infoForm">
+						<table class="noBackground">
+							<tr>
+								<td class="noBackground inputName">收件人:</td>
+								<td class="noBackground inputText">
+								<textarea name="sender" id="sender" type="text" style="width:300px;height:50px;" 
+									 class="easyui-validatebox" required="true" cols="20" rows="10">{$sender}</textarea>
+								</td>
+							</tr>
+							
+							<tr>
+								<td class="noBackground inputName">发送内容:</td>
+								<td class="noBackground inputName">								
+									<textarea style="width: 300px;height:200px;" cols="20" rows="10" 
+										class="easyui-validatebox"  id="smsContent" required="true"
+									name="smsContent">{$smsContent}</textarea>
+								</td>	
+							</tr>
+							
+						</table>
+					</form>
+				</div>
+				<div class="formLine" id="sendDiv" style="padding:0px;display:none;">
+					<div id="toolbar2" class="formLine">
+						<?php if (Auth::AccessDecision('Admin','Sms','sendSms')) { ?>
+						<button class="actionButton" id="saveBtn">
+							发送
+						</button>
+						<?php } ?>
+						<button class="actionButton" onclick="window.location.href='__ROOT__/Admin/Sms/'">
+							返回
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

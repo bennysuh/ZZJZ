@@ -3,17 +3,17 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title></title>
-<script type="text/javascript" src="__PUBLIC__/js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-1.8.0.min.js"></script>
 <script type="text/javascript" src="__PUBLIC__/js/jquery.bgiframe.min.js"></script>
 <script type="text/javascript" src="__PUBLIC__/js/loading-min.js"></script>
 <script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
 <script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
-<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.2.6/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.3.1/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="__PUBLIC__/js/validateType.js"></script>
 
 <link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
 <link href="__PUBLIC__/style/css/loading.css" rel="stylesheet" type="text/css" />
-<link href="__PUBLIC__/js/jquery-easyui-1.2.6/themes/default/easyui.css" rel="stylesheet" type="text/css">
+<link href="__PUBLIC__/js/jquery-easyui-1.3.1/themes/default/easyui.css" rel="stylesheet" type="text/css">
 
 <SCRIPT LANGUAGE="JavaScript">
 <!--
@@ -23,29 +23,29 @@ var members = {$members};
 $(document).ready(function(){
      //导航选中
 	$(".navList li[name=setting]").addClass('selectButton');
-	//展开收缩
+
 	$('.expandIcon,.shrinkIcon').click(function(){
-		//查找最近的父辈元素（不包含tr）所以要加上parent 找到tr
 	    var currentRow = $(this).parentsUntil('tr').parent();
-		//收缩状态
+		
 		if ($(this).hasClass('expandIcon')) {
-		    currentRow.find('.shrinkIcon').addClass('expandIcon').removeClass('shrinkIcon');//更改收缩图片为展开图片
-			$(this).removeClass('expandIcon').addClass('shrinkIcon');
+		    currentRow.find('.shrinkIcon').addClass('expandIcon');
+			currentRow.find('.shrinkIcon').removeClass('shrinkIcon');
+			$(this).removeClass('expandIcon');
+			$(this).addClass('shrinkIcon');
 
 			var index = currentRow.attr('index');
 			var level = $(this).attr('level');
 			var member = members[index][level];
-			//添加新行
+			
 			var newRow;
-			//判断是否在最后一行
 			if (currentRow.next().length == 0 || (currentRow.next().length > 0 && !currentRow.next().hasClass('expandRow'))) {
 				newRow = $("<tr class='expandRow'><td></td><td colspan=6></td></tr>");
 				currentRow.after(newRow);
 			} else {
 			    newRow = currentRow.next();
 			}
-			//包含内容的td元素
-			var memberContainer = newRow.children().eq(1);
+
+			var memberContainer = $(newRow.children()[1]);
 			memberContainer.html('');
 
 			for (var i = 0; i < member.length; i++) {
@@ -86,7 +86,7 @@ $(document).ready(function(){
   <!-- 右框架 -->
   <div id="rightWrap">
     <!-- 所在位置地址 -->
-    <div class="addressBar">用戶管理 > 系統用戶 > 用戶權限</div>
+    <div class="addressBar">用戶管理 > 系统用戶 > 用戶權限</div>
     
   	<div class="UMWrap">
       <div id="privilegesTabs" class="easyui-tabs" style="width:980px;margin-top:30px;">  
@@ -111,8 +111,8 @@ $(document).ready(function(){
 			 </tr>			 
 		     </volist>
 		   </table>
-		   <div style="margin:20px;color:#336699">黑色字體代表系統對此權限作了限制</div>
-		   <div style="margin:20px;color:#336699">灰色字體代表系統對此權限沒有限制</div>
+		   <div style="margin:20px;color:#336699">黑色字體代表系统對此權限作了限制</div>
+		   <div style="margin:20px;color:#336699">灰色字體代表系统對此權限沒有限制</div>
 		   <div style="margin:20px;color:#336699">展開按紐說明該用戶擁有此權限的原因，可能是該用戶單獨設置了權限，又或是該用戶繼承了某個群組的權限，按下去查看詳細</div>
         </div>
 		<!--<div class="authCopyWrapper" title="複製用戶權限">  

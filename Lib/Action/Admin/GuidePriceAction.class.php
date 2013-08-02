@@ -34,7 +34,7 @@ class GuidePriceAction extends EntryAction
     	$p = new Page($count,10);
 		$page = $p -> show();
 		$list = $M->limit($p->firstRow.','.$p->listRows)->order('year desc,month desc')->select();
-		Log::write(M()->getLastSql());
+		
 		$this->assign("page",$page);
 		$this->assign("list",$list);
 		$this->display();
@@ -65,7 +65,6 @@ class GuidePriceAction extends EntryAction
 		if(is_int($result)){
 			$this->success("保存成功");
 		}else{
-			Log::write(M()->getLastSql());
 			$this->error($error);
 		}
 	}
@@ -110,7 +109,6 @@ class GuidePriceAction extends EntryAction
 		if($result){
 			$this->success("新增成功");
 		}else{
-			Log::write(M()->getLastSql());
 			$this->error("新增失败");
 		}
 	}
@@ -160,7 +158,6 @@ class GuidePriceAction extends EntryAction
 			$chart->createChart($xData,$yData,$title,$exportName);
 			$this->success("导出成功！");
 		}else{
-			Log::write(M()->getLastSql());
 			$this->error("导出失败！");
 		}
 	}

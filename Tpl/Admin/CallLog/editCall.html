@@ -1,0 +1,174 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<!DOCTYPE>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>新增/編輯来电记录</title>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-1.8.0.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.bgiframe.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/loading-min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.json-2.3.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.3.1/jquery.easyui.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.3.1/locale/easyui-lang-zh_CN.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/validateType.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.scrollTo-min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-overlay.js"></script>
+		<link href="__PUBLIC__/style/css/common.css" rel="stylesheet" type="text/css">
+		<link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
+		<link href="__PUBLIC__/style/css/loading.css" rel="stylesheet" type="text/css" />
+		<link href="__PUBLIC__/js/jquery-easyui-1.3.1/themes/default/easyui.css" rel="stylesheet" type="text/css">
+		<SCRIPT LANGUAGE="JavaScript">
+			<!--
+			var actionName = '__ACTION__';
+			
+			$(document).ready(function() {
+				var loading = new ol.loading({id:"infoForm"});
+				var status;
+				$(".datebox :text").attr("readonly","readonly"); 
+				$("#phoneSel").combobox({
+					data:{$phoneList},//转换成数组
+					valueField:'id',
+					textField:'phone',
+				});
+				//status区分add或edit
+				//编辑时显示删除按钮
+				if (window.location.href.indexOf("phoneID") != -1) {
+					$("#phoneSel").combobox('setValue',$("#phoneID").val());
+				} 
+				if(window.location.href.indexOf("logID") != -1){
+					status = "edit";
+				}else {
+					status = "add";
+				}
+				var phoneList = {$phoneList};
+				
+				//保存
+				$("#saveBtn").click(function() {
+					//if(!$(form.name).validatebox('isValid') || !$(form.phone).validatebox('isValid')) {
+					if (!$('#infoForm').form("validate")) {
+						alert('請填寫必須的信息');
+						return;
+					}
+					var data = $('#infoForm').serialize();
+					data += "&type=" + $("#typeSel option:selected").text();
+					var phone = $(".phone").find(".validatebox-text").val();
+					data += "&phone=" + phone;
+					loading.show();
+					if (status == "add") {
+						$.post('{:U("CallLog/addCallLog")}', data, ajaxHandler, "json");
+					} else if (status == "edit") {
+						$.post('{:U("CallLog/saveCallLog")}', data, ajaxHandler, "json");
+					}
+				});
+
+				function ajaxHandler(response) {
+					loading.hide();
+					alert(response.info);
+					if (response.status == 1)
+						window.location.href = '{:U("/Admin/CallLog")}';
+				}
+
+				//删除
+				$("#removeBtn").click(function() {
+					$.post('{:U("CallLog/removeCallLog")}', "id=" + $("#logID").val(), ajaxHandler, "json");
+				});
+
+			});
+			//-->
+		</SCRIPT>
+	</head>
+	<body>
+<include file="Public:header" />
+		<!-- 主要內容 -->
+		<div id="content">
+			<include file="Public:leftForContent" />
+	
+			<!-- 右框架 -->
+			<div id="rightWrap">
+				<!-- 所在位置地址 -->
+				<div class="addressBar">
+					来电记录 > 新增/編輯来电记录
+				</div>
+				<div class="locationInfo">
+					<form id="infoForm">
+						<input name="phoneID" id="phoneID" type="text" style="display:none;" value="{$phoneID}" />
+						<input name="logID" id="logID" type="text" style="display:none;" value="{$logID}" />
+						<input name="customerID" id="customerID" type="text" style="display:none;" value="{$customerID}" />
+						<table class="noBackground">
+							<tr>
+								<td class="noBackground inputName">电话号码:</td>
+								<td class="noBackground inputText phone">
+								<!--<input name="phone" id="phone" type="text" style="width:300px;height:22px;" maxlength="20"
+									 class="easyui-validatebox"  validType="number"  required="true" value="{$phone}" />-->
+								 <select class="easyui-combobox" id="phoneSel" style="width:200px;">
+					              			
+					             </select>
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">来电日期:</td>
+								<td class="noBackground inputName">								
+									<input name="callTime"  id="callTime" showSeconds="false" value="{$callTime}" class="easyui-datetimebox" />
+								</td>	
+							</tr>
+							<tr>
+								<td class="noBackground inputName">称呼:</td>
+								<td class="noBackground inputName">
+									<input name="name" id="name" type="text" style="width:300px;height:22px;" maxlength="20"
+									 class="easyui-validatebox" required="true" value="{$name}" />
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">咨询类型:</td>
+								<td class="noBackground inputName">
+									<select id="typeSel" name="type">
+										<option value="0">请选择</option>
+										<option value="1" <if condition="$type eq '月嫂'">selected="true"</if>>月嫂</option>
+										<option value="2" <if condition="$type eq '保姆'">selected="true"</if>>保姆</option>
+										<option value="3" <if condition="$type eq '钟点工'">selected="true"</if>>钟点工</option>
+										<option value="4" <if condition="$type eq '其它'">selected="true"</if>>其它</option>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">所在区县:</td>
+								<td class="noBackground inputName">
+									<html:select name="areaID" first="请选择" 
+										selected="area" options="areaList" id="areaSel"/>
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">咨询内容:</td>
+								<td class="noBackground inputName">
+									<textarea id="detail" name="detail" class="easyui-validatebox" required="true">{$detail}</textarea>
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">跟进内容:</td>
+								<td class="noBackground inputName">
+									<textarea id="process" name="process"
+										 class="easyui-validatebox" >{$process}</textarea>
+								</td>
+							</tr>
+						</table>
+					</form>
+				</div>
+				<div class="formLine" style="padding:0px;">
+					<div id="toolbar2" class="formLine">
+						<?php if (Auth::AccessDecision('Admin','CallLog','editCall')) { ?>
+						<button class="actionButton" id="saveBtn">
+							保存
+						</button>
+						<?php } ?>
+						<button class="actionButton" onclick="window.location.href='__ROOT__/Admin/CallLog'">
+							返回
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

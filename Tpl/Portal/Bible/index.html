@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<HTML>
+	<HEAD>
+		<TITLE>广州月嫂 特级月嫂 家政服务 胎毛笔 手足印</TITLE>
+		<META http-equiv=Content-Type content="text/html; charset=utf-8">
+		<LINK href="__PUBLIC__/style/css/portal/style.css" type='text/css' rel="stylesheet" >
+		<LINK href="__PUBLIC__/style/css/portal/mystyle.css" type='text/css' rel="stylesheet" >
+		<link rel="stylesheet" type="text/css" href="__PUBLIC__/js/portal/pro_dropdown_2/pro_dropdown_2.css" />
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-1.8.0.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				//查看详细信息
+				$("#bibleList").delegate(".viewBtn", "click", function() {
+					var bibleID = $(this).parents("tr").attr("bibleID");
+					window.location.href = "__ROOT__/Portal/Bible/viewbible?bibleID=" + bibleID;
+				});
+
+				$("#searchBtn").click(function() {
+					var title = $("#title").val();
+					window.location.href = "__ROOT__/Portal/Bible/index?title=" + title;
+					
+				});
+				
+				$("#searchForm").keyup(function(e) {
+					if (e.which == 13)
+						$("#searchBtn").click();
+				})
+			});
+		</script>
+		<BODY>
+			<div class="wrapper">
+				<include file="Public:header" />
+			</div>
+			<div  class="content2 clearfix">
+				<div  class="content2 clearfix">
+					<div class="side">
+						<include file="Public:left" />
+					</div>
+					<div class="main">
+						<h2 class="ntit2" id="pageTitle">常识宝典</h2>
+						<div id="searchDiv">
+							<form onsubmit="return false;" id="searchForm">
+								<input placeholder="请输入需要查询的内容" style="width:200px;" type="text" name="title" id="title" />
+								<input type="button" value="查询" id="searchBtn"/>
+							</form>
+						</div>
+						<div class="edittext" id="pageContent">
+							<ul id="bibleUl">
+								<volist name="list" id="vo">
+									<li class="bibleLi" articleID={$vo['articleid']}>
+										<td class="bibleTd">
+										 	<a href="view/id/{$vo['articleid']}">{$vo['title']}</a>
+										 </td>
+									</li>
+								</volist>
+							</ul>
+							{:$page}
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--end right side -->
+			<include file="Public:footer" />
+		</BODY>
+</HTML>

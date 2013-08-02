@@ -1,0 +1,430 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<!DOCTYPE>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>新增/編輯催乳师</title>
+		<link href="__PUBLIC__/style/css/common.css" rel="stylesheet" type="text/css">
+		<link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
+		<link href="__PUBLIC__/style/css/loading.css" rel="stylesheet" type="text/css" />
+		<link rel="stylesheet" type="text/css" href="__PUBLIC__/js/uploadifive/uploadifive.css">
+		<link href="__PUBLIC__/js/jquery-easyui-1.3.1/themes/default/easyui.css" rel="stylesheet" type="text/css">
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-1.8.0.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.bgiframe.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/loading-min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.json-2.3.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.3.1/jquery.easyui.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.3.1/locale/easyui-lang-zh_CN.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/validateType.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.scrollTo-min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/uploadifive/jquery.uploadifive.min.js" ></script>
+
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-overlay.js"></script>
+		<SCRIPT LANGUAGE="JavaScript">
+			<!--
+			var actionName = '__ACTION__';
+			var fileArr = [];
+			//上传文件信息数组
+			$(document).ready(function() {
+				var loading = new ol.loading({
+					id : "prolactinInfoForm"
+				});
+				var status;
+
+				//初始化语言选择项
+				setLangSel();
+				//编辑时显示删除按钮
+				if (window.location.href.indexOf("id") != -1) {
+					$("#removeProlactinBtn").show();
+					status = "edit";
+
+					$("#thumbList").show();
+					initUpload();
+					$("#prolactinName").attr("readonly", true);
+					//不可更改用户名
+					$("#firstContact").remove();
+					$("#vo").empty();
+				} else {
+					status = "add";
+					$("#imageFile").hide();
+					$("#thumbList").hide();
+					$("#firstContact").show();
+				}
+
+				//保存
+				var postData = {};
+				$("#saveProlactinBtn").click(function() {
+					loading.show();
+					var form = $('#prolactinInfoForm')[0];
+					var contactData = [];
+					$("#contactUl li").each(function() {
+						var contact = {};
+						contact.type = $(this).find("select").val();
+						contact.content = $(this).find("input").val();
+						if (status == "edit") {
+							contact.id = $(this).find("label").text();
+						}
+						contactData.push(contact);
+					});
+
+					postData.data = contactData;
+					if (contactData.length == 0) {
+						alert("缺少联系方式");
+						loading.hide();
+						return;
+					}
+					//if(!$(form.name).validatebox('isValid') || !$(form.phone).validatebox('isValid')) {
+					if (!$('#prolactinInfoForm').form("validate")) {
+						alert('請填寫必須的信息');
+						loading.hide();
+						return;
+					}
+					var data = $(form).serialize();
+
+					if (status == "add") {
+						$.post('{:U("Prolactin/addProlactin")}', data, saveHandler, "json");
+					} else if (status == "edit") {
+						$.post('{:U("Prolactin/saveProlactin")}', data, saveHandler, "json");
+					}
+				});
+
+				var imageArr = [];
+
+				function initUpload() {
+					$("#imageFile").uploadifive({
+						'uploadScript' : '{:U("Prolactin/uploadImage")}',
+						'multi' : false,
+						'auto' : true,
+						'removeCompleted' : true,
+						'fileSizeLimit' : '50MB',
+						'fileType' : 'image',
+						'buttonText' : '上传照片',
+						'formData' : {
+							'PHPSESSID' : '<?php echo session_id(); ?>'
+						},
+						'onUploadComplete' : function(file, data) {
+							var data = JSON.parse(data);
+							if ( typeof (data) != "object") {
+								alert(data);
+								return false;
+							}
+							loading.show();
+							var prolactinID = $('#prolactinID').val();
+							$.post("{:U('Prolactin/addImage')}", {
+								prolactinID : prolactinID,
+								path : data.path,
+							}, addImageHandler, "json");
+
+						},
+					})
+				}
+
+				function addImageHandler(response) {
+					loading.hide();
+					if (response.status) {
+						var data = response.info;
+						alert("添加图片成功!");
+						window.location.href = window.location.href ;
+					} else {
+						alert(response.info);
+					}
+				}
+
+				//新增/更新联系方式
+				function saveHandler(response) {
+					if (response.status) {
+						if (postData.data.length == 0) {
+							alert("缺少联系方式");
+							loading.hide();
+							return;
+						}
+						var action;
+						if (status == "add") {
+							postData.no = response.info;
+							action = root + '/Admin/Prolactin/addContact';
+							//新增不能使用{:U("/Prolactin/saveContact")}。否则找不到对应的action函数。而编辑则可以。
+						} else {
+							postData.no = $("#prolactinID").val();
+							action = root + '/Admin/Prolactin/saveContact';
+						}
+						//这是在回调函数中第二次调用post，post的action不需要前面的目录
+						$.post(action, {
+							json : $.toJSON(postData)
+						}, relHandler, "json");
+					} else {
+						loading.hide();
+						alert(response.info);
+					}
+				}
+
+				//联系方式回调
+				function relHandler(r) {
+					loading.hide();
+					alert(r.info);
+					window.location.href = root + "/Admin/Prolactin";
+				}
+
+				function ajaxHandler(response) {
+					alert(response.info);
+					if (response.status == 1)
+						window.location.href = window.location.href;
+				}
+
+				//删除催乳师
+				$("#removeProlactinBtn").click(function() {
+					$.post('{:U("Prolactin/removeProlactin")}', "id=" + $("#prolactinID").val(), ajaxHandler, "json");
+				});
+				
+				$("#imageList").delegate(".delImageBtn", "click", function() {
+					var postData = {};
+					postData.id = $(this).parents("tr").attr("uploadID");
+					$.post(root + '/Admin/Prolactin/removeImage', postData, ajaxHandler, "json");
+				});
+				
+				$("#imageList").delegate(".saveImageBtn", "click", function() {
+					var postData = {};
+					postData.id = $(this).parents("tr").attr("uploadID");
+					postData.tip = $(this).parents("tr").find(".tip").val();
+					$.post(root + '/Admin/Prolactin/updateTip', postData, ajaxHandler, "json");
+				});
+						
+				
+				//新增联系方式
+				$("#contactUl").delegate(".addImg", "click", function() {
+					var contactHtml = '<li ><select class="contactTypeSel">' + '<option selected="true">电话</option>' + '<option>email</option>' + '</select>' + '<input type="text" class="easyui-validatebox" validType="number"  required="true" />' + "<img class='delImg' src='__PUBLIC__/style/img/delete.png' /></li>";
+					$("#contactUl").append(contactHtml);
+					$("#contactUl input[validType='number']").last().validatebox({
+						required : true
+					});
+				}).delegate(".delImg", "click", function(e) {
+					var i = $(this).parent().index();
+					$("#contactUl li").eq(i).find("input").validatebox("destroy");
+					//删除验证销毁组件
+					$("#contactUl li").eq(i).remove();
+				});
+				
+				
+				//切换联系方式
+				$(".contactTypeSel").live("change", function(e) {
+					var selectedIndex = e.currentTarget.selectedIndex;
+					var input = $(this).next();
+					input.val("");
+					switch(selectedIndex) {
+						case 0:
+							input.attr("validType", "number");
+							input.validatebox('remove');
+							input.validatebox({
+								required : true
+							});
+							break;
+						case 1:
+							input.attr("validType", "email");
+							input.validatebox('remove');
+							input.validatebox({
+								required : true,
+								validType : "email"
+							})
+							break;
+					}
+				});
+				//更改省份和城市
+				$("#provSel").change(function() {
+					var selIndex = this.selectedIndex;
+					var pid = $(this).find("option").eq(selIndex).val();
+					$.post('{:U("Prolactin/getCityByProv")}', {
+						"pid" : pid
+					}, function(response) {
+						$("#citySel").empty();
+						var option;
+						$.each(response.info, function(i) {
+							option = "<option value='" + i + "'>" + this + "</option>";
+							$("#citySel").append(option);
+						});
+					}, "json");
+				})
+				//给checkbox重新赋值。解决html:checkbox缓存问题
+				function setLangSel() {
+					var langs = '{$lang}';
+					langs = langs.split(",");
+					var input;
+					$("input[name='lang[]']").each(function() {
+						input = this;
+						$(this).removeAttr("checked");
+						//设置checked “” 无效
+						$.each(langs, function() {
+							if ($(input).attr("value") == this) {
+								$(input).attr("checked", "checked");
+							}
+						})
+					})
+				}
+
+			});
+			//-->
+		</SCRIPT>
+
+	</head>
+	<body>
+		<include file="Public:header" />
+		<!-- 主要內容 -->
+		<div id="content">
+			<include file="Public:leftForContent" />
+			<!-- 右框架 -->
+			<div id="rightWrap">
+				<!-- 所在位置地址 -->
+				<div class="addressBar">
+					催乳师管理 > 新增/編輯催乳师
+				</div>
+				<!--<div class="groupTitle">
+				<h2 class="pageTitle">新增/編輯催乳师</h2>
+				</div>-->
+				<div class="locationInfo" id="locationInfo">
+					<form id="prolactinInfoForm">
+						<input name="prolactinID" id="prolactinID" type="text" style="display:none;" value="{$prolactinID}" />
+						<table class="noBackground">
+							<tr>
+								<td class="noBackground inputName">催乳师编号:</td>
+								<td class="noBackground inputText">
+								<input name="ygbh" id="ygbh" type="text" style="width: 300px;" readonly="readonly" value="{$ygbh}" />
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">姓名:</td>
+								<td class="noBackground inputText">
+								<input name="name" id="prolactinName"  type="text" class="easyui-validatebox" required="true" value="{$name}" />
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">联系方式:</td>
+								<td class="noBackground inputText" >
+								<ul id="contactUl">
+									<!--编辑页面-->
+									<volist name="contactList" id="contactVo" key="k">
+										<li>
+											<select class="contactTypeSel">
+												<option <?php if($contactVo['type']=='电话') echo "selected='true'" ?>>电话</option>
+												<option <?php if($contactVo['type']=='email') echo "selected='true'" ?>>email</option>
+											</select>
+											<input type="text" class="easyui-validatebox"
+											<?php
+											if($contactVo['type']=='电话')
+											echo "validType='number'";
+											else if($contactVo['type']=='email')
+											echo "validType='email'";
+											?>
+											required="true" value="{$contactVo['fieldA']}" />
+											<img <?php if($k===1) {echo 'src="__PUBLIC__/style/img/add.png" class="addImg"';}
+											else {echo 'src="__PUBLIC__/style/img/delete.png" class="delImg"';} ?> />
+											<label class="contactID" style="display:none;" >{$contactVo['id']}</label>
+										</li>
+									</volist>
+									<!--新增页面-->
+									<li id="firstContact" style="display:none;">
+										<select class="contactTypeSel">
+											<option selected="true">电话</option>
+											<option>email</option>
+										</select>
+										<input type="text" class="easyui-validatebox" validType="number" required="true" value="{$phone}" />
+										<img class='addImg' src='__PUBLIC__/style/img/add.png' />
+									</li>
+								</ul></td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">籍贯:</td>
+								<td class="noBackground inputName">
+								<html:select name="jg_province" options="provList" selected="jg_province" id="provSel"/>
+								<html:select name="jg_city" options="cityList" selected="jg_city" id="citySel"/>
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">出生日期:</td>
+								<td class="noBackground inputText">
+								<input name="birthday" id="birthday" type="text" class="easyui-datebox" required="true" value="{$birthday}" />
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">文化程度:</td>
+								<td class="noBackground inputText">
+								<html:select options="whcdList" selected="whcd" name="whcd"/>
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">工作经验:</td>
+								<td class="noBackground inputText">
+								<input style="width: 400px;" name="gzjy" id="gzjy" type="text" class="easyui-validatebox" required="true" value="{$gzjy}" />
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">现住地址:</td>
+								<td class="noBackground inputName">								<textarea cols="5" class="easyui-validatebox" 
+									name="xzdz">{$xzdz}</textarea></td>
+							</tr>
+
+							<tr>
+								<td class="noBackground inputName">通晓语言:</td>
+								<td class="noBackground inputName">
+								<html:checkbox checkboxes="langList" checked="lang[]" name="lang" id="langCheckBoxes"/>
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">综合评价:</td>
+								<td class="noBackground inputName">								<textarea cols="5" name="remark" class="easyui-validatebox" validType="text"  value="{$remark}">
+										{$remark}
+									</textarea></td>
+							</tr>
+
+						</table>
+					</form>
+
+					<input type="file" class="imageFile" id="imageFile"  multiple="true"  name="imageFile[]" >
+					
+					<div id="toolbar2" class="formLine" >
+						<?php if (Auth::AccessDecision('Admin','Prolactin','editProlactin')) { ?>
+						<button class="actionButton" id="saveProlactinBtn">
+							儲存
+						</button>
+						<?php } ?>
+						<?php if (Auth::AccessDecision('Admin','Prolactin','removeProlactin')) { ?>
+						<button class="actionButton" id="removeProlactinBtn" style="display: none;">
+							刪除
+						</button>
+						<?php } ?>
+						<button class="actionButton" onclick="window.location.href='__ROOT__/Admin/Prolactin'">
+							返回
+						</button>
+					</div>
+				</div>
+				<gt name="imageCount" value="0">
+						<!--预览上传图片-->
+						<div id="imageList" style="clear:both;padding:0px;">
+							<table class="noBackground" style="border: none;" id="previewTb">
+								<tr class="tableHeader">
+									<th style="height:20px;max-height: 50px">图片</th>
+									<th>图片说明</th>
+									<th>保存</th>
+									<th>删除</th>
+								</tr>
+								<volist name='picList' id='picVo' key="k">
+									<tr uploadID="{$picVo['id']}">
+										<td><img  src="__PUBLIC__{$picVo[path]}"  class='uploadImg'></td>
+										<td>
+										<input value="{$picVo[tip]}" class="tip"/>
+										</td>
+										<td>
+										<input type="button" value="保存" operate="update" class="actionButton saveImageBtn"/>
+										</td>
+										<td>
+										<input type="button" value="删除" operate="del" class="actionButton delImageBtn"/>
+										</td>
+									</tr>
+								</volist>
+							</table>
+						</div>
+					</gt>
+			</div>
+		</div>
+	</body>
+</html>

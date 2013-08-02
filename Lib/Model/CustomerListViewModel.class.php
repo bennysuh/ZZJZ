@@ -18,8 +18,8 @@ class CustomerListViewModel extends ViewModel {
      +----------------------------------------------------------
     */
 	public $viewFields = array(
-		'zz_yscustomer' => array('id','name', 'expectedDay'),
-		'zz_log' => array('createUser','createTime','updateUser','updateTime','_on' => 'zz_log.tablename="zz_yscustomer" and zz_yscustomer.id=zz_log.no'),
+		'zz_customer' => array('id','name'),
+		'zz_log' => array('createUser','createTime','updateUser','updateTime','_on' => 'zz_log.tablename="zz_customer" and zz_customer.id=zz_log.no'),
 	);
 }
 ?>

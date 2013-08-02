@@ -1,12 +1,12 @@
 <?php
 // +----------------------------------------------------------------------
-// | Elibrary [ ENJOY LIFE ]
+// | CommonCMS [IT IS LIFE]
 // +----------------------------------------------------------------------
-// | Copyright (c) 2011 http://elibrary.nmg.com.hk All rights reserved.
+// | Copyright (c) 2013  All rights reserved.
 // +----------------------------------------------------------------------
 // | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
 // +----------------------------------------------------------------------
-// | Author: ccxopen <ccxopen@gmail.com>
+// | Author: davidhuang <mchuang1140@gmail.com>
 // +----------------------------------------------------------------------
 // $Id$
 
@@ -14,19 +14,17 @@
  +------------------------------------------------------------------------------
  * 群組模型類
  +------------------------------------------------------------------------------
- * @author    ccxopen <ccxopen@gmail.com>
+ * @author    davidhuang <mchuang1140@gmail.com>
  * @version   $Id$
  +------------------------------------------------------------------------------
  */
 class GroupModel extends Model {
-	protected $trueTableName = 'group_member'; 
+
     /**
      +----------------------------------------------------------
-     * 判斷某用戶是否屬於某個系統群組
+     * 判斷某用戶是否屬於某個系统群組
      +----------------------------------------------------------
 	 * @access public
-	 * @param userID
-	 * @param groupID
      +----------------------------------------------------------
      */
 	public function inGroup($userID, $groupID)
@@ -45,10 +43,6 @@ class GroupModel extends Model {
      +----------------------------------------------------------
 	 * @access public
      +----------------------------------------------------------
-	 * @param $userID 用户ID
-	 +----------------------------------------------------------
-	 * @return array 用户所在群组
-	 +----------------------------------------------------------
      */
 	public function belongToGroups($userID)
 	{
@@ -70,10 +64,6 @@ class GroupModel extends Model {
      +----------------------------------------------------------
 	 * @access public
      +----------------------------------------------------------
-	 * @param groupID
-	 +----------------------------------------------------------
-	 * @return array 父群组
-	 +----------------------------------------------------------
      */
 	private function parentGroups($groupID)
 	{
@@ -86,11 +76,6 @@ class GroupModel extends Model {
      +----------------------------------------------------------
 	 * @access public
      +----------------------------------------------------------
-	 * @param path groupID的array
-	 * @param currentGroup  
-	 +----------------------------------------------------------
-	 * @return array 父群组
-	 +----------------------------------------------------------
      */
 	private function travelToTop($path, $currentGroup)
 	{
@@ -118,9 +103,6 @@ class GroupModel extends Model {
      +----------------------------------------------------------
 	 * @access public
      +----------------------------------------------------------
-	 * @param $groupID 群组ID
-	 +----------------------------------------------------------
-	 * @return array 群组成员
      */
 	public function getGroupUsers($groupID)
 	{
@@ -146,10 +128,6 @@ class GroupModel extends Model {
      +----------------------------------------------------------
 	 * @access public
      +----------------------------------------------------------
-	 * @param 群组ID
-	 * @param userID
-	 +----------------------------------------------------------
-	 * @return boolean 是否添加成功
      */
 	public function addUserToGroup($groupID, $userID)
 	{
@@ -174,6 +152,73 @@ class GroupModel extends Model {
 
 		return true;
 	}
+
+	/**
+     +----------------------------------------------------------
+     * 从群组中删除指定用户
+     +----------------------------------------------------------
+	 * @access public
+     +----------------------------------------------------------
+     */
+	public function removeUserFromGroup($userID, $groupID = 0)
+	{
+		if (empty($userID)) return false;
+
+		if ($groupID) {
+			M('groupMember')->where("groupID = $groupID and userID = '$userID' and source = 'single'")->delete();
+		} else {
+			M('groupMember')->where("userID = '$userID' and source = 'single'")->delete();
+		}
+		return true;
+	}
+
+
+	/**
+     +----------------------------------------------------------
+     * 取本地群组列表，用於生成下拉菜單
+     +----------------------------------------------------------
+	 * @access public
+     +----------------------------------------------------------
+     */
+	public function getGroups()
+	{
+		$result = M('groupInfo')->where("status=1")->order('fixed desc,groupID')->select();
+
+		$list = array();
+		foreach ($result as $groupInfo) {
+			$tmp['id'] = $groupInfo['groupID'];
+			$tmp['name'] = $groupInfo['groupName'];
+			$list[] = $tmp;
+		}
+		return $list;
+	}
+
+
+	/**
+     +----------------------------------------------------------
+     * 取用戶信息，用於下拉列表自動完成
+     +----------------------------------------------------------
+	 * @access public
+     +----------------------------------------------------------
+     */
+	public function getUserList($q, $ignoreStatus)
+	{
+		if ($ignoreStatus) {
+			$where = "1=1 ";
+		} else {
+			$where = "status=1 ";
+		}
+		
+		if ($q) {
+			$where .= " and (userID like ('%${q}%') or firstname like ('%${q}%') or lastname like ('%${q}%') or nickname like ('%${q}%'))";
+		}
+		
+		$list = M('user')->where($where)->order('lastname')->select();
+		return $list;
+	}
+
+
+	
 }
 
 ?>
