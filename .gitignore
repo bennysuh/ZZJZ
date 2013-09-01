@@ -5,7 +5,7 @@
 ThinkPHP
 /Conf
 /Conf/config.php
-/Public/*
+/Public/Uploads
 /net
 /ThinkPHP
 /db
