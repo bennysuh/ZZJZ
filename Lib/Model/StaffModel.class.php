@@ -8,11 +8,21 @@ class StaffModel extends Model {
 	 * @access public
 	 +----------------------------------------------------------
 	 */
-	public function getRecommendStaffList($firstRow,$listRows) {
-		$M = D("StaffView");
-		$result = $M->where("isHidden=1 and ysLevel >= 4")->limit("$firstRow,$listRows")->order("updatetime")->select();
-		return $result;
+	public function getRecommendStaffList($firstRow, $listRows) {
+		$M = M('zz_staff');
+		$data['isHidden'] = 1;
+		$data['ysLevel'] = array(array('like','%高级月嫂%'), array('like','%特级月嫂%'), array('like','%星级月嫂%'),'or'); 
+		
+		$list = $M->field("zz_staff.staffID,zz_staff.ygbh,zz_staff.name,zz_staff.ysLevel,zz_staff.birthday,zz_upload.path,city.city")
+		->where($data)
+		->join('RIGHT JOIN city ON zz_staff.jg_province = city.pid and zz_staff.jg_city = city.cid 
+		right join zz_upload on zz_upload.tablename="zz_staff" and zz_upload.pid = zz_staff.ygbh 
+			and zz_upload.tip like "%网照%" ')
+			->order('zz_staff.updatetime desc')
+		->limit($firstRow.','.$listRows)->select();
+		return $list ? $list : array();
 	}
+	
 	public function getLastStaffList($firstRow,$listRows) {
 		$M = D("StaffView");
 		$result = $M->where("isHidden=1")->limit("$firstRow,$listRows")->order("updatetime")->select();

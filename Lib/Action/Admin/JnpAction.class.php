@@ -53,28 +53,6 @@ class JnpAction extends EntryAction {
 		$this->display();
 	}
 
-	/**
-	 +----------------------------------------------------------
-	 * 新增
-	 +----------------------------------------------------------
-	 * @access public
-	 +----------------------------------------------------------
-	 */
-	public function editJnp() {
-		//是否已經存在於本地數據庫
-		$M = M('zz_freetime');
-		$data = $M->create();
-		$key = $M ->data($data)-> add();//获取新增返回的id值用于添加到联系方式表中
-		if ($key) {
-			SysLogs::log("新增空檔期,id=" . $key);
-			$logData["tablename"] = "zz_freetime";
-			$logData["no"] = $key;
-			ZZLogModel::addLog($logData);
-			$this -> success("新增成功");
-		} else {
-			$this -> error('增加失敗');
-		}
-	}
 	
 	/**
 	 +----------------------------------------------------------
@@ -85,22 +63,7 @@ class JnpAction extends EntryAction {
 	 */
 	public function editJnp()
 	{
-		$freetimeId = $_GET['id'];//已有记录
-		if($freetimeId){//assess列表过来的
-			$M = D('AssessView');
-			$result = $M->where("zz_assess.id=" . $assessId)->find();
-			if($result){
-				$this->assign("ygbh",$result['ygbh']);
-				$this->assign("staffName",$result['staffName']);
-				$this->assign("startDate",$result['startDate']);
-				$this->assign("endDate",$result['endDate']);
-				$this->display();
-			}else{
-				$this->error("无此空檔期");
-			}
-		}else{
-			$this->error("缺少订单号");
-		}
+		$this->display();
 	}
 	/**
 	 +----------------------------------------------------------

@@ -49,14 +49,14 @@
 			<div id="indleft">
 				<div id="side">
 					<div id="global_module">
-						<h3 class="cardH3"> 最新动态 <span class="moreSpan"><a href="notice/noticeList.php"
+						<h3 class="cardH3"> 最新动态 <span class="moreSpan"><a href="__ROOT__/Portal/Notice/index/"
 							class="more" target="_self">更多</a></span></h3>
 						<!-- 最新通知 -->
 						<div id="scrollNews" class="scrollText">
 							<ul id="scrollNewsUL">
 								<volist name='notices' id='noticeVo'>
 									<li>
-										<a href='Portal/Notice/index?id={$noticeVo['id']}' title='{$noticeVo['title']}' id='{$noticeVo['id']}'> {$noticeVo['title']} </a>
+										<a href='__ROOT__/Portal/Notice/view?id={$noticeVo['id']}' title='{$noticeVo['title']}' id='{$noticeVo['id']}'> {$noticeVo['title']} </a>
 									</li>
 								</volist>
 							</ul>
@@ -67,14 +67,14 @@
 					</div>
 					<div id="csbd">
 						<div class=boxtop>
-							常识宝典<span class="moreSpan"><a href="bible/bible.php" class="more"
+							常识宝典<span class="moreSpan"><a href="_ROOT__/Portal/Bible/index" class="more"
 								target="_self">更多</a></span>
 						</div>
 						<div id="scrollBibles" class="scrollText">
 							<ul id="scrollBiblesUL">
 								<volist name='bibles' id='bibleVo'>
 									<li>
-										<a href='Portal/Bible/index?id={$bibleVo['articleid']}' title='{$bibleVo['title']}'>{$bibleVo['title']}</a>
+										<a href='__ROOT__/Portal/Bible/view?id={$bibleVo['articleid']}' title='{$bibleVo['title']}'>{$bibleVo['title']}</a>
 									</li>
 								</volist>
 							</ul>
@@ -154,55 +154,17 @@
 				<!-- end公司介绍 -->
 				<!--begin 月嫂推荐 -->
 				<div class="global_module" id="prolist">
-					<h3 class="ntit"><a href="ysfw/ysfw_list.php?level=星级月嫂" title="星级月嫂">明星月嫂推荐</a><a href="ysfw/ysfw_list.php" title="现有月嫂" class="moreStaff">更多>></a></h3>
+					<h3 class="ntit"><a href="__ROOT__/Portal/Staff/index/" title="高级月嫂，特级月嫂，星级月嫂">最新推荐月嫂</a>
+						<a href="__ROOT__/Portal/Staff/index/" title="现有月嫂" class="moreStaff">更多>></a></h3>
 					<div id="prolist_content">
 						<ul id="first-carousel"
 						class="first-and-second-carousel jcarousel-skin-ie7">
-							<li>
-								<a href="__PUBLIC__/style/img/portal/ys/small/mxys1_small.jpg" title="明星月嫂" target="_blank"><img
-								src="__PUBLIC__/style/img/portal/ys/small/mxys1_small.jpg" class="scrollImg"
-								alt="明星月嫂" /></a>
-							</li>
-							<li>
-								<a href="__PUBLIC__/style/img/portal/ys/small/mxys2_small.jpg" title="明星月嫂" target="_blank"><img
-								src="__PUBLIC__/style/img/portal/ys/small/mxys2_small.jpg" class="scrollImg"
-								alt="明星月嫂" /></a>
-							</li>
-							<li>
-								<a href="__PUBLIC__/style/img/portal/ys/small/mxys3_small.jpg" alt="明星月嫂" target="_blank"> <img
-								src="__PUBLIC__/style/img/portal/ys/small/mxys3_small.jpg" class="scrollImg"
-								alt="明星月嫂" /></a>
-							</li>
-							<li>
-								<a href="__PUBLIC__/style/img/portal/ys/small/mxys4_small.jpg" alt="明星月嫂" target="_blank"><img
-								src="__PUBLIC__/style/img/portal/ys/small/mxys4_small.jpg" class="scrollImg"
-								alt="明星月嫂" /></a>
-							</li>
-							<li>
-								<a href="__PUBLIC__/style/img/portal/ys/small/mxys5_small.jpg" title="明星月嫂" target="_blank"><img
-								src="__PUBLIC__/style/img/portal/ys/small/mxys5_small.jpg" class="scrollImg"
-								alt="明星月嫂" /></a>
-							</li>
-							<li>
-								<a href="__PUBLIC__/style/img/portal/ys/small/mxys6_small.jpg" title="明星月嫂" target="_blank"><img
-								src="__PUBLIC__/style/img/portal/ys/small/mxys6_small.jpg" class="scrollImg"
-								alt="明星月嫂" /></a>
-							</li>
-							<li>
-								<a href="__PUBLIC__/style/img/portal/ys/small/mxys7_small.jpg" class="scrollImg" target="_blank"
-								alt="明星月嫂"><img src="__PUBLIC__/style/img/portal/ys/small/mxys7_small.jpg"
-								class="scrollImg" alt="明星月嫂" /></a>
-							</li>
-							<li>
-								<a href="__PUBLIC__/style/img/portal/ys/small/mxys8_small.jpg" class="scrollImg" target="_blank"
-								alt="明星月嫂"><img src="__PUBLIC__/style/img/portal/ys/small/mxys8_small.jpg"
-								class="scrollImg" alt="明星月嫂" /></a>
-							</li>
-							<li>
-								<a href="__PUBLIC__/style/img/portal/ys/small/mxys9_small.jpg" class="scrollImg" target="_blank"
-								alt="明星月嫂"><img src="__PUBLIC__/style/img/portal/ys/small/mxys9_small.jpg"
-								class="scrollImg" alt="明星月嫂" /></a>
-							</li>
+							<volist name="ysList" id="ysVo">
+								<li>
+									<a href="__ROOT__/Portal/Staff/viewStaff?staffID={$ysVo['staffID']}" title="{$ysVo['ysLevel']}" target="_self">
+										<img src="__PUBLIC__/Uploads/Staff/{$ysVo['path']}"   class="scrollImg" /></a>
+								</li>
+							</volist>
 						</ul>
 					</div>
 				</DIV>
@@ -295,6 +257,6 @@
 		<!-- footer -->
 		<include file="Public:link" />
 		<include file="Public:footer" />
-
 	</BODY>
 </HTML>
+

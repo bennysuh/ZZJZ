@@ -5,7 +5,9 @@ class IndexAction extends Action {
     public function index() {
     	$pageConent = D('PageContent')->getPageContent('index');
 		$notices = D('Notice')->getNoticeList(0, 10);
-		$bibles = D('Article')->getArticleList(0, 10);		$this->assign("pageContent", $pageConent['content']);
+		$bibles = D('Article')->getArticleList(0, 10);
+		$ysList = D("Staff")->getRecommendStaffList(0, 10);		$this->assign("pageContent", $pageConent['content']);
+		$this->assign("ysList", $ysList);
 		$this->assign("notices", $notices);
 		$this->assign("bibles", $bibles);
     	$this->display();

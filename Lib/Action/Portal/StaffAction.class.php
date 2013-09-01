@@ -24,14 +24,18 @@ class StaffAction extends Action {
 			$data['ysLevel'] = $_GET['level'];
 		}
 		$data['isHidden'] = 1;
-		$count = $M->where($data)->count();
+		$count = $M->where($data)
+				->join('RIGHT JOIN city ON zz_staff.jg_province = city.pid and zz_staff.jg_city = city.cid 
+				right join zz_upload on zz_upload.tablename="zz_staff" and zz_upload.pid = zz_staff.ygbh 
+					and zz_upload.tip like "%网照%" ')->count();
 		//分页
 		$p = new Page($count, 10);
 		$page = $p -> show();
-		$list = $M->field("zz_staff.staffID,zz_staff.ygbh,zz_staff.name,zz_staff.ysLevel,zz_staff.birthday,zz_upload.path,city.city")->where($data)
-		->join('RIGHT JOIN city ON zz_staff.jg_province = city.pid and zz_staff.jg_city = city.cid 
-		right join zz_upload on zz_upload.tablename="zz_staff" and zz_upload.pid = zz_staff.ygbh 
-			and zz_upload.tip like "%网照%" ')
+		$list = $M->field("zz_staff.staffID,zz_staff.ygbh,zz_staff.name,zz_staff.ysLevel,zz_staff.birthday,zz_upload.path,city.city")
+				->where($data)
+				->join('RIGHT JOIN city ON zz_staff.jg_province = city.pid and zz_staff.jg_city = city.cid 
+				right join zz_upload on zz_upload.tablename="zz_staff" and zz_upload.pid = zz_staff.ygbh 
+					and zz_upload.tip like "%网照%" ')
 		->limit($p -> firstRow.','.$p -> listRows)->select();
 		foreach ($list as $key => $value) {
 			$list[$key]['age'] = date('Y') - substr($value['birthday'], 0, 4);

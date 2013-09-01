@@ -6,6 +6,6 @@ ThinkPHP
 /Conf
 /Conf/config.php
 /Public/*
-/Public/*
 /net
 /ThinkPHP
+/db
