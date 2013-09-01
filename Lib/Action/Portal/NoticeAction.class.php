@@ -21,13 +21,17 @@ class NoticeAction extends Action {
 			$title = $_GET['title'];
 			$data["title"] =  array('like',"%$title%");
 		}
+		$data['isPublish'] = 1;
 		$M = M("zz_notice");
 		import("@.ORG.Page");
-		$count = $M->field("title,content,isPublish,id")->where($data)->count();
+		$count = $M->where($data)->count();
 		$p = new Page($count, 10);
 		$page = $p -> show();
-		$result = D("NoticeView")->where($data)->limit($p -> firstRow.','.$p -> listRows)->order("updatetime desc")->select();
-		
+		$result = D("NoticeView")
+			->where($data)->limit($p -> firstRow.','.$p -> listRows)->order("updateTime desc")->select();
+		foreach ($result as $key => $value) {
+			$result[$key]['updateTime'] = substr($value['updateTime'], 0, 10);
+		}
 		$this -> assign('page', $page);
 		$this->assign("list",$result);
 		$this->display();
@@ -50,10 +54,10 @@ class NoticeAction extends Action {
 				$this->assign("id",$id);
 				$this->assign("title",$result['title']);
 				$this->assign("content",$result['content']);
-				$this->assign("isPublish",$result['isPublish']);
+				$this->assign("updateTime",substr($result['updatetime'], 0, 10));
 				$this->display();
 			}else{
-				$this->error("无此NOTICE");
+				$this->error("无此通知");
 			}
 		}else{
 			$this->display();

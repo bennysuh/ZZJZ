@@ -44,11 +44,12 @@
 						<div class="edittext" id="pageContent">
 							<ul id="noticeUl">
 								<volist name="list" id="vo">
+									<a href="__ROOT__/Portal/Notice/view/id/{$vo['id']}">
 									<li class="noticeLi" noticeID={$vo['id']}>
-										<td class="noticeTd">
-										 	<a href="__ROOT__/Portal/Notice/view/id/{$vo['id']}">{$vo['title']}</a>
-										 </td>
+										<span>{$vo['title']}</span>
+										<span style="float:right;">{$vo['updateTime']}</span>
 									</li>
+									</a>
 								</volist>
 							</ul>
 							{:$page}
