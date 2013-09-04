@@ -39,6 +39,7 @@ class StaffAction extends Action {
 		->limit($p -> firstRow.','.$p -> listRows)->select();
 		foreach ($list as $key => $value) {
 			$list[$key]['age'] = date('Y') - substr($value['birthday'], 0, 4);
+			$list[$key]['ygbh'] = substr($value['ygbh'], -4);
 		}
 		$levelList = M("zz_stafflevel")->order('id desc')->select();
 		$this -> assign('page', $page);

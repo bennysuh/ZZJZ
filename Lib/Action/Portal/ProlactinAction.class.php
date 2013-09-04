@@ -32,6 +32,7 @@ class ProlactinAction extends Action {
 		->limit($p -> firstRow.','.$p -> listRows)->select();
 		foreach ($list as $key => $value) {
 			$list[$key]['age'] = date('Y') - substr($value['birthday'], 0, 4);
+			$list[$key]['ygbh'] = substr($value['ygbh'], -4);
 		}
 		
 		$this -> assign('page', $page);

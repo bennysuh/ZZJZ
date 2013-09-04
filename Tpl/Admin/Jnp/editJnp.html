@@ -1,0 +1,224 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<!DOCTYPE>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>新增/編輯</title>
+		<link href="__PUBLIC__/style/css/common.css" rel="stylesheet" type="text/css">
+		<link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
+		<link href="__PUBLIC__/style/css/loading.css" rel="stylesheet" type="text/css" />
+		<link rel="stylesheet" type="text/css" href="__PUBLIC__/js/uploadifive/uploadifive.css">
+		<link href="__PUBLIC__/js/jquery-easyui-1.3.1/themes/default/easyui.css" rel="stylesheet" type="text/css">
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-1.8.0.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.bgiframe.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/loading-min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.json-2.3.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.3.1/jquery.easyui.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.3.1/locale/easyui-lang-zh_CN.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/validateType.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.scrollTo-min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/uploadifive/jquery.uploadifive.min.js" ></script>
+
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-overlay.js"></script>
+		<SCRIPT LANGUAGE="JavaScript">
+			<!--
+			var actionName = '__ACTION__';
+			var fileArr = [];
+			//上传文件信息数组
+			$(document).ready(function() {
+				var loading = new ol.loading({
+					id : "jnpInfoForm"
+				});
+				//编辑时显示删除按钮
+				if (window.location.href.indexOf("id") != -1) {
+					$("#removeJnpBtn").show();
+					$("#thumbList").show();
+					initUpload();
+					$("#vo").empty();
+				} else {
+					$("#imageFile").hide();
+					$("#thumbList").hide();
+				}
+
+				//保存
+				var postData = {};
+				$("#saveJnpBtn").click(function() {
+					loading.show();
+					var form = $('#jnpInfoForm');
+					
+					if (!form.form("validate")) {
+						alert('請填寫必須的信息');
+						loading.hide();
+						return;
+					}
+					var data = form.serialize();
+					$.post('{:U("Jnp/saveJnp")}', data, saveHandler, "json");
+				});
+
+				var imageArr = [];
+
+				function initUpload() {
+					$("#imageFile").uploadifive({
+						'uploadScript' : "{:U('Upload/uploadImage')}",
+						'multi' : false,
+						'auto' : true,
+						'removeCompleted' : true,
+						'fileSizeLimit' : '50MB',
+						'fileType' : 'image',
+						'buttonText' : '上传图片',
+						'formData' : {
+							'PHPSESSID' : '<?php echo session_id(); ?>',
+							'model' : 'jnp',
+						},
+						'onUploadComplete' : function(file, data) {
+							console.log(data);
+							console.log(file);
+							var data = JSON.parse(data);
+							if ( typeof (data) != "object") {
+								alert(data);
+								return false;
+							}
+							loading.show();
+							var jnpID = $('#jnpID').val();
+							$.post("{:U('Upload/addImage')}", {
+								tablename:"zz_jnp",
+								pid : jnpID,
+								type : "pic",
+								path : data.path,
+							}, addImageHandler, "json");
+
+						},
+					})
+				}
+
+				function addImageHandler(response) {
+					loading.hide();
+					if (response.status) {
+						var data = response.info;
+						alert("添加图片成功!");
+						window.location.href = window.location.href ;
+					} else {
+						alert(response.info);
+					}
+				}
+
+				//新增/更新
+				function saveHandler(response) {
+					loading.hide();
+					alert(response.info);
+					window.location.href = root + "/Admin/Jnp/index";
+				}
+
+				function ajaxHandler(response) {
+					alert(response.info);
+					if (response.status == 1)
+						window.location.href = window.location.href;
+				}
+
+				//删除
+				$("#removeJnpBtn").click(function() {
+					$.post('{:U("Jnp/delJnp")}', "id=" + $("#jnpID").val(), saveHandler, "json");
+				});
+				
+				$("#imageList").delegate(".delImageBtn", "click", function() {
+					var postData = {};
+					postData.id = $(this).parents("tr").attr("uploadID");
+					postData.tablename = "zz_jnp";
+					$.post(root + '/Admin/Jnp/removeImage', postData, ajaxHandler, "json");
+				});
+			});
+			//-->
+		</SCRIPT>
+
+	</head>
+	<body>
+		<include file="Public:header" />
+		<!-- 主要內容 -->
+		<div id="content">
+			<include file="Public:leftForContent" />
+			<!-- 右框架 -->
+			<div id="rightWrap">
+				<!-- 所在位置地址 -->
+				<div class="addressBar">
+					纪念品管理 > 新增/編輯纪念品
+				</div>
+				<!--<div class="groupTitle">
+				<h2 class="pageTitle">新增/編輯催乳师</h2>
+				</div>-->
+				<div class="locationInfo" id="locationInfo">
+					<form id="jnpInfoForm">
+						<input name="id" id="jnpID" type="text" style="display:none;" value="{$jnpID}" />
+						<table class="noBackground">
+							<tr>
+								<td class="noBackground inputName">类型:</td>
+								<td class="noBackground inputText">
+									<select id="typeSel" name="jnpType">
+				                		<option value="0">请选择</option>
+				                		<volist name="typeList" id="typeVo">
+				                			<option value="{$i}" <if condition="$typeVo eq $jnpType">selected="true" </if> >{$typeVo}</option>
+				                		</volist>
+				                	</select>
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">标题:</td>
+								<td class="noBackground inputText">
+								<input name="title" type="text" class="easyui-validatebox" required="true" value="{$title}" />
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">详细描述:</td>
+								<td class="noBackground inputName">
+									<textarea cols="5" name="description" class="easyui-validatebox" validType="text" >
+										{$description}
+									</textarea>
+								</td>
+							</tr>
+
+						</table>
+					</form>
+
+					<input type="file" class="imageFile" id="imageFile"  multiple="true"  name="imageFile[]" >
+					
+					<div id="toolbar2" class="formLine" >
+						<?php if (Auth::AccessDecision('Admin','Jnp','editJnp')) { ?>
+						<button class="actionButton" id="saveJnpBtn">
+							保存
+						</button>
+						<?php } ?>
+						<?php if (Auth::AccessDecision('Admin','Jnp','delJnp')) { ?>
+						<button class="actionButton" id="removeJnpBtn" style="display: none;">
+							刪除
+						</button>
+						<?php } ?>
+						<button class="actionButton" onclick="window.location.href='__ROOT__/Admin/Jnp/index/'">
+							返回
+						</button>
+					</div>
+				</div>
+				<gt name="imageCount" value="0">
+						<!--预览上传图片-->
+						<div id="imageList" style="clear:both;padding:0px;">
+							<table class="noBackground" style="border: none;" id="previewTb">
+								<tr class="tableHeader">
+									<th style="height:20px;max-height: 50px">图片</th>
+									<th>删除</th>
+								</tr>
+								<volist name='photoList' id='picVo'>
+									<tr uploadID="{$picVo['id']}">
+										<td><img  src="{$picVo[path]}"  class='uploadImg'></td>
+										<td>
+										<input type="button" value="删除" operate="del" class="actionButton delImageBtn"/>
+										</td>
+									</tr>
+								</volist>
+							</table>
+						</div>
+					</gt>
+			</div>
+		</div>
+	</body>
+</html>

@@ -71,16 +71,49 @@ class UploadModel extends Model {
 	//更新tip 和isshow
 	public function updateTip($data)
 	{
-		if($data){
-			$result = M("zz_upload")->data($data)->save();
-			if(is_int($result)){
-				return true;
-			}else{
-				return false;
-			}
-		}else{
-			return false;
+		if (!$data) return FALSE;
+		$result = M("zz_upload")->data($data)->save();
+		return is_int($result);
+	}
+	
+	private function getParentFolder($tablename) 
+	{
+		$folder = "";
+		switch ($tablename) {
+			case "zz_jnp":
+				$folder = "jnp";
+				break;
+			case "zz_staff":
+				$folder = "Staff";
+				break;
+			case "zz_prolactin":
+				$folder = "prolactin";
+				break;
+			case "zz_zdg":
+				$folder = "zdg";
+				break;
 		}
+		return $folder;
+	}
+	
+	public function removeFileByID($id)
+	{
+		$data['id'] = $id;
+		$file = M("zz_upload")->where($data)->find();
+		$folder = $this->getParentFolder($file['tablename']);
+		try{
+			unlink(C("PHOTO_PATH") . $folder . "/" . $file['path']);
+			return M("zz_upload")->where($data)->delete();
+		}catch(Exception $e){
+			 throw new Exception('Delete File Failed');
+		}
+	}
+	
+	public function getLastIndex($tablename, $pid)
+	{
+		$data['tablename'] = $tablename;
+		$data['pid'] = $pid;
+		return $this->where($data)->max('sortIndex');
 	}
 }
 ?>
