@@ -68,6 +68,20 @@ class UploadModel extends Model {
 		}
 	}
 	
+	public function removeImage($tablename, $id)
+	{
+		$data['tablename'] = $tablename;
+		$data['pid'] = $id;
+		$files = M("zz_upload")->where($data)->select();
+		foreach ($files as $key => $value) {
+			$result = $this->removeFileByID($value['id']);
+			if (!$result) {
+				return FALSE;
+			}
+		}
+		return TRUE;
+	}
+	
 	//更新tip 和isshow
 	public function updateTip($data)
 	{

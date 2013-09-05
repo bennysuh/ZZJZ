@@ -200,7 +200,7 @@ class StaffModel extends Model {
 		return $backList ? $backList : "";
 	}
 	
-	private function getLanguages($languages)
+	public function getLanguages($languages)
 	{
 		$langs = explode(",", $languages);
 		if (count($langs) > 1) {
@@ -213,7 +213,7 @@ class StaffModel extends Model {
 		return implode(",", $langArr);
 	}
 	
-	private function changeBirthdayToAge($birthday)
+	public function changeBirthdayToAge($birthday)
 	{
 		$interval = date(time() - strtotime($birthday));
 		return intval($interval / (365 * 60 * 60 * 24 )) + 1;

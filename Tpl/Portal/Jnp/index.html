@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<HTML>
+	<HEAD>
+		<TITLE>广州月嫂 胎毛笔 手足印</TITLE>
+		<META http-equiv=Content-Type content="text/html; charset=utf-8">
+		<LINK href="__PUBLIC__/style/css/portal/style.css" type='text/css' rel="stylesheet" >
+		<LINK href="__PUBLIC__/style/css/portal/mystyle.css" type='text/css' rel="stylesheet" >
+		<link rel="stylesheet" type="text/css" href="__PUBLIC__/js/portal/pro_dropdown_2/pro_dropdown_2.css" />
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-1.8.0.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				//查看详细信息
+				$("#jnpList").delegate(".viewBtn", "click", function() {
+					var jnpID = $(this).parents("tr").attr("jnpID");
+					window.location.href = "__ROOT__/Portal/Jnp/view?id=" + jnpID;
+				});
+			});
+		</script>
+		<BODY>
+			<div class="wrapper">
+				<include file="Public:header" />
+			</div>
+			<div  class="content2 clearfix">
+				<div  class="content2 clearfix">
+					<div class="side">
+						<include file="Public:left" />
+					</div>
+					<div class="main">
+						<h2 class="ntit2" id="pageTitle">现有婴幼儿纪念品</h2>
+						<div id="searchDiv">
+							<label>纪念品类别:</label>
+							<select id="levelSel">
+								<option value="0">所有类别</option>
+								<volist name='typeList' id="typeVo">
+									<option value="{$typeVo}">{$typeVo}</option>
+								</volist>
+							</select>
+							<input type="button" value="查询" id="searchBtn"/>
+						</div>
+						<div class="edittext" id="pageContent">
+							<table id="jnpList">
+								<tr class="tableHeader">
+					                <th class="emailField">图片</th>
+					                <th class="emailField">分类</th>
+					                 <th class="emailField">标题</th>
+					                <th class="emailField">查看</th>
+					            </tr>
+								<volist name="list" id="vo">
+									<tr jnpID={$vo['id']}>
+										<td class="staffPic"><img src="{$vo['path']}"  
+												class="prolactinImg"/> </td>
+										<td class="staffInfo">
+											{$vo['jnpType']}
+										</td>
+										<td class="staffInfo">
+											{$vo['title']}
+										</td>
+										<td class="viewTD"><input type="button" value="查看" class="viewBtn"/></td>
+									</tr>
+								</volist>
+							</table>
+							{:$page}
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--end right side -->
+			<include file="Public:footer" />
+		</BODY>
+</HTML>

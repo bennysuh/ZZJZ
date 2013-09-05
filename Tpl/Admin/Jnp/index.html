@@ -88,7 +88,7 @@ $(document).ready(function(){
             <table class="noBackground" style="border: none;">
               <tr>
               	<td class="inputName"><label>关键字：</label></td>
-                <td class="inputText"><input name="name" type="text" /></td>  	
+                <td class="inputText"><input name="keyword" type="text" /></td>  	
               </tr>
               <tr>
               	<td class="inputName"><label>类型：</label></td>
@@ -96,7 +96,18 @@ $(document).ready(function(){
                 	<select id="typeSel" name="jnpType">
                 		<option value="0">请选择</option>
                 		<volist name="typeList" id="typeVo">
-                			<option value="{$i}">{$typeVo}</option>
+                			<option value="{$typeVo}">{$typeVo}</option>
+                		</volist>
+                	</select>
+                </td>  	
+              </tr>
+              <tr>
+              	<td class="inputName"><label>上市年份：</label></td>
+                <td class="inputText">
+                	<select id="yearSel" name="years">
+                		<option value="0">请选择</option>
+                		<volist name="yearList" id="yearVo">
+                			<option value="{$yearVo}">{$yearVo}</option>
                 		</volist>
                 	</select>
                 </td>  	
@@ -114,6 +125,7 @@ $(document).ready(function(){
               <tr class="tableHeader">
                 <!-- F代表Form -->
                 <th class="nameF" >类型</th>
+                <th class="nameF">年份</th>
                 <th class="nameF">标题</th>
                 <th class="nameF">描述</th>
                 <th class="nameF">最后更新</th>
@@ -122,6 +134,7 @@ $(document).ready(function(){
               <volist name="list" id="vo">
 			  <tr jnpID={$vo['no']}>
 			  	<td>{$vo['jnpType']}</td>
+			  	 <td>{$vo['years']}</td>
                 <td>{$vo['title']}</td>
                 <td>{$vo['description']}</td>
 				<td>{$vo['updateUser']}<br/>{$vo['updateTime']}</td>

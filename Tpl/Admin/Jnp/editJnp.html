@@ -32,6 +32,7 @@
 				var loading = new ol.loading({
 					id : "jnpInfoForm"
 				});
+				
 				//编辑时显示删除按钮
 				if (window.location.href.indexOf("id") != -1) {
 					$("#removeJnpBtn").show();
@@ -74,8 +75,6 @@
 							'model' : 'jnp',
 						},
 						'onUploadComplete' : function(file, data) {
-							console.log(data);
-							console.log(file);
 							var data = JSON.parse(data);
 							if ( typeof (data) != "object") {
 								alert(data);
@@ -109,7 +108,7 @@
 				function saveHandler(response) {
 					loading.hide();
 					alert(response.info);
-					window.location.href = root + "/Admin/Jnp/index";
+					window.location.href = root + "/Admin/Jnp/index/";
 				}
 
 				function ajaxHandler(response) {
@@ -126,8 +125,7 @@
 				$("#imageList").delegate(".delImageBtn", "click", function() {
 					var postData = {};
 					postData.id = $(this).parents("tr").attr("uploadID");
-					postData.tablename = "zz_jnp";
-					$.post(root + '/Admin/Jnp/removeImage', postData, ajaxHandler, "json");
+					$.post(root + '/Admin/Upload/removeImage', postData, ajaxHandler, "json");
 				});
 			});
 			//-->
@@ -145,9 +143,7 @@
 				<div class="addressBar">
 					纪念品管理 > 新增/編輯纪念品
 				</div>
-				<!--<div class="groupTitle">
-				<h2 class="pageTitle">新增/編輯催乳师</h2>
-				</div>-->
+				
 				<div class="locationInfo" id="locationInfo">
 					<form id="jnpInfoForm">
 						<input name="id" id="jnpID" type="text" style="display:none;" value="{$jnpID}" />
@@ -156,9 +152,18 @@
 								<td class="noBackground inputName">类型:</td>
 								<td class="noBackground inputText">
 									<select id="typeSel" name="jnpType">
-				                		<option value="0">请选择</option>
 				                		<volist name="typeList" id="typeVo">
-				                			<option value="{$i}" <if condition="$typeVo eq $jnpType">selected="true" </if> >{$typeVo}</option>
+				                			<option value="{$typeVo}" <if condition="$typeVo eq $jnpType">selected="true" </if> >{$typeVo}</option>
+				                		</volist>
+				                	</select>
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">上市年份:</td>
+								<td class="noBackground inputText">
+									<select id="yearSel" name="years">
+				                		<volist name="yearList" id="yearVo">
+				                			<option value="{$yearVo}" <if condition="$yearVo eq $years">selected="true" </if> >{$yearVo}</option>
 				                		</volist>
 				                	</select>
 								</td>
@@ -201,7 +206,7 @@
 				</div>
 				<gt name="imageCount" value="0">
 						<!--预览上传图片-->
-						<div id="imageList" style="clear:both;padding:0px;">
+						<div id="imageList" style="padding:0px;">
 							<table class="noBackground" style="border: none;" id="previewTb">
 								<tr class="tableHeader">
 									<th style="height:20px;max-height: 50px">图片</th>

@@ -46,7 +46,7 @@ class  UploadAction extends EntryAction {
 			if (in_array(strtolower($fileParts['extension']), $fileTypes)) {
 				$result = move_uploaded_file($tempFile, $targetFile);
 				if ($result) {
-					$file['path'] = $targetFile;
+					$file['path'] = $newName;
 					$file['status'] = true;
 					echo json_encode($file);
 				}else 
@@ -82,10 +82,8 @@ class  UploadAction extends EntryAction {
 	public function removeImage()
 	{
 		if($_POST){
-			$data['tablename'] = $_POST['tablename'];
-			$data['id'] = $_POST['id'];
-			$result = D('Upload')->removeProlactinImage($data);
-			if($result === TRUE){
+			$result = D('Upload')->removeFileByID($_POST['id']);
+			if($result){
 				$this->success("图片删除成功");
 			}else{
 				$this->error($result);

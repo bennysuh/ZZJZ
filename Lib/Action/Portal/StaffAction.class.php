@@ -38,7 +38,7 @@ class StaffAction extends Action {
 					and zz_upload.tip like "%网照%" ')
 		->limit($p -> firstRow.','.$p -> listRows)->select();
 		foreach ($list as $key => $value) {
-			$list[$key]['age'] = date('Y') - substr($value['birthday'], 0, 4);
+			$list[$key]['age'] = D("Staff")->changeBirthdayToAge($value['birthday']) . '岁';
 			$list[$key]['ygbh'] = substr($value['ygbh'], -4);
 		}
 		$levelList = M("zz_stafflevel")->order('id desc')->select();
@@ -65,20 +65,16 @@ class StaffAction extends Action {
 			zz_staff.jg_city = city.cid 
 			right join zz_upload on zz_upload.tablename='zz_staff' 
 			and zz_upload.pid = zz_staff.ygbh and zz_upload.tip like '%网照%' ")->where($data)->find();
-		
 		$this->assign("ygbh", $staff['ygbh']);
 		$this->assign("gzjy", $staff['gzjy']);
 		$this->assign("path", $staff['path']);
 		$this->assign("city", $staff['city']);
-		$this->assign("age", date('Y') - substr($staff['birthday'], 0, 4));
+		$this->assign("age", D("Staff")->changeBirthdayToAge($staff['birthday']) . '岁');
 		$this->assign("whcd",  $staff['degree']);
 		$this->assign("ysLevel", $staff['ysLevel']);
 		$data['itemid'] = array("in", $staff["languages"]);
-		$langs = M('zz_languages')->where($data)->select();
-		foreach ($langs as $key => $value) {
-			$langArr[] = $value['itemname'];	
-		}
-		$this -> assign("lang", implode($langArr, ','));
+		$langs = D("Staff")->getLanguages($staff['languages']);
+		$this -> assign("lang", $langs);
 		$this -> assign("zhpj", $staff['remark']);
 		$this->display();
 	}

@@ -8,13 +8,7 @@
  +------------------------------------------------------------------------------
  */
 class JnpAction extends EntryAction {
-	private $typeList = array(
-		"胎毛笔",
-		"胎毛绣",
-		"手足印",
-		"其它",
-	);
-	
+
 	/**
 	 +----------------------------------------------------------
 	 * 根据查询条件显示列表
@@ -24,7 +18,7 @@ class JnpAction extends EntryAction {
 	 */
 	public function index() {
 		if($_GET['keyword']) {
-			$title = $_GET['keyword'];
+			$title = trim($_GET['keyword']);
 			$where['description']  = array('like',"%$title%");
 			$where['title']  = array('like',"%$title%");
 			$where['_logic'] = 'or';
@@ -32,6 +26,9 @@ class JnpAction extends EntryAction {
 		}
 		if ($_GET['jnpType']) {
 			$data["jnpType"] = $_GET['jnpType'];
+		}
+		if ($_GET['years']) {
+			$data["years"] = $_GET['years'];
 		}
 		$M = M("zz_jnp");
 		import("@.ORG.Page");
@@ -43,7 +40,8 @@ class JnpAction extends EntryAction {
 			->limit($p -> firstRow . " , " . $p -> listRows)->order('zz_log.updatetime desc')->select();
 		$this -> assign('page', $page);
 		$this->assign("list",$list);
-		$this->assign("typeList", $this->typeList);
+		$this->assign("yearList", D("Jnp")->getYears());
+		$this->assign("typeList", D("Jnp")->typeList);
 		$this->display();
 	}
 
@@ -58,12 +56,15 @@ class JnpAction extends EntryAction {
 	public function editJnp()
 	{
 		$jnpID = $_GET["id"];
-		$this->assign("typeList", $this->typeList);
+		$this->assign("typeList", D("Jnp")->typeList);
+		$this->assign("yearList", D("Jnp")->getYears());
+		$this->assign("years", date("Y"));
 		if ($jnpID) {
 			$jnpInfo =  D("Jnp")->getJnpByID($jnpID);
 			$this->assign("imageCount", count($jnpInfo['photos']));
 			$this->assign("jnpID", $jnpInfo['id']);
 			$this->assign("jnpType", $jnpInfo['jnpType']);
+			$this->assign("years", $jnpInfo['years']);
 			$this->assign("title", $jnpInfo['title']);
 			$this->assign("description", $jnpInfo['description']);
 			$this->assign("photoList", $jnpInfo['photos']);
@@ -82,6 +83,7 @@ class JnpAction extends EntryAction {
 	public function saveJnp(){
 		$M = M('zz_jnp');
 		$data = $M->create();
+		
 		if (!$data) $this -> error('保存失敗');
 		$data['updateTime'] = date('Y-m-d H:i:s');
 		if ($data['id']) {
@@ -114,9 +116,13 @@ class JnpAction extends EntryAction {
 	public function delJnp() {
 		$id = $_POST["id"];
 		if ($id) {
-			$result = D("Jnp");
+			$tablename = "zz_jnp";
+			// 删除图片
+			D("Upload")->removeImage($tablename, $id);
+			$data['id'] = $id;
+			$result = D("Jnp")->where($data)->delete();
 			SysLogs::log("删除纪念品,id=" . $id);
-			$logData["tablename"] = "zz_jnp";
+			$logData["tablename"] = $tablename;
 			$logData["no"] = $id;
 			$logData["operate"] = "delete";
 			$logData["updateUser"] = $_SESSION['loginName'];

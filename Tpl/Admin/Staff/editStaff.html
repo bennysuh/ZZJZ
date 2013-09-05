@@ -531,7 +531,11 @@
 							<tr>
 								<td class="noBackground inputName">文化程度:</td>
 								<td class="noBackground inputText">
-									<html:select options="whcdList" selected="whcd" name="whcd"/>
+									<select id="whcdSel" name="whcd">
+										<volist name="whcdList" id="whcdVo">
+											<option value="{$whcdVo['degreeID']}" <if condition="$whcdVo['degreeID']==$whcd">selected="true"</if>  >{$whcdVo['degree']}</option>
+										</volist>
+									</select>
 								</td>
 							</tr>
 							<tr>
