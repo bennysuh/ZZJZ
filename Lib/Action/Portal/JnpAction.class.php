@@ -25,13 +25,14 @@ class JnpAction extends Action {
 		$page = $p -> show();
 		$list = $M->where($data)
 			->join("join zz_log on zz_log.tablename='zz_jnp' and zz_log.no = zz_jnp.id")
+			->join("join zz_upload ON zz_upload.pid = zz_jnp.id AND zz_upload.tablename =  'zz_jnp' ")
 			->limit($p -> firstRow . " , " . $p -> listRows)->order('zz_log.updatetime desc')->select();
-		$result = array();
+
 		foreach ($list as $key => $value) {
-			$result[] = D("Jnp")->getJnpByID($value['id']);
+			$list[$key]['path'] = D("Jnp")->host . $value['path'];
 		}
 		$this -> assign('page', $page);
-		$this->assign("list",$result);
+		$this->assign("list", $list);
 		$this->assign("typeList", D("Jnp")->typeList);
 		$this->display();
 	}
@@ -48,25 +49,35 @@ class JnpAction extends Action {
 		if (!$_GET['jnpID']) {
 			$this->error("no ID to view");
 		}
-		$prolactin = M("zz_prolactin")->join("right join zz_degree on zz_degree.degreeID = zz_prolactin.whcd 
-			RIGHT JOIN city ON zz_prolactin.jg_province = city.pid and 
-			zz_prolactin.jg_city = city.cid 
-			right join zz_upload on zz_upload.tablename='zz_prolactin' 
-			and zz_upload.pid = zz_prolactin.id and zz_upload.tip like '%网照%' ")
-			->where('zz_prolactin.id = ' . $_GET['prolactinID'])->find();
-		$this->assign("ygbh", $prolactin['ygbh']);
-		$this->assign("gzjy", $prolactin['gzjy']);
-		$this->assign("path", $prolactin['path']);
-		$this->assign("city", $prolactin['city']);
-		$this->assign("age", date('Y') - substr($prolactin['birthday'], 0, 4));
-		$this->assign("whcd",  $prolactin['degree']);
-		$data['itemid'] = array("in", $prolactin["languages"]);
-		$langs = M('zz_languages')->where($data)->select();
-		foreach ($langs as $key => $value) {
-			$langArr[] = $value['itemname'];	
+		$jnp = D("Jnp")->getJnpByID($_GET['jnpID']);
+		$this->assign("jnpType", $jnp['jnpType']);
+		$this->assign("title", $jnp['title']);
+		$this->assign("description", $jnp['description']);
+		$this->assign("years", $jnp['years']);
+		$this->assign("photoList", $jnp['photos']);
+		$this->assign("updateTime", $jnp['updateTime']);
+		
+		$this->display();
+	}
+	
+	public function gallery()
+	{
+		$jnpType = $_GET['jnpType'];
+		if (!$jnpType) {
+			$jnpType = "胎毛笔";
 		}
-		$this -> assign("lang", implode($langArr, ','));
-		$this -> assign("zhpj", $prolactin['remark']);
+		$M = M("zz_jnp");
+		$data['jnpType'] = $jnpType;
+		$list = $M->where($data)
+			->join("join zz_log on zz_log.tablename='zz_jnp' and zz_log.no = zz_jnp.id")
+			->join("join zz_upload ON zz_upload.pid = zz_jnp.id AND zz_upload.tablename =  'zz_jnp' ")
+			->order('zz_log.updatetime desc')->select();
+		foreach ($list as $key => $value) {
+			$list[$key]['path'] = D("Jnp")->host . $value['path'];
+		}
+		$this -> assign('page', $page);
+		$this->assign("list", $list);
+		$this->assign("typeList", D("Jnp")->typeList);
 		$this->display();
 	}
 }

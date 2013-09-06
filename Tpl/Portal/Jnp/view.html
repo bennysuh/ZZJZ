@@ -19,9 +19,6 @@
 				<div class="main">
 					<h2 class="ntit2" id="pageTitle">婴幼儿纪念品展示 </h2>
 					<div id="staffDiv" class="edittext" >
-						<div class="staffImageDiv" style="width:200px;">
-							<img id="staffImg" style="max-width: 150px;" src="__PUBLIC__{$path}" />
-						</div>
 						<div class="staffDetailDiv">
 							<table cellpadding="0" cellspacing="0" style="width:80%;">
 								<tr>
@@ -37,6 +34,13 @@
 									<td class="jgItem">{$description}</td>
 								</tr>
 							</table>
+							<ul class="jnpUl">
+								<volist name="photoList" id="photoVo">
+									<li>
+										<img src="{$photoVo['path']}" class="jnpBigImg" />
+									</li>
+								</volist>
+							</ul>
 						</div>
 					</div>
 					<div>

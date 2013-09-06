@@ -1,7 +1,7 @@
 <?php
 class JnpModel extends Model {
 	protected $trueTableName = "zz_jnp";
-	private $host = "/ZZJZ/Public/Uploads/jnp/";
+	public $host = "/ZZJZ/Public/Uploads/jnp/";
 	private $showField = "id, jnpType, description, date_format(`updateTime`, '%Y-%m-%d') as updateTime, zz_uploads.path, 
 				zz_upload.tip, zz_upload.type, zz_upload.sortIndex";
 	

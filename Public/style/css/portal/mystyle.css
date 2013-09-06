@@ -760,7 +760,7 @@ li {
 	margin:5px;
 }
 
-.staffImg{
+.staffImg, .jnpImg{
 	width:96px;
 	height:96px;
 }
@@ -769,18 +769,18 @@ li {
 	padding:5px;
 	vertical-align: top;
 }
-#staffList, #prolactinList{
+#staffList, #prolactinList, #jnpList{
 	width:520px;
 	border:1px solid #ccc;
 	border-collapse: collapse;
 	clear:both;
 }
-#staffList th, #prolactinList th{
+#staffList th, #prolactinList th,  #jnpList th{
 	background:#DB4985;
 	color:#fff; 
 	border: 1px solid #ccc !important;
 }
-#staffList tr, #prolactinList tr{
+#staffList tr, #prolactinList tr,  #jnpList tr{
 	border:1px solid #ccc;
 }
 .viewTD {
@@ -911,7 +911,7 @@ li {
 	height:100px;
 }
 
-#prolactinList {
+#prolactinList, #jnpList {
 	width:100%;
 	border:none !important;
 }
@@ -919,4 +919,22 @@ li {
 .updateTime {
 	float:left;
 	margin:20px;
+}
+
+.jnpInfo {
+	text-overflow:ellipsis;
+	word-break: break-all;
+	word-wrap:break-word;
+}
+
+.jnpBigImg {
+	width: 150px;
+	height:150px;
+}
+.jnpUl {
+	list-style:none;
+}
+
+.jnpUl li{
+	list-style:none;
 }
