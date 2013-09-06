@@ -206,7 +206,7 @@ class Image {
             }
 
             // 载入原图
-            $createFun = 'ImageCreateFrom' . ($type == 'jpg' ? 'jpeg' : $type);
+            $createFun = 'imagecreatefrom' . ($type == 'jpg' ? 'jpeg' : $type);
             $srcImg = $createFun($image);
 
             //创建缩略图
@@ -403,7 +403,7 @@ class Image {
             $type = empty($type) ? $info['type'] : $type;
             unset($info);
             // 载入原图
-            $createFun = 'ImageCreateFrom' . ($type == 'jpg' ? 'jpeg' : $type);
+            $createFun = 'imagecreatefrom' . ($type == 'jpg' ? 'jpeg' : $type);
             $im = $createFun($image);
             $dx = imagesx($im);
             $dy = imagesy($im);

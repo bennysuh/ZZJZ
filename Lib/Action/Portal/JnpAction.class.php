@@ -66,14 +66,22 @@ class JnpAction extends Action {
 		if (!$jnpType) {
 			$jnpType = "胎毛笔";
 		}
-		$M = M("zz_jnp");
-		$data['jnpType'] = $jnpType;
-		$list = $M->where($data)
-			->join("join zz_log on zz_log.tablename='zz_jnp' and zz_log.no = zz_jnp.id")
-			->join("join zz_upload ON zz_upload.pid = zz_jnp.id AND zz_upload.tablename =  'zz_jnp' ")
-			->order('zz_log.updatetime desc')->select();
+		$jnpList = D("Jnp")->where("jnpType='{$jnpType}'")->field("id, title, description")->select();
+		$ids = array();
+		foreach ($jnpList as $key => $value) {
+			$ids[] = $value['id'];
+		}
+		$data['tablename'] = "zz_jnp";
+		$data['pid'] = array("in", $ids);
+		$list = M("zz_upload")->where($data)
+			->order('zz_upload.updatetime desc')->select();
+		$jnpInfo;
 		foreach ($list as $key => $value) {
 			$list[$key]['path'] = D("Jnp")->host . $value['path'];
+			$jnpInfo = D("Jnp")->where("id={$value['pid']}")->field("title, description")->find();
+			$list[$key]['title'] =  $jnpInfo['title'];
+			$list[$key]['description'] =  $jnpInfo['title'] . htmlspecialchars("<br/>") . $jnpInfo['description'];
+			$list[$key]['thumb'] = D("Jnp")->host . "s_". $value['path'];
 		}
 		$this -> assign('page', $page);
 		$this->assign("list", $list);

@@ -25,11 +25,12 @@
 			$(document).ready(function() {
 				$(".fancybox").attr('rel', 'gallery')
 					.fancybox({
+						padding: "10px",
 						prevEffect	: 'none',
 						nextEffect	: 'none',
 						helpers	: {
 							title	: {
-								type: 'outside'
+								type: 'inside'
 							},
 							thumbs	: {
 								width	: 50,
@@ -58,8 +59,10 @@
 					</div>
 					<div class="main">
 						<volist name="list" id="jnpVo">
-							<a class="fancybox" rel="group"  caption="{$jnpVo['title']}" 
-								href="{$jnpVo['path']}"><img src="{$jnpVo['path']}" alt="" /></a>
+							<a class="fancybox" rel="group"  title="{$jnpVo['description']} " 
+								href="{$jnpVo['path']}">
+								<img src="{$jnpVo['thumb']}" title="{$jnpVo['title']}" />
+							</a>
 						</volist>
 					</div>
 				</div>

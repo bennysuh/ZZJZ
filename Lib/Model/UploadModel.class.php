@@ -117,6 +117,7 @@ class UploadModel extends Model {
 		$folder = $this->getParentFolder($file['tablename']);
 		try{
 			unlink(C("PHOTO_PATH") . $folder . "/" . $file['path']);
+			unlink(C("PHOTO_PATH") . $folder . "/s_" . $file['path']);
 			return M("zz_upload")->where($data)->delete();
 		}catch(Exception $e){
 			 throw new Exception('Delete File Failed');
@@ -128,6 +129,16 @@ class UploadModel extends Model {
 		$data['tablename'] = $tablename;
 		$data['pid'] = $pid;
 		return $this->where($data)->max('sortIndex');
+	}
+	
+	public function createThumb($sourcePath, $sourceName)
+	{
+		import("@.ORG.Image");
+		$image = new Image();
+		$targetName = 's_' . $sourceName;
+		$sourceFile= $sourcePath . $sourceName;
+		$result = $image::thumb($sourceFile, $sourcePath . $targetName, '', 150, 150);
+		return $result;
 	}
 }
 ?>

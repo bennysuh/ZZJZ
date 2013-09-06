@@ -2,8 +2,6 @@
 class JnpModel extends Model {
 	protected $trueTableName = "zz_jnp";
 	public $host = "/ZZJZ/Public/Uploads/jnp/";
-	private $showField = "id, jnpType, description, date_format(`updateTime`, '%Y-%m-%d') as updateTime, zz_uploads.path, 
-				zz_upload.tip, zz_upload.type, zz_upload.sortIndex";
 	
 	public $typeList = array(
 		"胎毛笔",
@@ -15,8 +13,6 @@ class JnpModel extends Model {
 	public function getYears()
 	{
 		$currYear = date("Y");
-		$minYear = $this->min("years");
-		$maxYear = $this->max("years");
 		$years = array();
 		$years[] = $currYear+1;
 		$years[] = $currYear;
@@ -52,6 +48,7 @@ class JnpModel extends Model {
 		$photos = D("Upload")->getFiles($photoData);
 		foreach ($photos as $key => $value) {
 			$photos[$key]['path'] = $this->host . $value['path'];
+			$photos[$key]['thumb'] = $this->host . "s_" . $value['path'];
 		}
 		return $photos;
 	}

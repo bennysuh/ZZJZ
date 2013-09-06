@@ -75,6 +75,7 @@
 							'model' : 'jnp',
 						},
 						'onUploadComplete' : function(file, data) {
+							console.log(data);
 							var data = JSON.parse(data);
 							if ( typeof (data) != "object") {
 								alert(data);
@@ -214,7 +215,7 @@
 								</tr>
 								<volist name='photoList' id='picVo'>
 									<tr uploadID="{$picVo['id']}">
-										<td><img  src="{$picVo[path]}"  class='uploadImg'></td>
+										<td><img  src="{$picVo[thumb]}"  class='uploadImg'></td>
 										<td>
 										<input type="button" value="删除" operate="del" class="actionButton delImageBtn"/>
 										</td>
