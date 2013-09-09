@@ -66,21 +66,6 @@ class JnpAction extends Action {
 		if (!$jnpType) {
 			$jnpType = "胎毛笔";
 		}
-		switch ($jnpType) {
-			case '1':
-				$jnpType = "胎毛笔";
-				break;
-			case "2":
-				$jnpType = "胎毛绣";
-				break;
-			case "3":
-				$jnpType = "手足印";
-				break;
-			default:
-				$jnpType = "胎毛笔";
-				break;
-		}
-		
 		$jnpList = D("Jnp")->where("jnpType='{$jnpType}'")->field("id, title, description")->select();
 		$ids = array();
 		foreach ($jnpList as $key => $value) {
@@ -93,9 +78,11 @@ class JnpAction extends Action {
 		$jnpInfo;
 		foreach ($list as $key => $value) {
 			$list[$key]['path'] = D("Jnp")->host . $value['path'];
-			$jnpInfo = D("Jnp")->where("id={$value['pid']}")->field("title, description")->find();
-			$list[$key]['title'] =  $jnpInfo['title'];
-			$list[$key]['description'] =  $jnpInfo['title'] . htmlspecialchars("<br/>") . $jnpInfo['description'];
+			$jnpInfo = D("Jnp")->where("id={$value['pid']}")->find();
+			$list[$key]['title'] = $jnpInfo['title'];
+			$description =   $jnpInfo['title'] . "<br/>编号:" . $jnpInfo['bh'] . "<br/>" . ($jnpInfo['cz'] ? "材质:" . $jnpInfo['cz'] . "<br/>" : "")
+				.  ($jnpInfo['color'] ? "颜色:" . $jnpInfo['color'] . "<br/>" : "") . ($jnpInfo['size'] ? "尺寸:" . $jnpInfo['size'] . "<br/>" : "");
+			$list[$key]['description'] = $description;
 			$list[$key]['thumb'] = D("Jnp")->host . "s_". $value['path'];
 		}
 		$this -> assign('page', $page);

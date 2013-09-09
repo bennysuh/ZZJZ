@@ -26,25 +26,17 @@
 				$(".fancybox").attr('rel', 'gallery')
 					.fancybox({
 						padding: "10px",
-						prevEffect	: 'none',
-						nextEffect	: 'none',
+						maxWidth:"712px",
+						maxHeight:"712px",
 						helpers	: {
 							title	: {
-								type: 'inside'
+								type: 'outside'
 							},
 							thumbs	: {
 								width	: 50,
 								height	: 50
 							}
 						},
-						beforeShow: function () {
-				            /* Add watermark */
-				            $('<div class="watermark"></div>')
-				                .bind("contextmenu", function (e) {
-				                    return false; /* Disables right click */
-				                })
-				                .prependTo( $.fancybox.inner );   
-				        }
 					});
 			});
 		</script>
@@ -58,20 +50,6 @@
 						<include file="Public:left" />
 					</div>
 					<div class="main">
-						<ul class="jnpTypeUl">
-							<volist>
-								
-							</volist>
-							<li class="selected">
-								<a href="/Portal/Jnp/gallery/jnpType/1">胎毛笔</a>
-							</li>
-							<li>
-								<a href="/Portal/Jnp/gallery/jnpType/2">胎毛绣</a>
-							</li>
-							<li>
-								<a href="/Portal/Jnp/gallery/jnpType/3">手足印</a>
-							</li>
-						</ul>
 						<volist name="list" id="jnpVo">
 							<a class="fancybox" rel="group"  title="{$jnpVo['description']} " 
 								href="{$jnpVo['path']}">

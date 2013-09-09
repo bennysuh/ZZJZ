@@ -52,5 +52,12 @@ class JnpModel extends Model {
 		}
 		return $photos;
 	}
+	
+	public function checkBh($bh)
+	{
+		$data['bh'] = trim($bh);
+		$result = $this->where($data)->count();
+		return $result > 0 ? true : false;
+	}
 }
 ?>

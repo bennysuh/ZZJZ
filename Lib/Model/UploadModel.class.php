@@ -131,13 +131,15 @@ class UploadModel extends Model {
 		return $this->where($data)->max('sortIndex');
 	}
 	
-	public function createThumb($sourcePath, $sourceName)
+	public function createThumb($sourcePath, $sourceName, $targetName, $targetMaxWidth, $targetMaxHeight)
 	{
 		import("@.ORG.Image");
 		$image = new Image();
 		$targetName = 's_' . $sourceName;
 		$sourceFile= $sourcePath . $sourceName;
-		$result = $image::thumb($sourceFile, $sourcePath . $targetName, '', 150, 150);
+		$targetWidth = $targetWidth ? $targetWidth : 150;
+		$targetHeight = $targetHeight ? $targetHeight : 150;
+		$result = $image::thumb($sourceFile, $sourcePath . $targetName, '', $targetWidth, $targetHeight);
 		return $result;
 	}
 }

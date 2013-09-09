@@ -1,9 +1,9 @@
-/Public/Uploads
-/Conf
-/*.sql
-/feixin.php
-/curl.php
-/.metadata
-/.metadata
-.metadata
+/Conf/config.php
 /Runtime
+/ThinkPHP
+/Conf
+/Conf/config.php
+/Public/Uploads
+/net
+/ThinkPHP
+/db

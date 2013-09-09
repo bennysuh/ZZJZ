@@ -21,6 +21,10 @@ class JnpAction extends EntryAction {
 			$title = trim($_GET['keyword']);
 			$where['description']  = array('like',"%$title%");
 			$where['title']  = array('like',"%$title%");
+			$where['bh']  = array('like',"%$title%");
+			$where['color']  = array('like',"%$title%");
+			$where['size']  = array('like',"%$title%");
+			$where['cz']  = array('like',"%$title%");
 			$where['_logic'] = 'or';
 			$data['_complex'] = $where;
 		}
@@ -65,6 +69,10 @@ class JnpAction extends EntryAction {
 			$this->assign("jnpID", $jnpInfo['id']);
 			$this->assign("jnpType", $jnpInfo['jnpType']);
 			$this->assign("years", $jnpInfo['years']);
+			$this->assign("cz", $jnpInfo['cz']);
+			$this->assign("size", $jnpInfo['size']);
+			$this->assign("color", $jnpInfo['color']);
+			$this->assign("bh", $jnpInfo['bh']);
 			$this->assign("title", $jnpInfo['title']);
 			$this->assign("description", $jnpInfo['description']);
 			$this->assign("photoList", $jnpInfo['photos']);
@@ -85,6 +93,9 @@ class JnpAction extends EntryAction {
 		$data = $M->create();
 		
 		if (!$data) $this -> error('保存失敗');
+		if ((D("Jnp")->checkBh($data['bh']))) {
+			$this->error("已存在此编号");
+		}
 		$data['updateTime'] = date('Y-m-d H:i:s');
 		if ($data['id']) {
 			$M ->data($data)->save();
@@ -97,6 +108,7 @@ class JnpAction extends EntryAction {
 			$this->success("更新成功");
 		} else {
 			$result = $M ->data($data)->add();
+			Log::write(M()->getLastSql());
 			SysLogs::log("新增纪念品,id=" . $result);
 			$logData["tablename"] = "zz_jnp";
 			$logData["no"] = $result;

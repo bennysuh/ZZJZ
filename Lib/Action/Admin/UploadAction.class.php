@@ -46,6 +46,8 @@ class  UploadAction extends EntryAction {
 			if (in_array(strtolower($fileParts['extension']), $fileTypes)) {
 				$result = move_uploaded_file($tempFile, $targetFile);
 				if ($result) {
+					//$fileInfo = getimagesize($targetFile);
+					
 					$r = D("Upload")->createThumb($targetPath, $newName);
 					if (!$r) {
 						echo "create thumb failed!";
