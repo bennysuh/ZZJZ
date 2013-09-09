@@ -938,3 +938,23 @@ li {
 .jnpUl li{
 	list-style:none;
 }
+
+.jnpTypeUl li {
+	float: left;
+	margin:0 20px;
+}
+
+#selectYsUl {
+	list-style:none;
+	height:100%;
+	width: 100%;
+}
+#selectYsUl li{
+	list-style:none;
+	width:480px;
+	height:360px;
+}
+.selectYsImg {
+	width:480px;
+	height:360px;
+}

@@ -78,5 +78,16 @@ class StaffAction extends Action {
 		$this -> assign("zhpj", $staff['remark']);
 		$this->display();
 	}
+	
+	public function selectYs()
+	{
+		$selectList = array();
+		while ($a < 10) {
+			$a++;
+			$selectList[] = APP_NAME . "/Public/selectYs/" . $a . ".jpg";
+		}
+		$this->assign("pptList", $selectList);
+		$this->display();
+	}
 }
 ?>
