@@ -1,0 +1,200 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<!DOCTYPE>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>編輯网页内容</title>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-1.8.0.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.bgiframe.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/loading-min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.json-2.3.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.3.1/jquery.easyui.min.js"></script>
+		<script src="__PUBLIC__/js/kindeeditor/kindeditor-min.js" type="text/javascript"></script>
+		<script src="__PUBLIC__/js/kindeeditor/lang/zh_CN.js" type="text/javascript"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/validateType.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.scrollTo-min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-overlay.js"></script>
+		<link href="__PUBLIC__/style/css/common.css" rel="stylesheet" type="text/css">
+		<link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
+		<link href="__PUBLIC__/style/css/loading.css" rel="stylesheet" type="text/css" />
+		<link href="__PUBLIC__/js/jquery-easyui-1.3.1/themes/default/easyui.css" rel="stylesheet" type="text/css">
+		<SCRIPT LANGUAGE="JavaScript">
+			<!--
+			var actionName = '__ACTION__';
+			
+			$(document).ready(function() {
+				var loading = new ol.loading({id:"infoForm"});
+				var editor, status;
+				initEditor();
+				//status区分add或edit
+				//编辑时显示删除按钮
+				if (window.location.href.indexOf("id") != -1) {
+					$("#removeBtn").show();
+					status = "edit";
+				} else {
+					status = "add";
+				}
+				function initEditor()
+				{
+					KindEditor.ready(function(K) {
+						editor = K.create('textarea[name="content"]', {
+							allowFileManager : true
+						});
+					});
+				}
+				
+				//保存
+				$("#saveBtn").click(function() {
+					//if(!$(form.name).validatebox('isValid') || !$(form.phone).validatebox('isValid')) {
+					if (!$('#infoForm').form("validate")) {
+						alert('請填寫必須的信息');
+						return;
+					}
+					var data = $('#infoForm').serialize();
+					
+					var contentStr = editor.html().replace(/\#/g, "%23");
+					contentStr = contentStr.replace(/\&/g, "%26");
+					contentStr = contentStr.replace(/\+/g, "%2B");
+					data +=  contentStr;
+					loading.show();
+					$.post('{:U("WebSite/saveWebSite")}', data, ajaxHandler, "json");
+				});
+
+				function ajaxHandler(response) {
+					loading.hide();
+					alert(response.info);
+					if (response.status == 1)
+						window.location.href = '{:U("/Admin/WebSite")}';
+				}
+				
+				$("#navListSel").change(function()
+				{
+					var data = {};
+					data.id = $("#navListSel").val();
+					reset();
+					if(!data.id) return;
+					loading.show();
+					$.post(root+'/Admin/WebSite/getSubNav', data, changeNavHandler, "json");
+				});
+				
+				function changeNavHandler(response){
+					loading.hide();
+					var sel = $("#subNavTypeSel");
+					sel.children().remove();
+					sel.append("<option value='0'>请选择</option>");
+					if(response.status){
+						var data = response.info;
+						if(data.type){
+							$("#webTitle").val(data.title);
+							editor.html(data.content);
+							$("#webSiteId").val(data.id);
+						}else{
+							$.each(data,function(){
+								sel.append("<option value='" + this.navId + "'>" + this.navName + "</option>");
+							});
+						}
+					}else{
+						alert(response.info);	
+					}
+				}
+				
+				function reset()
+				{
+					$("#webTitle").val("");
+					editor.html("");
+					$("#webSiteId").val("");
+				}
+				
+				$("#subNavTypeSel").change(function(){
+					var data = {};
+					data.navId = $("#navTypeSel").val();
+					data.subNavId = $("#subNavTypeSel").val();
+					reset();
+					if(!data.subNavId || data.subNavId=="0") return;
+					loading.show();
+					$.post(root+'/Admin/WebSite/getWebSite', data, changeSubNavHandler, "json");
+				});
+				
+				function changeSubNavHandler(response){
+					loading.hide();
+					if(response.status){
+						var data = response.info;
+						$("#webTitle").val(data.title);
+						editor.html(data.content);
+						$("#webSiteId").val(data.id);
+					}else{
+						alert(response.info);	
+					}
+				}
+			});
+			
+			//-->
+		</SCRIPT>
+	</head>
+	<body>
+<include file="Public:header" />
+		<!-- 主要內容 -->
+		<div id="content">
+			<include file="Public:leftForContent" />
+	
+			<!-- 右框架 -->
+			<div id="rightWrap">
+				<!-- 所在位置地址 -->
+				<div class="addressBar">
+					网站内容管理 > 修改网站内容
+				</div>
+				<div class="locationInfo">
+					<form id="infoForm">
+						<input name="id" id="webSiteId" type="text" style="display:none;" />
+						<table class="noBackground">
+							<tr>
+								<td class="noBackground inputName">导航菜单:</td>
+								<td class="noBackground inputText">
+									<html:select  name="navId" first="请选择" id="navListSel" options="navList" />
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">导航子菜单:</td>
+								<td class="noBackground inputName">
+									<select id="subNavTypeSel" name="subNav" >
+										<option value="0">请选择</option>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">网页标题:</td>
+								<td class="noBackground inputText">
+								<input name="title" id="webTitle" type="text" style="width:300px;height:22px;"
+									 class="easyui-validatebox" required="true" />
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">网页内容:</td>
+								<td class="noBackground inputName">								
+									<textarea style="width: 600px;height:300px;" cols="45" rows="20" class="easyui-validatebox"  id="content"
+									name="content"></textarea>
+								</td>	
+							</tr>
+							
+						</table>
+					</form>
+				</div>
+				<div class="formLine" style="padding:0px;">
+					<div id="toolbar2" class="formLine">
+						<?php if (Auth::AccessDecision('Admin','WebSite','saveWebSite')) { ?>
+						<button class="actionButton" id="saveBtn">
+							保存
+						</button>
+						<?php } ?>
+						<button class="actionButton" onclick="window.location.href='__ROOT__/Admin/WebSite'">
+							返回
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

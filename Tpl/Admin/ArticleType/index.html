@@ -1,0 +1,165 @@
+<tagLib name="html" />
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title></title>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-1.8.0.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.bgiframe.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/loading-min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.3.1/jquery.easyui.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/validateType.js"></script>
+
+		<link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
+		<link href="__PUBLIC__/style/css/loading.css" rel="stylesheet" type="text/css" />
+		<link href="__PUBLIC__/js/jquery-easyui-1.3.1/themes/default/easyui.css" rel="stylesheet" type="text/css">
+
+		<SCRIPT LANGUAGE="JavaScript">
+			<!--
+			var actionName = '__ACTION__';
+
+			$(document).ready(function() {
+				//导航选中
+				$(".navList li[name=setting]").addClass('selectButton');
+				var loading = new ol.loading({
+					id : "typeForm"
+				});
+				//查看
+				$("#listTb").delegate(".editBtn", "click", function() {
+					var currentRow = $(this).parents("tr");
+					var id = currentRow.attr("typeID");
+					$("#editType").show();
+					$("#editID").val(id);
+					$("#editValue").val(currentRow.find(".editValue").text());
+				}).delegate(".delBtn", "click", function() {
+					var id = $(this).parents("tr").attr("typeID");
+					$.post("{:U('ArticleType/delType')}", {
+						id : id
+					}, reflashHandler, "json");
+				})
+				
+				//刷新回调
+				function reflashHandler(response) {
+					loading.hide();
+					//alert(response.info);
+					if (response.status) {
+						window.location.href = window.location.href;
+					}
+				}
+
+				//保存编辑
+				$("#saveBtn").click(function() {
+					var postData = $("#editTypeForm").serialize();
+					$.post("{:U('ArticleType/saveType')}", postData, reflashHandler, "json");
+				})
+				//取消编辑
+				$("#cancelBtn").click(function() {
+					$("#editTypeForm")[0].reset
+					$("#editType").hide();
+				})
+				//新增
+				$("#addBtn").click(function() {
+					loading.show();
+					if (!$("#addTypeForm").form("validate")) {
+						alert('請填寫必須的信息');
+						loading.hide();
+					} else {
+						var postData = $("#addTypeForm").serialize();
+						$.post("{:U('ArticleType/addType')}", postData, reflashHandler, "json");
+					}
+				});
+				
+				
+			})
+			//-->
+		</SCRIPT>
+
+	</head>
+	<body>
+		<include file="Public:header" />
+
+		<!-- 主要內容 -->
+		<div id="content">
+			<include file="Public:leftForContent" />
+
+			<!-- 右框架 -->
+			<div id="rightWrap">
+				<!-- 所在位置地址 -->
+				<div class="addressBar">
+					文章分类管理 >
+				</div>
+				<!-- 管理框架 -->
+				<div class="UMWrap">
+					<!-- 增加用戶框架 -->
+					<div class="addUserWrap">
+						<form id="addTypeForm">
+							<table>
+								<tr>
+									<td class="inputName"><label>文章分类:</label></td>
+									<td class="inputText">
+										<input name="value" id="type"  maxlength="6"
+										required="true" validType="validateText"  class="easyui-validatebox"  type="text" />
+									</td>
+								</tr>
+							</table>
+							<!-- 按鈕按下去為select否則為noselect -->
+							<input type="button" value="新增" class="actionButton" id="addBtn"/>
+							<BR>
+							<BR>
+						</form>
+					</div>
+					<form id="typeForm">
+						<div id="listInfo" class="listTitle">
+							按照排序索引排序
+						</div>
+						<table id="listTb">
+							<tr>
+								<th>分类</th>
+								<th>最近更新日期</th>
+								<th>操作</th>
+							</tr>
+							<volist name="list" id="vo">
+								<tr class='dataTr' typeID='{$vo["id"]}'>
+									<td class="exportTD editValue">{$vo['value']}</td>
+									<td class="exportTD">{$vo['updateTime']}</td>
+									<td class="exportTD">
+									<input type="button" value="编辑" class="tableActionButton editBtn"/>
+									<input type="button" value="刪除" class="tableActionButton delBtn"/>
+									</td>
+								</tr>
+							</volist>
+						</table>
+						
+					</form>
+				</div>
+				<!-- 這裡的UMWrap是修改時出現的,所以加上了modify控制display -->
+				<div id="editType" class="UMWrap modify">
+					<!-- 框架標題 -->
+					<div class="wrapTitle">
+						<h2>修改分类</h2>
+					</div>
+					<!-- 增加用戶框架 -->
+					<div class="addUserWrap">
+						<form id="editTypeForm" userID=''>
+							<input style="display: none;" name="id" id="editID"/>
+							<table cellpadding="0" cellspacing="0" width="500px;">
+								<tr>
+									<td class="inputName"><label>分类名：</label></td>
+									<td class="inputText">
+									<input name="value" id="editValue"  maxlength="6"
+										required="true" validType="validateText" class="easyui-validatebox"  type="text" />
+									</td>
+								</tr>
+							</table>
+							<!-- 按鈕按下去為select否則為noselect -->
+							<input type="button" value="保存" id="saveBtn" class="actionButton"/>
+							<input type="button" id="cancelBtn" value="取消" class="cancelButton actionButton"/>
+						</form>
+					</div>
+				</div>
+			</div>
+
+	</body>
+</html>

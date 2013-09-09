@@ -1,0 +1,392 @@
+{// 引入标签库 }
+<tagLib name="html" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>新增/編輯钟点工</title>
+		<link href="__PUBLIC__/style/css/common.css" rel="stylesheet" type="text/css">
+		<link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
+		<link href="__PUBLIC__/style/css/loading.css" rel="stylesheet" type="text/css" />
+		<link href="__PUBLIC__/js/jquery-easyui-1.3.1/themes/default/easyui.css" rel="stylesheet" type="text/css">
+				<link rel="stylesheet" type="text/css" href="__PUBLIC__/js/uploadify/uploadify.css">
+				
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-1.8.0.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.bgiframe.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/loading-min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.json-2.3.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.3.1/jquery.easyui.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.3.1/locale/easyui-lang-zh_CN.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/validateType.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery.scrollTo-min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-overlay.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/uploadify/jquery.uploadify.min.js" ></script>
+		
+		<SCRIPT LANGUAGE="JavaScript">
+			<!--
+			var actionName = '__ACTION__';
+			var fileArr = [];
+			//上传文件信息数组
+			$(document).ready(function() {
+				var loading = new ol.loading({
+					id : "ZdgInfoForm"
+				});
+				var status;
+
+				//编辑时显示删除按钮
+				if ($("#id").val()) {
+					$("#removeZdgBtn")
+					.show();
+					status = "edit";
+					$("#ZdgName").attr("readonly", true);
+					//不可更改用户名
+					$("#firstContact").remove();
+					$("#vo").empty();
+				} else {
+					status = "add";
+					$("#firstContact").show();
+				}
+
+				//保存
+				var postData = {};
+				$("#saveZdgBtn").click(function() {
+					loading.show();
+					var form = $('#ZdgInfoForm')[0];
+					var contactData = [];
+					$("#contactUl li").each(function() {
+						var contact = {};
+						contact.type = $(this).find("select").val();
+						contact.content = $(this).find("input").val();
+						if (status == "edit") {
+							contact.id = $(this).find("label").text();
+						}
+						contactData.push(contact);
+					});
+
+					postData.data = contactData;
+					if (contactData.length == 0) {
+						alert("缺少联系方式");
+						loading.hide();
+						return;
+					}
+					//if(!$(form.name).validatebox('isValid') || !$(form.phone).validatebox('isValid')) {
+					if (!$('#ZdgInfoForm').form("validate")) {
+						alert('請填寫必須的信息');
+						loading.hide();
+						return;
+					}
+					var data = $(form).serialize();
+					if (status == "add") {
+						$.post('{:U("Zdg/addZdg")}', data, saveHandler, "json");
+					} else if (status == "edit") {
+						$.post('{:U("Zdg/saveZdg")}', data, saveHandler, "json");
+					}
+				});
+				//新增/更新联系方式
+				function saveHandler(response) {
+					if (response.status) {
+						if (postData.data.length == 0) {
+							alert("缺少联系方式");
+							loading.hide();
+							return;
+						}
+						var action;
+						if (status == "add") {
+							postData.no = response.info;
+							action = root + '/Admin/Zdg/addContact';
+							//新增不能使用{:U("/Zdg/saveContact")}。否则找不到对应的action函数。而编辑则可以。
+						} else {
+							postData.no = $("#id").val();
+							action = root + '/Admin/Zdg/saveContact';
+						}
+						//这是在回调函数中第二次调用post，post的action不需要前面的目录
+						$.post(action, {
+							json : $.toJSON(postData)
+						}, ajaxHandler, "json");
+					} else {
+						loading.hide();
+						alert(response.info);
+					}
+				}
+
+				function ajaxHandler(response) {
+					loading.hide();
+					alert(response.info);
+					if (response.status == 1)
+						window.location.href = root + "/Admin/Zdg";
+				}
+
+				//删除钟点工
+				$("#removeZdgBtn").click(function() {
+					$.post('{:U("Zdg/removeZdg")}', "id=" + $("#id").val(), ajaxHandler, "json");
+				});
+				
+				//新增联系方式
+				$("#contactUl").delegate(".addImg", "click", function() {
+					var contactHtml = '<li ><select class="contactTypeSel">' + '<option selected="true">电话</option>' + '<option>email</option>' + '</select>' + '<input type="text" class="easyui-validatebox" validType="number"  required="true" />' + "<img class='delImg' src='__PUBLIC__/style/img/delete.png' /></li>";
+					$("#contactUl").append(contactHtml);
+					$("#contactUl input[validType='number']").last().validatebox({
+						required : true
+					});
+				}).delegate(".delImg", "click", function(e) {
+					var i = $(this).parent().index();
+					$("#contactUl li").eq(i).find("input").validatebox("destroy");
+					//删除验证销毁组件
+					$("#contactUl li").eq(i).remove();
+				});
+				
+				//切换联系方式
+				$(".contactTypeSel").live("change", function(e) {
+					var selectedIndex = e.currentTarget.selectedIndex;
+					var input = $(this).next();
+					input.val("");
+					switch(selectedIndex) {
+						case 0:
+							input.attr("validType", "number");
+							input.validatebox('remove');
+							input.validatebox({
+								required : true
+							});
+							break;
+						case 1:
+							input.attr("validType", "email");
+							input.validatebox('remove');
+							input.validatebox({
+								required : true,
+								validType : "email"
+							})
+							break;
+					}
+				});
+				
+				$("#uploadBtn").uploadify({
+					'swf' : root + '/Public/js/uploadify/uploadify.swf',
+					'uploader' : root + '/Public/js/uploadify/uploadify_image.php',
+					'multi' : false,
+					'auto' : true,
+					'removeTimeout' : 1,
+					'removeCompleted' : true,
+					'fileTypeDesc' : 'Image Files',
+					'fileSizeLimit' : '50MB',
+					'fileTypeExts' : '*.jpg;*.png;*.gif;',
+					'buttonText':'上传图片',
+					'onUploadSuccess' : function(file, data) {
+						if(data){
+							$("#imagePath").val(data);
+							$("#uploadImg").attr("src",root+"/Public/Uploads/zdg/" + data);
+						}
+					},
+				})
+
+			});
+
+			function addUploadHandler(response) {
+				if (response.status) {
+					
+				} else {
+					alert(response.info);
+				}
+			}
+			
+			//删除上传信息
+			function removeFileData(path) {
+				var data = {};
+				data.path = path;
+				data.pid = $("#ygbh").val();
+				$.post(root + "/Admin/Zdg/removeUpload", {
+					json : $.toJSON(data)
+				}, function(response) {
+					//alert(response.info);
+				}, "json");
+			}
+
+			//删除上传行数
+			function deleteRow() {
+				if (tbl.rows.length > 0) {
+					tbl.deleteRow(rindex);
+					//删除当前行
+					rowsnum--;
+				} else {
+					return;
+				}
+				rindex = "";
+			}
+			
+			function changeProvince(){
+				var parentID = $("#provSel option:selected").val();//获取选择的省份id
+				$("#citySel").children().remove();//清空選項
+				$("#qxSel").children().remove();//清空選項
+				$.post('{:U("Region/getSubsByParentID")}',{id:parentID},function(response){	
+					if(response.status)
+					{
+						var citySel = $("#citySel");
+						if(response.info){
+							citySel.append("<option value=''>请选择</option>");
+							$.each(response.info,function(i){
+								citySel.append("<option value='" + i + "'>" + this + "</option>");
+							});	
+						}
+					}
+				},"json");
+			}
+			
+			function changeCity(){
+				var parentID = $("#citySel option:selected").val();//获取选择的省份id
+				$("#qxSel").children().remove();//清空dept選項
+				$.post('{:U("Region/getSubsByParentID")}',{id:parentID},function(response){	
+					if(response.status)
+					{
+						var qxSel = $("#qxSel");
+						if(response.info){
+							qxSel.append("<option value=''>请选择</option>");
+							$.each(response.info,function(i){
+								qxSel.append("<option value='" + i + "'>" + this + "</option>");
+							});	
+						}
+					}
+				},"json");
+			}
+			//-->
+		</SCRIPT>
+
+	</head>
+	<body>
+		<div id="uploadifyQueue"></div>
+		<include file="Public:header" />
+		<!-- 主要內容 -->
+		<div id="content">
+			<include file="Public:leftForContent" />
+			<!-- 右框架 -->
+			<div id="rightWrap">
+				<!-- 所在位置地址 -->
+				<div class="addressBar">
+					钟点工管理 > 新增/編輯钟点工
+				</div>
+				<!--<div class="groupTitle">
+				<h2 class="pageTitle">新增/編輯钟点工</h2>
+				</div>-->
+				<div class="locationInfo" id="locationInfo">
+					<form id="ZdgInfoForm">
+						<input name="id" id="id" type="text" style="display:none;" value="{$id}" />
+						<table class="noBackground">
+							<tr>
+								<td class="noBackground inputName">钟点工编号:</td>
+								<td class="noBackground inputText">
+								<input name="ygbh" id="ygbh" type="text" style="width: 300px;" readonly="readonly" value="{$ygbh}" />
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">姓名:</td>
+								<td class="noBackground inputText">
+								<input name="name" id="ZdgName" type="text" class="easyui-validatebox" required="true" value="{$name}" />
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">联系方式:</td>
+								<td class="noBackground inputText" >
+								<ul id="contactUl">
+									<!--编辑页面-->
+									<volist name="contactList" id="contactVo" key="k">
+										<li>
+											<select class="contactTypeSel">
+												<option <?php if($contactVo['type']=='电话') echo "selected='true'" ?>>电话</option>
+												<option <?php if($contactVo['type']=='email') echo "selected='true'" ?>>email</option>
+											</select>
+											<input type="text" class="easyui-validatebox"
+											<?php
+											if($contactVo['type']=='电话')
+											echo "validType='number'";
+											else if($contactVo['type']=='email')
+											echo "validType='email'";
+											?>
+											required="true" value="{$contactVo['fieldA']}" />
+											<img <?php if($k===1) {echo 'src="__PUBLIC__/style/img/add.png" class="addImg"';}
+											else {echo 'src="__PUBLIC__/style/img/delete.png" class="delImg"';} ?> />
+											<label class="contactID" style="display:none;" >{$contactVo['id']}</label>
+										</li>
+									</volist>
+									<!--新增页面-->
+									<li id="firstContact" style="display:none;">
+										<select class="contactTypeSel">
+											<option selected="true">电话</option>
+											<option>email</option>
+										</select>
+										<input type="text" class="easyui-validatebox" validType="number" required="true" value="{$phone}" />
+										<img class='addImg' src='__PUBLIC__/style/img/add.png' />
+									</li>
+								</ul></td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">籍贯:</td>
+								<td class="noBackground inputName">
+									<html:select name="jg_province" 
+										change="changeProvince()" selected="provinceID" options="provinceList" id="provSel"/>
+									<html:select name="jg_city" selected="cityID"  options="cityList" id="citySel"  change="changeCity()"/>
+									<html:select name="jg_qx" selected="qxID" first="请选择" options="qxList" id="qxSel"/>
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">出生日期:</td>
+								<td class="noBackground inputText">
+								<input name="birthday" id="birthday" type="text" class="easyui-datebox" value="{$birthday}" />
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">工作经验:</td>
+								<td class="noBackground inputText">
+								<input style="width: 400px;" name="gzjy" id="gzjy" type="text" class="easyui-validatebox" required="true" value="{$gzjy}" />
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">现住地址:</td>
+								<td class="noBackground inputName">
+									<html:select name="addressRegion" selected="addressRegion" options="addressRegionList" id="addressRegionSel"/>				
+									
+									<input id="address" style="width:350px;" value="{$address}" name="address"  class="easyui-validatebox" />
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">工作时段:</td>
+								<td class="noBackground inputName">
+									<input value="{$worktime}" name="worktime" class="easyui-validatebox" validType="text" />
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">备注:</td>
+								<td class="noBackground inputName">	
+									<input value="{$remark}" name="remark" class="easyui-validatebox" style="width: 500px;" validType="text" />
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">照片：</td>
+								<td class="noBackground inputName">
+									<input name="imagePath" id="imagePath" type="hidden" value="{$imagePath}"/>
+									<img src="__PUBLIC__/Uploads/zdg/{$imagePath}"   id="uploadImg"	class='zdgImg'/>
+								</td>
+							</tr>
+						</table>
+					</form>
+					<input type="file" id="uploadBtn" style="float:left; "  
+						name="uploadImage" value="上传图片" class="TinputAdd noselected"  />
+				</div>
+				<div id="toolbar2" class="formLine">
+					<?php if (Auth::AccessDecision('Admin','Zdg','editZdg')) { ?>
+					<button class="actionButton" id="saveZdgBtn">
+						保存
+					</button>
+					<?php } ?>
+					<?php if (Auth::AccessDecision('Admin','Zdg','removeZdg')) { ?>
+					<button class="actionButton" id="removeZdgBtn" style="display: none;">
+						刪除
+					</button>
+					<?php } ?>
+					<button class="actionButton" onclick="window.location.href='__ROOT__/Admin/Zdg'">
+						返回
+					</button>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<HTML>
+	<HEAD>
+		<TITLE>广州月嫂 胎毛笔 手足印</TITLE>
+		<META http-equiv=Content-Type content="text/html; charset=utf-8">
+		<LINK href="__PUBLIC__/style/css/portal/style.css" type='text/css' rel="stylesheet" >
+		<LINK href="__PUBLIC__/style/css/portal/mystyle.css" type='text/css' rel="stylesheet" >
+		<link rel="stylesheet" type="text/css" href="__PUBLIC__/js/portal/pro_dropdown_2/pro_dropdown_2.css" />
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-1.8.0.min.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
+		<script type="text/javascript" src="__PUBLIC__/fancyBox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
+		<!-- Add fancyBox main JS and CSS files -->
+		<script type="text/javascript" src="__PUBLIC__/fancyBox/source/jquery.fancybox.js?v=2.1.5"></script>
+		<link rel="stylesheet" type="text/css" href="__PUBLIC__/fancyBox/source/jquery.fancybox.css?v=2.1.5" media="screen" />
+	
+		<!-- Add Button helper (this is optional) -->
+		<link rel="stylesheet" type="text/css" href="__PUBLIC__/fancyBox/source/helpers/jquery.fancybox-buttons.css?v=1.0.5" />
+		<script type="text/javascript" src="__PUBLIC__/fancyBox/source/helpers/jquery.fancybox-buttons.js?v=1.0.5"></script>
+	
+		<!-- Add Thumbnail helper (this is optional) -->
+		<link rel="stylesheet" type="text/css" href="__PUBLIC__/fancyBox/source/helpers/jquery.fancybox-thumbs.css?v=1.0.7" />
+	<script type="text/javascript" src="__PUBLIC__/fancyBox/source/helpers/jquery.fancybox-thumbs.js?v=1.0.7"></script>
+
+		<script type="text/javascript">
+			$(document).ready(function() {
+				//查看详细信息
+				$("#jnpList").delegate(".viewBtn", "click", function() {
+					var jnpID = $(this).parents("tr").attr("jnpID");
+					window.location.href = "__ROOT__/Portal/Jnp/view?jnpID=" + jnpID;
+				});
+			});
+		</script>
+		<BODY>
+			<div class="wrapper">
+				<include file="Public:header" />
+			</div>
+			<div  class="content2 clearfix">
+				<div  class="content2 clearfix">
+					<div class="side">
+						<include file="Public:left" />
+					</div>
+					<div class="main">
+						<h2 class="ntit2" id="pageTitle">现有婴幼儿纪念品</h2>
+						 <form id="searchForm"  >
+							<table class="noBackground" style="border: none;">
+				              <tr>
+				              	<td class="inputName"><label>纪念品名称：</label></td>
+				                <td class="inputText"><input name="keyword" type="text" /></td>  	
+				              </tr>
+				              <tr>
+				              	<td class="inputName"><label>纪念品类别：</label></td>
+				                <td class="inputText">
+				                	<select id="typeSel" name="jnpType">
+				                		<option value="0">请选择</option>
+				                		<volist name="typeList" id="typeVo">
+				                			<option value="{$typeVo}">{$typeVo}</option>
+				                		</volist>
+				                	</select>
+				                </td>  	
+				              </tr>
+				            </table>
+							<input type="button" value="查询" id="searchBtn"/>
+						</form>
+						<div class="edittext" id="pageContent">
+							<table id="jnpList">
+								<tr class="tableHeader">
+					                <th class="emailField">图片</th>
+					                <th class="emailField">分类</th>
+					                 <th class="emailField">纪念品名称</th>
+					                <th class="emailField">查看</th>
+					            </tr>
+								<volist name="list" id="vo">
+									<tr jnpID={$vo['no']}>
+										<td class="staffPic">
+											<img src="{$vo['path']}" class="jnpImg"/> 
+										</td>
+										<td class="staffInfo">
+											{$vo['jnpType']}
+										</td>
+										<td class="staffInfo" class="jnpInfo">
+											名称：{$vo['title']}<br />
+											描述：{$vo['description']}
+										</td>
+										<td class="viewTD"><input type="button" value="查看" class="viewBtn"/></td>
+									</tr>
+								</volist>
+							</table>
+							{:$page}
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--end right side -->
+			<include file="Public:footer" />
+		</BODY>
+</HTML>

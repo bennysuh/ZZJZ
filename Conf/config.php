@@ -28,7 +28,7 @@ return array(
 	'VERIFY_CODE_MODE' => false, // 是否验证码模式
 	'LANG_AUTO_DETECT'   =>  false,     // 自动侦测语言
 	'VAR_LANGUAGE'=>'locale',
-	'APP_GROUP_LIST'=> 'Admin,Portal',// 分组列表
+	'APP_GROUP_LIST'=> 'Admin,Portal,Api',// 分组列表
 	'DEFAULT_GROUP' => 'Portal',// 默认分组
 	'JUMP_TO_MODULE' => __ROOT__.'/Admin/Staff/index',// 登录后自动跳转的模块
 	'TMPL_ACTION_ERROR' => './Tpl/Public/error.html',// 错误跳转页面
@@ -78,7 +78,7 @@ return array(
 	
 	//數據庫
 	'DB_HOST'=>'localhost',
-	'DB_NAME'=>'newzzjz',
+	'DB_NAME'=>'uu143072',
 	'DB_USER'=>'root',
 	'DB_PWD'=>'',
 	
@@ -86,5 +86,7 @@ return array(
 	'SMS_USERID'=>'044843',
 	'SMS_PASSWORD'=>'38295611',
 	'SMS_ACCOUNT'=>'admin',
+	'WEB_HOST'=>'localhost/',
+	'STORAGE_ROOT'=>'/Uploads/prolactin/',
 );
 ?>

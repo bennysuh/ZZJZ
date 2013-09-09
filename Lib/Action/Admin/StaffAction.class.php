@@ -29,6 +29,9 @@ class StaffAction extends EntryAction {
 		$M = D("StaffListView");
 		if($keyword)
 			$data["name"] = array("like","%$keyword%");
+		if ($_GET['ygbh']) {
+			$data["ygbh"] = array("like","%" . $_GET['ygbh'] . "%");
+		}
 		
 		$count = $M->where($data)->count();
 		
@@ -207,7 +210,7 @@ class StaffAction extends EntryAction {
 		$langAttr = $M -> getField("itemid,itemname");
 		$this -> assign('langList', $langAttr);
 		//文化程度
-		$whcdList = array("小学","初中","高中","中专","大专","本科","硕士","其它");
+		$whcdList = M("zz_degree")->order("degreeID")->select();
 		$this->assign('whcdList',$whcdList);
 	}
     /**

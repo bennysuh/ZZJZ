@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<HTML>
+	<HEAD>
+		<TITLE>广州月嫂 特级月嫂 家政服务 胎毛笔 手足印</TITLE>
+		<META http-equiv=Content-Type content="text/html; charset=utf-8">
+		<LINK href="__PUBLIC__/style/css/portal/style.css" type='text/css' rel="stylesheet" >
+		<LINK href="__PUBLIC__/style/css/portal/mystyle.css" type='text/css' rel="stylesheet" >
+		<link rel="stylesheet" type="text/css" href="__PUBLIC__/js/portal/pro_dropdown_2/pro_dropdown_2.css" />
+		<script type="text/javascript" src="__PUBLIC__/js/jquery-1.8.0.min.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				//查看详细信息
+				$("#staffList").delegate(".viewBtn", "click", function() {
+					var staffid = $(this).parents("tr").attr("staffid");
+					window.location.href = "Portal/Staff/viewStaff?id=" + staffid;
+				});
+
+				$("#searchBtn").click(function() {
+					var levelSel = document.getElementById('levelSel');
+					var level = '';
+					if (levelSel.selectedIndex != 0) {
+						level = levelSel.options[levelSel.selectedIndex].text;
+					}
+					window.location.href = "__ROOT__/Portal/Staff/index?level=" + level;
+
+				});
+			});
+		</script>
+		<BODY>
+			<div class="wrapper">
+				<include file="Public:header" />
+			</div>
+			<div  class="content2 clearfix">
+				<div class="side">
+					<include file="Public:left" />
+				</div>
+				<div class="main">
+					<h2 class="ntit2" id="pageTitle"> {$title} </h2>
+					<div id="staffDiv" class="edittext" >
+						{$content} 
+					</div>
+					<div class="updateTime" >
+						发布日期：{$updateTime} 
+					</div>
+					<div>
+						<include file="Public:return" />
+					</div>
+				</div>
+			</div>
+			<!--end right side -->
+			<include file="Public:footer" />
+		</BODY>
+</HTML>

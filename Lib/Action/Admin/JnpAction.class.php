@@ -8,6 +8,7 @@
  +------------------------------------------------------------------------------
  */
 class JnpAction extends EntryAction {
+
 	/**
 	 +----------------------------------------------------------
 	 * 根据查询条件显示列表
@@ -16,65 +17,34 @@ class JnpAction extends EntryAction {
 	 +----------------------------------------------------------
 	 */
 	public function index() {
-		if($_GET['name'])
-		{
-			$name = $_GET['name'];
-			$data["name"] =  array('like',"%$name%");
+		if($_GET['keyword']) {
+			$title = trim($_GET['keyword']);
+			$where['description']  = array('like',"%$title%");
+			$where['title']  = array('like',"%$title%");
+			$where['_logic'] = 'or';
+			$data['_complex'] = $where;
 		}
-		if($_GET['freeDate'])
-		{
-			$data["startDate"] = array("ELT", $_GET["freeDate"]);
-			$data["endDate"] = array("EGT", $_GET["freeDate"]);
+		if ($_GET['jnpType']) {
+			$data["jnpType"] = $_GET['jnpType'];
 		}
-		$M = M("zz_freetime");
-		//月嫂下拉列表
-		$staffList = D("Staff")->getStafflist();
+		if ($_GET['years']) {
+			$data["years"] = $_GET['years'];
+		}
+		$M = M("zz_jnp");
 		import("@.ORG.Page");
-		$count = D('FreeTimeView')->where($data)->count();
+		$count = $M->where($data)->count();
 		$p = new Page($count, 10);
 		$page = $p -> show();
-		$result = D('FreeTimeView')->where($data)->limit($p -> firstRow.','.$p -> listRows)->order("updatetime desc")->select();
-		foreach ($result as $key=>$freetime) {
-			if($freetime['endDate']){
-				if(strtotime($freetime['endDate']) < strtotime(date("Y-m-d"))){
-					$result[$key]["status"] = "非空档";
-				}else{
-					$result[$key]["status"] = "空档";
-				}
-			}else{
-				$result[$key]["status"] = "空档期无截至日期";
-			}
-		}
-		
+		$list = $M->where($data)
+			->join("join zz_log on zz_log.tablename='zz_jnp' and zz_log.no = zz_jnp.id")
+			->limit($p -> firstRow . " , " . $p -> listRows)->order('zz_log.updatetime desc')->select();
 		$this -> assign('page', $page);
-		$this->assign("list",$result);
-		
-		$this->assign("staffList",json_encode($staffList));
+		$this->assign("list",$list);
+		$this->assign("yearList", D("Jnp")->getYears());
+		$this->assign("typeList", D("Jnp")->typeList);
 		$this->display();
 	}
 
-	/**
-	 +----------------------------------------------------------
-	 * 新增
-	 +----------------------------------------------------------
-	 * @access public
-	 +----------------------------------------------------------
-	 */
-	public function editJnp() {
-		//是否已經存在於本地數據庫
-		$M = M('zz_freetime');
-		$data = $M->create();
-		$key = $M ->data($data)-> add();//获取新增返回的id值用于添加到联系方式表中
-		if ($key) {
-			SysLogs::log("新增空檔期,id=" . $key);
-			$logData["tablename"] = "zz_freetime";
-			$logData["no"] = $key;
-			ZZLogModel::addLog($logData);
-			$this -> success("新增成功");
-		} else {
-			$this -> error('增加失敗');
-		}
-	}
 	
 	/**
 	 +----------------------------------------------------------
@@ -85,23 +55,24 @@ class JnpAction extends EntryAction {
 	 */
 	public function editJnp()
 	{
-		$freetimeId = $_GET['id'];//已有记录
-		if($freetimeId){//assess列表过来的
-			$M = D('AssessView');
-			$result = $M->where("zz_assess.id=" . $assessId)->find();
-			if($result){
-				$this->assign("ygbh",$result['ygbh']);
-				$this->assign("staffName",$result['staffName']);
-				$this->assign("startDate",$result['startDate']);
-				$this->assign("endDate",$result['endDate']);
-				$this->display();
-			}else{
-				$this->error("无此空檔期");
-			}
-		}else{
-			$this->error("缺少订单号");
+		$jnpID = $_GET["id"];
+		$this->assign("typeList", D("Jnp")->typeList);
+		$this->assign("yearList", D("Jnp")->getYears());
+		$this->assign("years", date("Y"));
+		if ($jnpID) {
+			$jnpInfo =  D("Jnp")->getJnpByID($jnpID);
+			$this->assign("imageCount", count($jnpInfo['photos']));
+			$this->assign("jnpID", $jnpInfo['id']);
+			$this->assign("jnpType", $jnpInfo['jnpType']);
+			$this->assign("years", $jnpInfo['years']);
+			$this->assign("title", $jnpInfo['title']);
+			$this->assign("description", $jnpInfo['description']);
+			$this->assign("photoList", $jnpInfo['photos']);
 		}
+		$this->display();
 	}
+
+
 	/**
 	 +----------------------------------------------------------
 	 * 更新
@@ -110,22 +81,30 @@ class JnpAction extends EntryAction {
 	 +----------------------------------------------------------
 	 */
 	public function saveJnp(){
-		$M = M('zz_freetime');
+		$M = M('zz_jnp');
 		$data = $M->create();
-		if($data){
+		
+		if (!$data) $this -> error('保存失敗');
+		$data['updateTime'] = date('Y-m-d H:i:s');
+		if ($data['id']) {
 			$M ->data($data)->save();
-			SysLogs::log("更新空檔期,id=" . $data["id"]);
+			SysLogs::log("更新纪念品,id=" . $data["id"]);
 			$logData["tablename"] = "zz_jnp";
 			$logData["no"] = $data["id"];
 			$logData["operate"] = "update";
 			$logData["updateUser"] = $_SESSION['loginName'];
 			ZZLogModel::updateLog($logData);
 			$this->success("更新成功");
-		}else{
-			$this -> error('保存失敗');
+		} else {
+			$result = $M ->data($data)->add();
+			SysLogs::log("新增纪念品,id=" . $result);
+			$logData["tablename"] = "zz_jnp";
+			$logData["no"] = $result;
+			$result = ZZLogModel::addLog($logData);
+			if (!$result) $this->error("add log error");
+			$this->success("新增成功");
 		}
 	}
-	
 	
 	/**
 	 +----------------------------------------------------------
@@ -137,9 +116,13 @@ class JnpAction extends EntryAction {
 	public function delJnp() {
 		$id = $_POST["id"];
 		if ($id) {
-			$result = M('zz_jnp') -> where("id=" . $id) -> delete();
+			$tablename = "zz_jnp";
+			// 删除图片
+			D("Upload")->removeImage($tablename, $id);
+			$data['id'] = $id;
+			$result = D("Jnp")->where($data)->delete();
 			SysLogs::log("删除纪念品,id=" . $id);
-			$logData["tablename"] = "zz_jnp";
+			$logData["tablename"] = $tablename;
 			$logData["no"] = $id;
 			$logData["operate"] = "delete";
 			$logData["updateUser"] = $_SESSION['loginName'];

@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.bgiframe.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/loading-min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
+
+<link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/style/css/loading.css" rel="stylesheet" type="text/css" />
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+var actionName = '__ACTION__';
+
+$(document).ready(function(){
+    var loading = new ol.loading({id:"MessageBox"});
+    loading.show();
+
+	$.post('{:U("User/doSyncFromEDB")}', null, showResponse, 'json');
+	function showResponse(response) {
+		loading.hide();
+		$('#MessageBox').html(response.info);
+		alert(response.info);
+	}
+
+})
+
+//-->
+</SCRIPT>
+</head>
+<body>
+<include file="Public:header" />
+
+<!-- 主要內容 -->
+<div id="content">
+  <include file="Public:left" />
+    
+  <!-- 右框架 -->
+  <div id="rightWrap">
+    
+    <!-- 用戶管理框架 -->
+  	<div class="UMWrap">
+    	<div id="MessageBox" style="height:500px;"></div>
+    </div>    
+  </div>
+  
+</div>
+
+
+</body>
+</html>

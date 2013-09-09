@@ -95,7 +95,6 @@ class RegionAction extends EntryAction
 			SysLogs::log("修改小区,id=" . $_GET['id']);
 			$this -> success("保存成功");
 		} else {
-			Log::write($M->getError());
 			$this -> error('保存失敗');
 		}
 	}

@@ -1,0 +1,165 @@
+<!DOCTYPE>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-1.8.0.min.js"></script>
+<!--解决IE6 select遮罩 hack插件 配合loading插件使用-->
+<script type="text/javascript" src="__PUBLIC__/js/jquery.bgiframe.min.js"></script>
+<!--loading mask插件-->
+<script type="text/javascript" src="__PUBLIC__/js/loading-min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.3.1/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.3.1/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/validateType.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.json-2.3.min.js"></script>
+<link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/style/css/loading.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/js/jquery-easyui-1.3.1/themes/default/easyui.css" rel="stylesheet" type="text/css">
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+var actionName = '__ACTION__';
+$(document).ready(function(){
+	var loading = new ol.loading({id:"searchForm"});
+     //导航选中
+	$(".navList li[name=setting]").addClass('selectButton');
+	
+	$('#searchBtn').click(function(){
+	    var postData = $("#searchForm").serialize();
+		var url = actionName + "/?" + postData;
+		window.location.href = url;
+	});
+	
+	$("#addBtn").click(function(){
+		window.location.href = group + "/CallLog/editCall/";
+	});
+	
+	//编辑或删除的按纽被按下
+	$('#listTb').delegate(".tableActionButton","click",function(){
+		var currentRow = $(this).parent().parent();
+		var phoneID = currentRow.attr('phoneID');
+		var logID = currentRow.attr('logID');
+		var isHidden;//显示隐藏按钮状态
+		if ($(this).attr('value') == '号码记录') {
+			window.location.href = group + '/CallLog/phoneLog/phoneID/'+phoneID
+				+"/phone/"+ currentRow.children().eq(0).text() + "/name/" + currentRow.children().eq(1).text()
+				+ "/area/" + currentRow.children().eq(2).text() ;
+			return;
+		}
+		if ($(this).attr('value') == '编辑') {
+			window.location.href = group + '/CallLog/editCall/logID/'+logID+"/phoneID/"+phoneID;
+			return;
+		}
+		if ($(this).attr('value') == '查看客户资料') {
+			window.location.href = group + '/Customer/editCustomer/id/'+currentRow.attr('customerID');
+			return;
+		}
+		if ($(this).attr('value') == '删除') {
+			loading.show();
+			$.post('{:U("__ROOT__/Admin/CallLog/removeCallLog")}', "id="+logID, removeHandler, 'json');
+			return;
+		}
+	});
+	function removeHandler(response) {
+		loading.hide();
+		if (response.status) {
+		    window.location.reload();
+		}else{
+			alert(response.info);
+		}
+	}
+	
+})
+//-->
+</SCRIPT>
+
+</head>
+<body>
+  <include file="Public:header" />
+
+<!-- 主要內容 -->
+<div id="content">
+	
+  <!-- 左菜单 -->
+  <include file="Public:leftForContent" />
+    
+  <!-- 右框架 -->
+  <div id="rightWrap">
+    <!-- 所在位置地址 -->
+    <div class="addressBar">来电记录管理 > </div>
+    <!-- 用戶管理框架 -->
+  	<div class="UMWrap">
+  		 <div class="formLine">
+        <form id="searchForm"  >
+            <table class="noBackground" style="border: none;">
+              <tr>
+              	<td class="inputName"><label>电话号码</label></td>
+                <td class="inputText"><input name="phone" type="text" /></td>  	
+              </tr>
+              <tr>
+              	<td class="inputName"><label>来电日期</label></td>
+                <td class="inputText">
+                	<input name="validFrom"  id="validFrom" class="easyui-datebox" />
+					To <input name="validTo" id="validTo" class="easyui-datebox" />
+				</td>  	
+              </tr>
+              <tr>
+              	<td class="inputName"><label>更新日期</label></td>
+                <td class="inputText">
+                	<input name="updateFrom"  id="updateFrom" class="easyui-datebox" />
+					To <input name="updateTo" id="updateTo" class="easyui-datebox" />
+				</td>  	
+              </tr>
+            </table>
+            <!-- 按鈕按下去為select否則為noselect -->
+            <input type="button" id="searchBtn" value="Search" class="TinputAdd noselected" />
+          </form>
+      </div>
+        <!-- 列表框架 -->
+        <div class="listWrap">
+          <h2>来电记录列表</h2> 
+          <button id="addBtn" class="TinputAdd noselected"> 新 增 </button>
+            <table id="listTb">
+              <tr class="tableHeader">
+                <!-- F代表Form -->
+                <th class="nameF" style="width:120px;">来电号码</th>
+                <th class="nameF" style="width:80px;">称呼</th>
+                <th class="nameF" style="width:80px;">所在区域</th>
+                <th class="nameF" style="width:80px;">咨询类型</th>
+                <th class="nameF" style="width:80px;">是否签约客户</th>
+                <th class="nameF" style="width:150px;">拨打日期</th>
+                <th class="nameF" style="width:180px;">最后更新</th>
+				<th class="tableActionTD">操作</th>
+              </tr>
+              <volist name="list" id="vo">
+			  <tr phoneID={$vo['phoneID']} logID="{$vo[logID]}" customerID="{$vo['customerID']}">
+                <td>{$vo['phone']}</td>
+                <td>{$vo['name']}</td>
+                <td>{$vo['area']}</td>
+                <td>{$vo['type']}</td>
+                <td><?php if($vo['customerID']) echo "是"; else echo "否";?> </td>
+                <td>{$vo['callTime']}</td>
+				<td>{$vo['updateUser']}<br/>{$vo['updateTime']}</td>
+				<td>
+					<input type="button" value="号码记录" class="tableActionButton"/>
+					<if condition="$vo['customerID']">
+						<input type="button" value="查看客户资料" class="tableActionButton"/>
+					</if>
+					<?php if (Auth::AccessDecision('Admin','CallLog','saveCallLog')) { ?>
+					<input type="button" value="编辑" class="tableActionButton"/>
+					<?php } ?>
+					<?php if (Auth::AccessDecision('Admin','CallLog','removeCallLog')) { ?>
+					<input type="button" value="删除" class="tableActionButton"/>
+					<?php } ?>
+				</td>
+              </tr>
+              </volist>
+            </table>
+			{:$page}
+        </div>
+  </div>
+</div>
+</body>
+</html>

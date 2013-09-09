@@ -16,10 +16,7 @@ class ZZLogModel extends Model {
 			$data["createUser"] = $_SESSION['loginName'];
 			$data["updateTime"] = $data["createTime"];
 			$key = $M ->data($data)->add();
-			if($key)
-				return true;
-			else 
-				return false;
+			return $key ? true : false;
 		}else{
 			return false;
 		}
@@ -39,10 +36,7 @@ class ZZLogModel extends Model {
 			$data["operate"] = "update";
 			$logData["updateTime"] = date('Y-m-d H:i:s');
 			$key = $M ->where("no=" . $data['no'] . " and tablename='" . $data['tablename'] . "'")->data($logData)->save();
-			if($key)
-				return true;
-			else 
-				return false;
+			return $key ? true : false;
 		}else{
 			return false;
 		}

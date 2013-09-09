@@ -110,10 +110,14 @@ class EmailSender
 			$to = $this->toAddress;
 			$this->toAddress = array();
 		}
+		Log::write("send email");
 		foreach ($to as $email) {
 			$this->mail->AddAddress($email[0], $email[1]);
+			Log::write($email[0] . "," . $email[1]);
 		}
 		$result = $this->mail->Send();
+		
+		Log::write($this->mail->ErrorInfo);
 		return $result;
 	}
 

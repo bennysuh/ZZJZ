@@ -531,7 +531,11 @@
 							<tr>
 								<td class="noBackground inputName">文化程度:</td>
 								<td class="noBackground inputText">
-									<html:select options="whcdList" selected="whcd" name="whcd"/>
+									<select id="whcdSel" name="whcd">
+										<volist name="whcdList" id="whcdVo">
+											<option value="{$whcdVo['degreeID']}" <if condition="$whcdVo['degreeID']==$whcd">selected="true"</if>  >{$whcdVo['degree']}</option>
+										</volist>
+									</select>
 								</td>
 							</tr>
 							<tr>
@@ -643,7 +647,7 @@
 						</table>
                 	</div>
 				</div>
-				<div id="toolbar2" class="formLine" >
+				<div id="toolbar2" class="formLine" style="clear:both;">
 						<?php if (Auth::AccessDecision('Admin','Staff','editStaff')) { ?>
 						<button class="actionButton" id="saveStaffBtn">
 							儲存

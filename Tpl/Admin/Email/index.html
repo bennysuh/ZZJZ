@@ -1,0 +1,127 @@
+<!DOCTYPE>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-1.8.0.min.js"></script>
+<!--解决IE6 select遮罩 hack插件 配合loading插件使用-->
+<script type="text/javascript" src="__PUBLIC__/js/jquery.bgiframe.min.js"></script>
+<!--loading mask插件-->
+<script type="text/javascript" src="__PUBLIC__/js/loading-min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/leftMenu.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.3.1/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery-easyui-1.3.1/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/validateType.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.json-2.3.min.js"></script>
+<link href="__PUBLIC__/style/css/main.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/style/css/loading.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/js/jquery-easyui-1.3.1/themes/default/easyui.css" rel="stylesheet" type="text/css">
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+var actionName = '__ACTION__';
+$(document).ready(function(){
+	var loading = new ol.loading({id:"searchForm"});
+     //导航选中
+	$(".navList li[name=setting]").addClass('selectButton');
+	
+	$('#searchBtn').click(function(){
+	    var postData = $("#searchForm").serialize();
+		var url = actionName + "/?" + postData;
+		window.location.href = url;
+	});
+	
+	$("#addBtn").click(function(){
+		window.location.href = group + "/Email/sendEmail/";
+	});
+	//编辑或删除的按纽被按下
+	$('#listTb').delegate(".tableActionButton","click",function(){
+		var currentRow = $(this).parent().parent();
+		var emailId = currentRow.attr('emailId');
+		var isHidden;//显示隐藏按钮状态
+		if ($(this).attr('value') == '查看') {
+			window.location.href = group + '/Email/viewEmail/id/'+emailId;
+			return;
+		}
+	});
+	function removeHandler(response) {
+		loading.hide();
+		if (response.status) {
+			window.location.reload();
+		}else{
+			alert(response.info);
+		}
+	}
+})
+//-->
+</SCRIPT>
+
+</head>
+<body>
+  <include file="Public:header" />
+
+<!-- 主要內容 -->
+<div id="content">
+	
+  <!-- 左菜单 -->
+  <include file="Public:leftForContent" />
+    
+  <!-- 右框架 -->
+  <div id="rightWrap">
+    <!-- 所在位置地址 -->
+    <div class="addressBar">已发送Email > </div>
+    <!-- 用戶管理框架 -->
+  	<div class="UMWrap">
+  		 <div class="formLine">
+        <form id="searchForm"  >
+            <table class="noBackground" style="border: none;">
+              <tr>
+              	<td class="inputName"><label>标题/内容</label></td>
+                <td class="inputText"><input name="title" type="text" /></td>  	
+              </tr>
+              <tr>
+              	<td class="inputName"><label>发送对象</label></td>
+                <td class="inputText"><input name="sender" type="text" /></td>  	
+              </tr>
+              <tr>
+              	<td class="inputName"><label>发送日期</label></td>
+                <td class="inputText">
+                	<input name="sendFrom"  id="sendFrom" class="easyui-datebox" />
+					To <input name="sendTo" id="sendTo" class="easyui-datebox" />
+				</td>  	
+              </tr>
+            </table>
+            <!-- 按鈕按下去為select否則為noselect -->
+            <input type="button" id="searchBtn" value="Search" class="TinputAdd noselected" />
+          </form>
+      </div>
+        <!-- 列表框架 -->
+        <div class="listWrap">
+          <h2>已发送Email列表</h2> 
+          <button id="addBtn" class="TinputAdd noselected"> 新 增 </button>
+            <table id="listTb">
+              <tr class="tableHeader">
+                <!-- F代表Form -->
+                <th class="nameF" style="width:300px;">标题</th>
+                <th class="nameF" style="width:80px;">发送对象</th>
+                <th class="nameF" style="width:150px;">发送日期</th>
+                <th class="nameF" style="width:60px;">操作</th>
+              </tr>
+              <volist name="list" id="vo">
+			  <tr emailId={$vo['id']}>
+                <td>{$vo['title']}</td>
+                <td style="word-break: break-all;word-wrap:break-word; width: 300px;">{$vo['sender']}</td>
+				<td>{$vo['user']}<br/>{$vo['updateTime']}</td>
+				<td>
+					<input type="button" value="查看" class="tableActionButton"/>
+				</td>
+              </tr>
+              </volist>
+            </table>
+			{:$page}
+        </div>
+  </div>
+</div>
+</body>
+</html>

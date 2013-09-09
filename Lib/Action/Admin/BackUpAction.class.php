@@ -18,14 +18,13 @@
  * @version   $Id$
  +------------------------------------------------------------------------------
  */
-
+Header('Content-type:document; charset=utf-8');
+header("Content-Disposition:attachment; filename=zzjz_".date( 'YmdHis ').".sql"); 
 class BackUpAction extends EntryAction
 {
     
     public function index()
     {
-    	Header('Content-type:document; charset=utf-8');
-		Header("Content-Disposition:attachment; filename=zzjz_".date( 'YmdHis ').".sql"); 
     	$table=$this->getTable();
 		$struct=$this->bakStruct($table);
 		$record=$this->bakRecord($table);
