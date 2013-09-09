@@ -160,6 +160,12 @@
 								</td>
 							</tr>
 							<tr>
+								<td class="noBackground inputName">编号:</td>
+								<td class="noBackground inputText">
+								<input name="bh" type="text" class="easyui-validatebox" required="true" value="{$bh}" />
+								</td>
+							</tr>
+							<tr>
 								<td class="noBackground inputName">上市年份:</td>
 								<td class="noBackground inputText">
 									<select id="yearSel" name="years">
@@ -167,6 +173,24 @@
 				                			<option value="{$yearVo}" <if condition="$yearVo eq $years">selected="true" </if> >{$yearVo}</option>
 				                		</volist>
 				                	</select>
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">材质:</td>
+								<td class="noBackground inputText">
+								<input name="cz" type="text" class="easyui-validatebox" required="true" value="{$cz}" />
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">颜色:</td>
+								<td class="noBackground inputText">
+								<input name="color" type="text" class="easyui-validatebox" required="true" value="{$color}" />
+								</td>
+							</tr>
+							<tr>
+								<td class="noBackground inputName">尺寸:</td>
+								<td class="noBackground inputText">
+								<input name="size" type="text" class="easyui-validatebox" required="true" value="{$size}" />
 								</td>
 							</tr>
 							<tr>

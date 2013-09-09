@@ -26,25 +26,17 @@
 				$(".fancybox").attr('rel', 'gallery')
 					.fancybox({
 						padding: "10px",
-						prevEffect	: 'none',
-						nextEffect	: 'none',
+						maxWidth:"712px",
+						maxHeight:"712px",
 						helpers	: {
 							title	: {
-								type: 'inside'
+								type: 'outside'
 							},
 							thumbs	: {
 								width	: 50,
 								height	: 50
 							}
 						},
-						beforeShow: function () {
-				            /* Add watermark */
-				            $('<div class="watermark"></div>')
-				                .bind("contextmenu", function (e) {
-				                    return false; /* Disables right click */
-				                })
-				                .prependTo( $.fancybox.inner );   
-				        }
 					});
 			});
 		</script>

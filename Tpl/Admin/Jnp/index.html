@@ -124,19 +124,19 @@ $(document).ready(function(){
             <table id="jnpList">
               <tr class="tableHeader">
                 <!-- F代表Form -->
+                <th class="nameF"  style="width:80px;">编号</th>
                 <th class="nameF" style="width:100px;">类型</th>
                 <th class="nameF"  style="width:80px;">年份</th>
                 <th class="nameF"  style="width:200px;">标题</th>
-                <th class="nameF"  style="width:300px;">描述</th>
                 <th class="nameF">最后更新</th>
 				<th class="tableActionTD" style="width:200px;">操作</th>
               </tr>
               <volist name="list" id="vo">
 			  <tr jnpID={$vo['no']}>
+			  	<td>{$vo['bh']}</td>
 			  	<td>{$vo['jnpType']}</td>
-			  	 <td>{$vo['years']}</td>
+			  	<td>{$vo['years']}</td>
                 <td>{$vo['title']}</td>
-                <td style="width:300px;">{$vo['description']}</td>
 				<td>{$vo['updateUser']}<br/>{$vo['updateTime']}</td>
 				<td >
 					<?php if (Auth::AccessDecision('Admin','Jnp','editJnp')) { ?>
