@@ -75,6 +75,7 @@
 							'model' : 'jnp',
 						},
 						'onUploadComplete' : function(file, data) {
+							console.log(data);
 							var data = JSON.parse(data);
 							if ( typeof (data) != "object") {
 								alert(data);
@@ -177,19 +178,19 @@
 							<tr>
 								<td class="noBackground inputName">材质:</td>
 								<td class="noBackground inputText">
-								<input name="cz" type="text" class="easyui-validatebox" required="true" value="{$cz}" />
+								<input name="cz" type="text" class="easyui-validatebox" value="{$cz}" />
 								</td>
 							</tr>
 							<tr>
 								<td class="noBackground inputName">颜色:</td>
 								<td class="noBackground inputText">
-								<input name="color" type="text" class="easyui-validatebox" required="true" value="{$color}" />
+								<input name="color" type="text" class="easyui-validatebox"  value="{$color}" />
 								</td>
 							</tr>
 							<tr>
 								<td class="noBackground inputName">尺寸:</td>
 								<td class="noBackground inputText">
-								<input name="size" type="text" class="easyui-validatebox" required="true" value="{$size}" />
+								<input name="size" type="text" class="easyui-validatebox" value="{$size}" />
 								</td>
 							</tr>
 							<tr>
