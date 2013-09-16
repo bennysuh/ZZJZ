@@ -38,6 +38,12 @@
 							}
 						},
 					});
+					
+				$("#searchBtn").click(function () {
+					var postData = $("#gallerySearchForm").serialize();
+					var url = "__ROOT__/Portal/Jnp/gallery?" + postData;
+					window.location.href = url;
+				});
 			});
 		</script>
 		<BODY>
@@ -50,6 +56,27 @@
 						<include file="Public:left" />
 					</div>
 					<div class="main">
+						<form id="gallerySearchForm"  >
+				            <table class="noBackground" style="border: none;">
+				              <tr>
+				              	<td class="inputName"><label>关键字：</label></td>
+				                <td class="inputText"><input name="keyword" type="text" /></td>  	
+				              </tr>
+				              <tr>
+				              	<td class="inputName"><label>类型：</label></td>
+				                <td class="inputText">
+				                	<select id="typeSel" name="jnpType">
+				                		<option value="0">请选择</option>
+				                		<volist name="typeList" id="typeVo">
+				                			<option value="{$typeVo}">{$typeVo}</option>
+				                		</volist>
+				                	</select>
+				                </td>  	
+				              </tr>
+				            </table>
+				            <!-- 按鈕按下去為select否則為noselect -->
+				            <input type="button" id="searchBtn" value="查询" class="TinputAdd noselected" />
+				          </form>
 						<volist name="list" id="jnpVo">
 							<a class="fancybox" rel="group"  title="{$jnpVo['description']} " 
 								href="{$jnpVo['path']}">

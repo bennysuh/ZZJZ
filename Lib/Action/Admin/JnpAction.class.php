@@ -93,9 +93,7 @@ class JnpAction extends EntryAction {
 		$data = $M->create();
 		
 		if (!$data) $this -> error('保存失敗');
-		if ((D("Jnp")->checkBh($data['bh']))) {
-			$this->error("已存在此编号");
-		}
+		
 		$data['updateTime'] = date('Y-m-d H:i:s');
 		if ($data['id']) {
 			$M ->data($data)->save();
@@ -107,8 +105,10 @@ class JnpAction extends EntryAction {
 			ZZLogModel::updateLog($logData);
 			$this->success("更新成功");
 		} else {
+			if ((D("Jnp")->checkBh($data['bh']))) {
+				$this->error("已存在此编号");
+			}
 			$result = $M ->data($data)->add();
-			Log::write(M()->getLastSql());
 			SysLogs::log("新增纪念品,id=" . $result);
 			$logData["tablename"] = "zz_jnp";
 			$logData["no"] = $result;

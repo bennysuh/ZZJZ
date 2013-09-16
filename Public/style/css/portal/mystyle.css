@@ -958,3 +958,13 @@ li {
 	width:480px;
 	height:360px;
 }
+#staffInfoTB {
+	width:100%;
+}
+#gallerySearchForm {
+	width:100%;
+	margin:10px;
+}
+#gallerySearchForm td{
+	border: none;
+}

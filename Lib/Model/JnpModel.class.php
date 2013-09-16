@@ -6,7 +6,9 @@ class JnpModel extends Model {
 	public $typeList = array(
 		"胎毛笔",
 		"胎毛绣",
+		"胎毛画",
 		"手足印",
+		"挂坠",
 		"其它",
 	);
 	
@@ -58,6 +60,30 @@ class JnpModel extends Model {
 		$data['bh'] = trim($bh);
 		$result = $this->where($data)->count();
 		return $result > 0 ? true : false;
+	}
+	
+	public function getRecentJnp($first, $length)
+	{
+		$jnpList = $this->field("id, title, description")->limit($first, $length)->select();
+		$ids = array();
+		foreach ($jnpList as $key => $value) {
+			$ids[] = $value['id'];
+		}
+		$uploadData['tablename'] = "zz_jnp";
+		$uploadData['pid'] = array("in", $ids);
+		$list = M("zz_upload")->where($uploadData)
+			->order('zz_upload.updatetime desc')->select();
+		$jnpInfo;
+		foreach ($list as $key => $value) {
+			$list[$key]['path'] = D("Jnp")->host . $value['path'];
+			$jnpInfo = D("Jnp")->where("id={$value['pid']}")->find();
+			$list[$key]['title'] = $jnpInfo['title'];
+			$description =   $jnpInfo['title'] . "<br/>编号:" . $jnpInfo['bh'] . "<br/>" . ($jnpInfo['cz'] ? "材质:" . $jnpInfo['cz'] . "<br/>" : "")
+				.  ($jnpInfo['color'] ? "颜色:" . $jnpInfo['color'] . "<br/>" : "") . ($jnpInfo['size'] ? "尺寸:" . $jnpInfo['size'] . "<br/>" : "");
+			$list[$key]['description'] = $description;
+			$list[$key]['thumb'] = D("Jnp")->host . "s_". $value['path'];
+		}
+		return $list;
 	}
 }
 ?>
