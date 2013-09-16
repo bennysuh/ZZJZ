@@ -24,7 +24,8 @@ class JnpAction extends Action {
 		if ($_GET['jnpType']) {
 			$data["jnpType"] = $_GET['jnpType'];
 		}
-		$jnpList = D("Jnp")->where($data)->field("id, title, description")->select();
+		$jnpList = D("Jnp")->where($data)->field("id, title, description, jnpType")
+			->order("jnpType asc, updatetime desc")->select();
 		$ids = array();
 		foreach ($jnpList as $key => $value) {
 			$ids[] = $value['id'];

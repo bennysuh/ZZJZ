@@ -96,6 +96,7 @@ class JnpAction extends EntryAction {
 		
 		$data['updateTime'] = date('Y-m-d H:i:s');
 		if ($data['id']) {
+			unset($data['bh']);
 			$M ->data($data)->save();
 			SysLogs::log("更新纪念品,id=" . $data["id"]);
 			$logData["tablename"] = "zz_jnp";
@@ -146,6 +147,70 @@ class JnpAction extends EntryAction {
 		} else {
 			$this -> error('无参数');
 		}
+	}
+	
+	public function autoUpload()
+	{
+		$path = "/Public/Uploads/jnp/source/";
+		$targetPath = "/Public/Uploads/jnp/";
+		$handle = opendir($path);	// 打开路径
+		if (!$handle) return FALSE; 
+		
+		$fileArray = array();
+		
+		$key = 1;
+		while (false !== ($file = readdir($handle)))	// 循环读取目录中的文件名并赋值给$file
+		{
+			if ($file != "." && $file != "..")	// 排除当前路径和前一路径
+			{
+				$fileNameArr = explode(" ", $file);
+				// 新增jnp log
+				$jnpData['jnpType'] = '手足印';
+				$jnpData['years'] = '2013';
+				$jnpData['bh'] = 'szy_2013_' . $key++;
+				$jnpData['cz'] = '水晶琉璃';
+				$jnpData['color'] = '样色';
+				$jnpData['size'] = $fileNameArr[1];
+				$jnpData['title'] = $fileNameArr[0];
+				$jnpData['description'] = $jnpData['title'] . "-" . "木托古法琉璃套系列";
+				$jnpData['updateTime'] = date('Y-m-d H:i:s');
+				$result = D("Jnp")->add($jnpData);
+				if (!$result) {
+					dump(M()->getLastSql());
+					die;
+				}
+				// copy image
+				$sourcePath = $path. $jnpData['title'];
+				$newName = Date("YmdHis") . ".jpg";
+				$targetPath = $targetPath . $newName;
+				
+				
+				// 新增upload log
+				
+				
+				$uploadData['tablename'] = "zz_jnp";
+				$obj['pid'] = "zz_jnp";
+				$obj['path'] = $path . $file;
+				$obj['fileName'] = $file;
+				$path_parts = pathinfo($obj['path']);
+				$obj['extension'] = $path_parts['extension'];
+				$pathArr = split("/", $obj['path']);
+				
+				// 获取父目录 count($pathArr) > 7表示根目录下的目录路径。排除了data.js
+				if ($file != "data.js") { //count($pathArr) > 7
+					$parentFolder = "";
+					foreach ($pathArr as $key => $value) {
+						if ($key > 5 && $key < (count($pathArr)-1)) {
+							$parentFolder .= $value . "/";
+						}
+					}
+					
+					$obj['parentFolder'] = $parentFolder; 
+				}
+				$fileArray[] = $obj;
+			}
+		}
+		closedir($handle);
 	}
 }
 ?>

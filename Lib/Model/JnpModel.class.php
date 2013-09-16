@@ -1,7 +1,12 @@
 <?php
 class JnpModel extends Model {
 	protected $trueTableName = "zz_jnp";
-	public $host = "/ZZJZ/Public/Uploads/jnp/";
+	public $host;
+	
+	public function __construct() {
+		parent::__construct();
+		$this->host = APP_NAME . "/Public/Uploads/jnp/"; 
+	}
 	
 	public $typeList = array(
 		"胎毛笔",
