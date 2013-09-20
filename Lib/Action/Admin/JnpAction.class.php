@@ -151,12 +151,12 @@ class JnpAction extends EntryAction {
 	
 	public function autoUpload()
 	{
-		$path = "/Public/Uploads/jnp/source/";
-		$targetPath = "/Public/Uploads/jnp/";
+		$path =  "./Public/Uploads/jnp/source/test/";
+		$targetPath = "./Public/Uploads/jnp/target/szy/ykl/";
 		$handle = opendir($path);	// 打开路径
-		if (!$handle) return FALSE; 
-		
-		$fileArray = array();
+		if (!$handle) {
+			return FALSE; 
+		}
 		
 		$key = 1;
 		while (false !== ($file = readdir($handle)))	// 循环读取目录中的文件名并赋值给$file
@@ -165,29 +165,38 @@ class JnpAction extends EntryAction {
 			{
 				$fileNameArr = explode(" ", $file);
 				// 新增jnp log
-				$jnpData['jnpType'] = '手足印';
+				$jnpData['jnpType'] = D("Jnp")->typeList[3];
 				$jnpData['years'] = '2013';
 				$jnpData['bh'] = 'szy_2013_' . $key++;
-				$jnpData['cz'] = '水晶琉璃';
+				$jnpData['cz'] = '亚克力';
 				$jnpData['color'] = '样色';
-				$jnpData['size'] = $fileNameArr[1];
+				$jnpData['size'] = substr($fileNameArr[1], 0, -4);
 				$jnpData['title'] = $fileNameArr[0];
-				$jnpData['description'] = $jnpData['title'] . "-" . "木托古法琉璃套系列";
+				$jnpData['description'] = $fileNameArr[0];
+				Log::write($jnpData['title'] . "," . $jnpData['description']);
 				$jnpData['updateTime'] = date('Y-m-d H:i:s');
 				$result = D("Jnp")->add($jnpData);
+				Log::write(M()->getLastSql());
 				if (!$result) {
 					dump(M()->getLastSql());
-					die;
+					return false;
 				}
+				return false;
 				// copy image
-				$sourcePath = $path. $jnpData['title'];
+				$sourcePath = $path . $file;
 				$newName = Date("YmdHis") . ".jpg";
-				$targetPath = $targetPath . $newName;
+				if (!$this->createDir($targetPath)) {
+					print_r("create dir failed:" . $targetPath);
+					return FALSE;
+				}
+				$targetFile = $targetPath . $newName;
 				
+				if (!copy($sourcePath, $targetFile)) {
+					print_r("copy failed:" . $sourcePath . ',' . $targetFile);
+					return false ;
+				}
 				
 				// 新增upload log
-				
-				
 				$uploadData['tablename'] = "zz_jnp";
 				$obj['pid'] = "zz_jnp";
 				$obj['path'] = $path . $file;
@@ -196,21 +205,18 @@ class JnpAction extends EntryAction {
 				$obj['extension'] = $path_parts['extension'];
 				$pathArr = split("/", $obj['path']);
 				
-				// 获取父目录 count($pathArr) > 7表示根目录下的目录路径。排除了data.js
-				if ($file != "data.js") { //count($pathArr) > 7
-					$parentFolder = "";
-					foreach ($pathArr as $key => $value) {
-						if ($key > 5 && $key < (count($pathArr)-1)) {
-							$parentFolder .= $value . "/";
-						}
-					}
-					
-					$obj['parentFolder'] = $parentFolder; 
-				}
-				$fileArray[] = $obj;
 			}
 		}
 		closedir($handle);
+	}
+
+	public function createDir($dir)
+	{
+		// 創建目錄
+		if (!is_dir($dir)) {
+			return mkdir($dir, 0755, true);
+		}
+		return TRUE;
 	}
 }
 ?>
