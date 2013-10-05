@@ -5,13 +5,14 @@ class JnpModel extends Model {
 	
 	public function __construct() {
 		parent::__construct();
-		$this->host = APP_NAME . "/Public/Uploads/jnp/"; 
+		$this->host =  APP_NAME . "/Public/Uploads/jnp/"; 
 	}
 	
 	public $typeList = array(
 		"胎毛笔",
 		"胎毛绣",
 		"胎毛画",
+		"胎毛印章",
 		"手足印",
 		"挂坠",
 		"其它",
@@ -52,10 +53,10 @@ class JnpModel extends Model {
 	{
 		$photoData['tablename'] = $this->trueTableName;
 		$photoData['pid'] = $id;
+		$photoData['tip'] = "thumb";
 		$photos = D("Upload")->getFiles($photoData);
 		foreach ($photos as $key => $value) {
-			$photos[$key]['path'] = $this->host . $value['path'];
-			$photos[$key]['thumb'] = $this->host . "s_" . $value['path'];
+			$photos[$key]['thumb'] = $this->host . $value['path'];
 		}
 		return $photos;
 	}
@@ -67,15 +68,16 @@ class JnpModel extends Model {
 		return $result > 0 ? true : false;
 	}
 	
-	public function getRecentJnp($first, $length)
+	public function getRecentJnp($first, $length, $cond)
 	{
-		$jnpList = $this->field("id, title, description")->limit($first, $length)->select();
+		$jnpList = $this->field("id, title, description")->where($cond)->limit($first . ',' . $length)->select();
 		$ids = array();
 		foreach ($jnpList as $key => $value) {
 			$ids[] = $value['id'];
 		}
 		$uploadData['tablename'] = "zz_jnp";
 		$uploadData['pid'] = array("in", $ids);
+		$uploadData['tip'] = "big";
 		$list = M("zz_upload")->where($uploadData)
 			->order('zz_upload.updatetime desc')->select();
 		$jnpInfo;
@@ -86,7 +88,9 @@ class JnpModel extends Model {
 			$description =   $jnpInfo['title'] . "<br/>编号:" . $jnpInfo['bh'] . "<br/>" . ($jnpInfo['cz'] ? "材质:" . $jnpInfo['cz'] . "<br/>" : "")
 				.  ($jnpInfo['color'] ? "颜色:" . $jnpInfo['color'] . "<br/>" : "") . ($jnpInfo['size'] ? "尺寸:" . $jnpInfo['size'] . "<br/>" : "");
 			$list[$key]['description'] = $description;
-			$list[$key]['thumb'] = D("Jnp")->host . "s_". $value['path'];
+			$fileName = substr(strrchr($value['path'],"/"), 1);
+			$folder = substr($value['path'], 0, strlen($value['path']) - strlen($fileName));
+			$list[$key]['thumb'] = D("Jnp")->host . $folder. "s_" . $fileName;
 		}
 		return $list;
 	}

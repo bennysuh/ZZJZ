@@ -40,8 +40,8 @@ class JnpAction extends EntryAction {
 		$p = new Page($count, 10);
 		$page = $p -> show();
 		$list = $M->where($data)
-			->join("join zz_log on zz_log.tablename='zz_jnp' and zz_log.no = zz_jnp.id")
-			->limit($p -> firstRow . " , " . $p -> listRows)->order('zz_log.updatetime desc')->select();
+			->limit($p -> firstRow . " , " . $p -> listRows)
+			->order('updateTime desc')->select();
 		$this -> assign('page', $page);
 		$this->assign("list",$list);
 		$this->assign("yearList", D("Jnp")->getYears());
@@ -152,39 +152,51 @@ class JnpAction extends EntryAction {
 	public function autoUpload()
 	{
 		$path =  "./Public/Uploads/jnp/source/test/";
-		$targetPath = "./Public/Uploads/jnp/target/szy/ykl/";
+		$subFolder = "target/tmx/"; // 修改的地方
+		$targetPath = "./Public/Uploads/jnp/" . $subFolder;
 		$handle = opendir($path);	// 打开路径
 		if (!$handle) {
 			return FALSE; 
 		}
-		
-		$key = 1;
+		$data['bh'] = array("like", "tmx_%"); // 修改地方
+		$lastBh = D("Jnp")->where($data)->order("id desc")->getField("bh");
+		$lastBh_id = substr($lastBh, -2);
+		$key = $lastBh_id ? ($lastBh_id+1) : 1;
 		while (false !== ($file = readdir($handle)))	// 循环读取目录中的文件名并赋值给$file
 		{
 			if ($file != "." && $file != "..")	// 排除当前路径和前一路径
 			{
+				unset($uploadData);
+				unset($jnpData);
 				$fileNameArr = explode(" ", $file);
 				// 新增jnp log
-				$jnpData['jnpType'] = D("Jnp")->typeList[3];
+				$jnpData['jnpType'] = D("Jnp")->typeList[2];
 				$jnpData['years'] = '2013';
-				$jnpData['bh'] = 'szy_2013_' . $key++;
-				$jnpData['cz'] = '亚克力';
+				$jnpData['bh'] = 'tmx_2013_' . $key++;// 修改地方
+				$jnpData['cz'] = '参考样品';// 修改地方
 				$jnpData['color'] = '样色';
-				$jnpData['size'] = substr($fileNameArr[1], 0, -4);
+				//$size = substr($fileNameArr[1], 0, -4);
+				$jnpData['size'] = $size ? $size : '参考样品';
 				$jnpData['title'] = $fileNameArr[0];
 				$jnpData['description'] = $fileNameArr[0];
-				Log::write($jnpData['title'] . "," . $jnpData['description']);
+				if (!mb_check_encoding($jnpData['title'] , 'utf-8')){
+					if (mb_check_encoding($jnpData['title'] , 'gbk')) {
+						$jnpData['title'] = iconv('gbk', 'utf-8//IGNORE', $jnpData['title'] );
+						$jnpData['description'] = iconv('gbk', 'utf-8//IGNORE', $jnpData['description'] );
+					} else {
+						dump("unknow code");
+					}
+		        }
+		        $jnpData['description'] .= "-胎毛绣系列";// 修改地方
 				$jnpData['updateTime'] = date('Y-m-d H:i:s');
-				$result = D("Jnp")->add($jnpData);
-				Log::write(M()->getLastSql());
-				if (!$result) {
+				$jnpID = D("Jnp")->data($jnpData)->add();
+				if (!$jnpID) {
 					dump(M()->getLastSql());
 					return false;
 				}
-				return false;
 				// copy image
 				$sourcePath = $path . $file;
-				$newName = Date("YmdHis") . ".jpg";
+				$newName = $this->generalFileName() . ".jpg";
 				if (!$this->createDir($targetPath)) {
 					print_r("create dir failed:" . $targetPath);
 					return FALSE;
@@ -192,24 +204,50 @@ class JnpAction extends EntryAction {
 				$targetFile = $targetPath . $newName;
 				
 				if (!copy($sourcePath, $targetFile)) {
-					print_r("copy failed:" . $sourcePath . ',' . $targetFile);
+					echo "copy failed:" . $sourcePath . ',' . $targetFile;
 					return false ;
+				}
+				
+				// 创建缩略图
+				$thumbResult = D("Upload")->createThumb($targetPath, $newName);
+				if (!$thumbResult) {
+					echo "create thumb failed!";
+					return false;
 				}
 				
 				// 新增upload log
 				$uploadData['tablename'] = "zz_jnp";
-				$obj['pid'] = "zz_jnp";
-				$obj['path'] = $path . $file;
-				$obj['fileName'] = $file;
-				$path_parts = pathinfo($obj['path']);
-				$obj['extension'] = $path_parts['extension'];
-				$pathArr = split("/", $obj['path']);
+				$uploadData['pid'] = $jnpID;
+				$uploadData['tip'] = "big";
+				$uploadData['path'] = $subFolder . $newName;
+				$uploadData['type'] = "pic";
+				$uploadData['sortIndex'] = 0;
+				$uploadData['updateTime'] = date('Y-m-d H:i:s');
+				$result = M("zz_upload")->add($uploadData);
+				if (!$result) {
+					echo "create upload error";
+					return FALSE;
+				}
 				
+				// 新增thumb log
+				$uploadData['tip'] = "thumb";
+				$uploadData['path'] = $subFolder . 's_' . $newName;
+				$result = M("zz_upload")->add($uploadData);
+				if (!$result) {
+					echo "create upload error";
+					return FALSE;
+				}
 			}
 		}
 		closedir($handle);
 	}
-
+	
+	public function generalFileName()
+	{
+		$now = microtime_format();
+		return date('YmdHis', $now[0]) . $now[1];
+	}
+	
 	public function createDir($dir)
 	{
 		// 創建目錄

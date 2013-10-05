@@ -3,6 +3,8 @@
 	<HEAD>
 		<META http-equiv=Content-Type content="text/html; charset=UTF-8">
 		<TITLE>广州月嫂 特级月嫂 家政服务 胎毛笔 手足印 广州市真真家政服务有限公司</TITLE>
+		<meta name="keywords" content="月嫂 广州月嫂 家政服务"/>
+		<meta name="description" content="请月嫂请到真真家政，真心待人，真诚服务"/>
 		<LINK href="__PUBLIC__/style/css/portal/mystyle.css" type=text/css rel=stylesheet>
 		<link rel="stylesheet" type="text/css" href="__PUBLIC__/js/portal/pro_dropdown_2/pro_dropdown_2.css" />
 		<link href="__PUBLIC__/js/jquery-easyui-1.3.1/themes/default/easyui.css" rel="stylesheet" type="text/css">
@@ -48,22 +50,6 @@
 						$("img", $self).attr("src", "__PUBLIC__/style/img/portal/down.gif");
 					});
 				});
-				
-				$(".fancybox").attr('rel', 'gallery')
-					.fancybox({
-						padding: "10px",
-						maxWidth:"712px",
-						maxHeight:"712px",
-						helpers	: {
-							title	: {
-								type: 'outside'
-							},
-							thumbs	: {
-								width	: 50,
-								height	: 50
-							}
-						},
-					});
 			})
 		</script>
 	</HEAD>
@@ -91,7 +77,7 @@
 							</ul>
 						</div>
 						<p id="module_up_down">
-							<img src="__PUBLIC__/style/img/portal/down.gif" alt="" />
+							<img src="__PUBLIC__/style/img/portal/down.gif" alt="收起最新通知" />
 						</p>
 					</div>
 					<div id="csbd">
@@ -191,7 +177,7 @@
 							<volist name="ysList" id="ysVo">
 								<li>
 									<a href="__ROOT__/Portal/Staff/viewStaff?staffID={$ysVo['staffID']}" title="{$ysVo['ysLevel']}" target="_self">
-										<img src="__PUBLIC__/Uploads/Staff/{$ysVo['path']}"   class="scrollImg" /></a>
+										<img src="__PUBLIC__/Uploads/Staff/{$ysVo['path']}"  alt="点击查看详细资料"  class="scrollImg" /></a>
 								</li>
 							</volist>
 						</ul>
@@ -209,10 +195,7 @@
 						class="first-and-second-carousel jcarousel-skin-ie7">
 							<volist name="jnpList" id="jnpVo">
 								<li>
-									<a class="fancybox" rel="group"  title="{$jnpVo['description']} " 
-										href="{$jnpVo['path']}">
-										<img src="{$jnpVo['thumb']}" title="{$jnpVo['title']}" />
-									</a>
+									<img src="{$jnpVo['thumb']}" title="{$jnpVo['title']}" alt="手足印纪念品"  class="scrollImg" />
 								</li>
 							</volist>
 						</ul>

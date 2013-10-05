@@ -2,11 +2,7 @@
 <HTML>
 	<HEAD>
 		<TITLE>广州月嫂 胎毛笔 手足印</TITLE>
-		<META http-equiv=Content-Type content="text/html; charset=utf-8">
-		<LINK href="__PUBLIC__/style/css/portal/style.css" type='text/css' rel="stylesheet" >
-		<LINK href="__PUBLIC__/style/css/portal/mystyle.css" type='text/css' rel="stylesheet" >
-		<link rel="stylesheet" type="text/css" href="__PUBLIC__/js/portal/pro_dropdown_2/pro_dropdown_2.css" />
-		<script type="text/javascript" src="__PUBLIC__/js/jquery-1.9.0.min.js"></script>
+		<include file='Public:common' />
 		<script type="text/javascript" src="__PUBLIC__/js/common.js"></script>
 		<script type="text/javascript" src="__PUBLIC__/js/fancyBox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
 		<!-- Add fancyBox main JS and CSS files -->
@@ -83,6 +79,7 @@
 								<img src="{$jnpVo['thumb']}" title="{$jnpVo['title']}" />
 							</a>
 						</volist>
+						{:$page}
 					</div>
 				</div>
 			</div>

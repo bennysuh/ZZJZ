@@ -131,6 +131,17 @@ class UploadModel extends Model {
 		return $this->where($data)->max('sortIndex');
 	}
 	
+	/**
+	 +----------------------------------------------------------
+	 * @param sourcePath 源路经
+	 * @param sourceName 源文件名称
+	 * @param targetName 目标文件名称 默认 s_源文件名称
+	 * @param $targetMaxWidth 默认150
+	 * @param $targetMaxHeight 默认150
+	 +----------------------------------------------------------
+	 * @access public
+	 +----------------------------------------------------------
+	 */
 	public function createThumb($sourcePath, $sourceName, $targetName, $targetMaxWidth, $targetMaxHeight)
 	{
 		import("@.ORG.Image");
