@@ -67,8 +67,8 @@ class ContractAction extends EntryAction {
 		$p = new Page($count, 10);
 		
 		$page = $p -> show();
-		$list = $M->where($data)->limit($p -> firstRow.','.$p -> listRows)->order("id desc")->select();
-		
+		$list = $M->where($data)->limit($p -> firstRow.','.$p -> listRows)->order("id desc")->group("bh")->select();
+	
 		$this -> assign('page', $page);
 		$this -> assign('list', $list);
 		$this -> display();
