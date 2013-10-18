@@ -35,7 +35,19 @@ return array(
 	'TMPL_ACTION_SUCCESS' => './Tpl/Public/success.html',// 成功跳转页面
 	'OUTPUT_ENCODE'=>false,
 	'ENABLE_EDB' => false,
-
+	//静态缓存
+	'HTML_CACHE_ON'=>true,
+	'HTML_CACHE_RULES'=> array(
+		'index:index'            => array('{:module}'), 
+		'pagecontent:index'            => array('{page}'), 
+		'staff:selectYs'            => array('{:action}'), 
+		'staff:viewStaff'            => array('{:module}_{staffID}'), 
+		'notice:view'            => array('{:module}_{id}'), 
+		'bible:view'            => array('{:module}_{id}'), 
+	),
+	"HTML_CACHE_TIME"=>1200,
+	"HTML_FILE_SUFFIX "=>'.html', 
+	'URL_HTML_SUFFIX'=>'.html',
 	//調試狀態配置
 	'APP_DEBUG' => false,
 	'LOG_RECORD' => true,
