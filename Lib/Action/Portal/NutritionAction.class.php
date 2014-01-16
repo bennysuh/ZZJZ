@@ -1,13 +1,13 @@
 <?php
  /**
  +------------------------------------------------------------------------------
- * Bible控制類
+ * 食补控制類
  +------------------------------------------------------------------------------
  * @author    david <lhdst@163.com>
  * @version   $Id$
  +------------------------------------------------------------------------------
  */
-class BibleAction extends Action {
+class NutritionAction extends BibleAction {
 	/**
 	 +----------------------------------------------------------
 	 * 根据查询条件显示列表
@@ -27,7 +27,7 @@ class BibleAction extends Action {
 			$where['_logic']  = "or";
 			$data['_complex'] = $where;
 		}
-		$data['articleType'] = array("neq","1");
+		$data['articleType'] = "1";
 		$count = $M->where($data)->count();
 		//分页
 		$p = new Page($count, 10);
@@ -36,26 +36,6 @@ class BibleAction extends Action {
 		$this -> assign('page', $page);
 		$this -> assign('list', $list);
 		$this -> display();
-	}
-	/**
-	 +----------------------------------------------------------
-	 * 月嫂详细资料
-	 +----------------------------------------------------------
-	 * @access public
-	 +----------------------------------------------------------
-	 */
-	public function view()
-	{
-		if (!$_GET['id']) {
-			$this->error("no bible ID to view");
-		}
-		$data['articleid'] = $_GET['id'];
-		$article = M("zz_article")->where($data)->find();
-		
-		$this->assign("title", $article['title']);
-		$this->assign("content", $article['content']);
-		$this->assign("updateTime", $staff['updatetime']);
-		$this->display();
 	}
 }
 ?>

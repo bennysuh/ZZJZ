@@ -152,13 +152,13 @@ class JnpAction extends EntryAction {
 	public function autoUpload()
 	{
 		$path =  "./Public/Uploads/jnp/source/test/";
-		$subFolder = "target/tmx/"; // 修改的地方
+		$subFolder = "target/szy/sjll/"; // 修改的地方
 		$targetPath = "./Public/Uploads/jnp/" . $subFolder;
 		$handle = opendir($path);	// 打开路径
 		if (!$handle) {
 			return FALSE; 
 		}
-		$data['bh'] = array("like", "tmx_%"); // 修改地方
+		$data['bh'] = array("like", "szy_%"); // 修改地方
 		$lastBh = D("Jnp")->where($data)->order("id desc")->getField("bh");
 		$lastBh_id = substr($lastBh, -2);
 		$key = $lastBh_id ? ($lastBh_id+1) : 1;
@@ -170,13 +170,13 @@ class JnpAction extends EntryAction {
 				unset($jnpData);
 				$fileNameArr = explode(" ", $file);
 				// 新增jnp log
-				$jnpData['jnpType'] = D("Jnp")->typeList[2];
+				$jnpData['jnpType'] = D("Jnp")->typeList[3];
 				$jnpData['years'] = '2013';
-				$jnpData['bh'] = 'tmx_2013_' . $key++;// 修改地方
-				$jnpData['cz'] = '参考样品';// 修改地方
+				$jnpData['bh'] = 'szy_2013_' . $key++;
+				$jnpData['cz'] = '水晶琉璃';// 修改地方
 				$jnpData['color'] = '样色';
-				//$size = substr($fileNameArr[1], 0, -4);
-				$jnpData['size'] = $size ? $size : '参考样品';
+				$size = substr($fileNameArr[1], 0, -4);
+				$jnpData['size'] = $size ? $size : '';
 				$jnpData['title'] = $fileNameArr[0];
 				$jnpData['description'] = $fileNameArr[0];
 				if (!mb_check_encoding($jnpData['title'] , 'utf-8')){
@@ -187,7 +187,7 @@ class JnpAction extends EntryAction {
 						dump("unknow code");
 					}
 		        }
-		        $jnpData['description'] .= "-胎毛绣系列";// 修改地方
+		        $jnpData['description'] .= "-水晶三宝典藏精品套系-水晶套系";// 修改地方
 				$jnpData['updateTime'] = date('Y-m-d H:i:s');
 				$jnpID = D("Jnp")->data($jnpData)->add();
 				if (!$jnpID) {

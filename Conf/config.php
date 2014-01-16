@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 if (!defined('THINK_PATH')) exit();
 define ( 'WEBSITE_URL', 'www.gzzzjz.com' );
 //应用ID 这个是在  http://connect.qq.com/   申请
@@ -28,22 +28,37 @@ return array(
 	'VERIFY_CODE_MODE' => false, // 是否验证码模式
 	'LANG_AUTO_DETECT'   =>  false,     // 自动侦测语言
 	'VAR_LANGUAGE'=>'locale',
-	'APP_GROUP_LIST'=> 'Admin,Portal,Api',// 分组列表
+	'APP_GROUP_LIST'=> 'Admin,Portal,Api,Weixin',// 分组列表
 	'DEFAULT_GROUP' => 'Portal',// 默认分组
 	'JUMP_TO_MODULE' => __ROOT__.'/Admin/Staff/index',// 登录后自动跳转的模块
 	'TMPL_ACTION_ERROR' => './Tpl/Public/error.html',// 错误跳转页面
 	'TMPL_ACTION_SUCCESS' => './Tpl/Public/success.html',// 成功跳转页面
 	'OUTPUT_ENCODE'=>false,
 	'ENABLE_EDB' => false,
-
+	//静态缓存
+	'HTML_CACHE_ON'=>true,
+	'HTML_CACHE_RULES'=> array(
+		'index:index'            => array('{:module}'), 
+		'pagecontent:index'            => array('{page}'), 
+		'staff:selectYs'            => array('{:action}'), 
+		'staff:viewStaff'            => array('{:module}_{staffID}'), 
+		'notice:view'            => array('{:module}_{id}'), 
+		'bible:view'            => array('{:module}_{id}'), 
+	),
+	"HTML_CACHE_TIME"=>1200,
+	"HTML_FILE_SUFFIX "=>'.html', 
+	'URL_HTML_SUFFIX'=>'.html',
 	//調試狀態配置
 	'APP_DEBUG' => false,
 	'LOG_RECORD' => true,
 	'LOG_EXCEPTION_RECORD'  => true,
-	'LOG_LEVEL' => 'EMERG,ALERT,CRIT,ERR,WARN,NOTICE,DEBUG,SQL',
+	'LOG_LEVEL' => 'EMERG,ALERT,CRIT,ERR',
 	'SHOW_ERROR_MSG' => true,
-	
 
+	'WECHAT_TOKEN' => 'yapai',
+	'WECHAT_APPID' => 'yapai',
+	'WECHAT_APPSECRET' => '123456',
+	'DATA_AUTH_KEY' => 'davidhuang',
 
 
 	//系統變量
@@ -57,38 +72,36 @@ return array(
 
 	'SYS_USER_GROUP_ID' => 2,//系統合法用戶組的ID號
 	//郵件
-	// 'SMTP' => 'smtp.qq.com',
-	// 'SEND_FROM' => '1275653073@qq.com',
-	// 'TESTING_EMAIL' => array(
-	    // array('42613823@qq.com','davidhuang'),
-	// ),
-	// 'EMAIL_ACCOUNT'=>"1275653073@qq.com",
-	// 'EMAIL_PASSWORD'=>"89285610",
-	// 'SEND_FROMNAME'=>'广州市真真家政服务有限公司',
-	'SMTP' => 'smtp.163.com',
-	'SEND_FROM' => 'lhdst@163.com',
+	//'SMTP' => 'smtp.126.com',
+	//'SEND_FROM' => 'to89285668@126.com',
+	//'TESTING_EMAIL' => array(
+	//	array('to89285668@126.com','meedee'),
+	//),
+	//'EMAIL_ACCOUNT'=>"to89285668@126.com",
+	//'EMAIL_PASSWORD'=>"zz38295611",
+	//'SEND_FROMNAME'=>'广州市真真家政服务有限公司',
+
+	'SMTP' => 'smtp.gmail.com',
+	'SEND_FROM' => 'mchuang1104@gmail.com',
 	'TESTING_EMAIL' => array(
-		array('lhdst@163.com','davidhuang'),
+		array('to89285668@126.com','meedee'),
 	),
-	'EMAIL_ACCOUNT'=>"lhdst@163.com",
-	'EMAIL_PASSWORD'=>"xqh40510832229",
+	'EMAIL_ACCOUNT'=>"mchuang1104@gmail.com",
+	'EMAIL_PASSWORD'=>"81720529",
 	'SEND_FROMNAME'=>'广州市真真家政服务有限公司',
-	
-	
-	
+
+	/*=================環境差異配置===================*/
+
 	//數據庫
 	'DB_HOST'=>'localhost',
 	'DB_NAME'=>'uu143072',
-	'DB_USER'=>'root',
-	'DB_PWD'=>'',
-	
+	'DB_USER'=>'uu143072',
+	'DB_PWD'=>'fNLSxc0Y',
 	//SMS
 	'SMS_USERID'=>'044843',
 	'SMS_PASSWORD'=>'38295611',
 	'SMS_ACCOUNT'=>'admin',
-	'WEB_HOST'=>'localhost/',
 	'STORAGE_ROOT'=>'/Uploads/prolactin/',
 	"PHOTO_PATH"=>'./Public/Uploads/',
-	'APP_PATH'=>'newzzjz',
 );
 ?>

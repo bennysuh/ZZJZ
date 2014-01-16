@@ -8,7 +8,7 @@
 			$(document).ready(function() {
 				$("#searchBtn").click(function() {
 					var title = $("#title").val();
-					window.location.href = "__ROOT__/Portal/Bible/index?title=" + title;
+					window.location.href = "__ROOT__/Portal/Nutrition/index?title=" + title;
 					
 				});
 				
@@ -28,7 +28,7 @@
 						<include file="Public:left" />
 					</div>
 					<div class="main">
-						<h2 class="ntit2" id="pageTitle">常识宝典</h2>
+						<h2 class="ntit2" id="pageTitle">月子食补馆</h2>
 						<div id="searchDiv">
 							<form onsubmit="return false;" id="searchForm">
 								<input placeholder="请输入需要查询的内容" style="width:200px;" type="text" name="title" id="title" />
@@ -40,7 +40,7 @@
 								<volist name="list" id="vo">
 									<li class="bibleLi" articleID={$vo['articleid']}>
 										<td class="bibleTd">
-										 	<a href="__ROOT__/Portal/Bible/view/id/{$vo['articleid']}.html">{$vo['title']}</a>
+										 	<a href="__ROOT__/Portal/Nutrition/view/id/{$vo['articleid']}.html">{$vo['title']}</a>
 										 </td>
 									</li>
 								</volist>
